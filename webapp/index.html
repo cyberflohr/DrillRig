@@ -1,0 +1,321 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6" ng-app> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7" ng-app> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8" ng-app> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9" ng-app> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en" ng-app="DrillRigServices">
+<!--<![endif]-->
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+<title></title>
+<meta name="description" content="">
+<meta name="author" content="">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="css/screen.css" type="text/css"
+  media="screen" title="default" />
+
+<!--[if lt IE 9]>
+      <script src="js/libs/html5.js"></script>
+      <![endif]-->
+<!--  jquery core -->
+<script src="js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+
+<!-- Custom jquery scripts -->
+<script src="js/jquery/custom_jquery.js" type="text/javascript"></script>
+
+<!-- MUST BE THE LAST SCRIPT IN <HEAD></HEAD></HEAD> png fix -->
+<script src="js/jquery/jquery.pngFix.pack.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(document).pngFix();
+	});
+</script>
+
+</head>
+
+<body ng-controller="PhoneListCtrl">
+
+  <div id="page-top-outer">
+
+    <!-- Start: page-top -->
+    <div id="page-top">
+
+      <!-- start logo -->
+      <div id="logo">
+        <a href=""><img width="156" height="40" alt=""
+          src="images/shared/logo.png"></a>
+      </div>
+      <!-- end logo -->
+
+      <div class="clear"></div>
+
+    </div>
+    <!-- End: page-top -->
+
+  </div>
+  <div class="clear">&nbsp;</div>
+  <div class="nav-outer-repeat">
+    <!--  start nav-outer -->
+    <div class="nav-outer">
+
+      <!-- start nav-right -->
+      <div id="nav-right">
+
+        <div class="nav-divider">&nbsp;</div>
+        <div class="showhide-account">
+          <img width="93" height="14" alt=""
+            src="images/shared/nav/nav_myaccount.gif">
+        </div>
+        <div class="nav-divider">&nbsp;</div>
+        <a id="logout" href=""><img width="64" height="14" alt=""
+          src="images/shared/nav/nav_logout.gif"></a>
+        <div class="clear">&nbsp;</div>
+
+        <!--  start account-content -->
+        <div class="account-content">
+          <div class="account-drop-inner">
+            <a id="acc-settings" href="">Settings</a>
+            <div class="clear">&nbsp;</div>
+            <div class="acc-line">&nbsp;</div>
+            <a id="acc-details" href="">Personal details </a>
+          </div>
+        </div>
+        <!--  end account-content -->
+
+      </div>
+      <!-- end nav-right -->
+
+
+      <!--  start nav -->
+      <div class="nav">
+        <div class="table">
+
+          <ul class="current">
+            <li><a href="#nogo"><b>Monitoring</b> <!--[if IE 7]><!--></a>
+              <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
+              <div class="select_sub show">
+                <ul class="sub">
+                  <li class="sub_show"><a href="#nogo">Tunnels by Maschine</a></li>
+                  <li><a href="#nogo">Tunnels by Categorie</a></li>
+                </ul>
+              </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
+          </ul>
+
+          <div class="nav-divider">&nbsp;</div>
+
+          <ul class="select">
+            <li><a href="#nogo"><b>Configuration</b> <!--[if IE 7]><!--></a>
+              <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
+              <div class="select_sub">
+                <ul class="sub">
+                  <li><a href="#nogo">View all products</a></li>
+                  <li ><a href="#nogo">Add
+                      product</a></li>
+                  <li><a href="#nogo">Delete products</a></li>
+                </ul>
+              </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
+          </ul>
+
+          <div class="nav-divider">&nbsp;</div>
+
+          <ul class="select">
+            <li><a href="#nogo"><b>Accounts</b> <!--[if IE 7]><!--></a>
+              <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
+              <div class="select_sub">
+                <ul class="sub">
+                  <li><a href="#nogo">Categories Details 1</a></li>
+                  <li><a href="#nogo">Categories Details 2</a></li>
+                  <li><a href="#nogo">Categories Details 3</a></li>
+                </ul>
+              </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
+          </ul>
+
+          <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <!--  start nav -->
+
+    </div>
+    <div class="clear"></div>
+    <!--  start nav-outer -->
+  </div>
+  <div class="clear"></div>
+  <div id="content-outer">
+    <!-- start content -->
+    <div id="content">
+
+      <!--  start page-heading -->
+      <div id="page-heading">
+        <h1>Tunnels by Maschine</h1>
+      </div>
+      <!-- end page-heading -->
+
+      <table width="100%" cellspacing="0" cellpadding="0" border="0"
+        id="content-table">
+        <tbody>
+          <tr>
+            <th class="sized" rowspan="3"><img width="20"
+              height="300" alt=""
+              src="images/shared/side_shadowleft.jpg"></th>
+            <th class="topleft"></th>
+            <td id="tbl-border-top">&nbsp;</td>
+            <th class="topright"></th>
+            <th class="sized" rowspan="3"><img width="20"
+              height="300" alt=""
+              src="images/shared/side_shadowright.jpg"></th>
+          </tr>
+          <tr>
+            <td id="tbl-border-left"></td>
+            <td>
+              <!--  start content-table-inner ...................................................................... START -->
+              <div id="content-table-inner">
+
+                <!--  start table-content  -->
+                <div id="table-content">
+
+                  <!--  start product-table ..................................................................................... -->
+                  <form action="" id="mainform">
+                    <div ng-repeat="client in config.SshClient">
+                      <h2>via {{client['@name']}} - {{client['@description']}} ({{client.MachineAccount['@user']}}@{{client.MachineAccount['@host']}})</h2>
+                      <table width="100%" cellspacing="0"
+                        cellpadding="0" border="0" id="product-table">
+                        <tbody>
+                          <tr>
+                            <th class="table-header-check"><a
+                              id="toggle-all"></a></th>
+                            <th
+                              class="table-header-repeat line-left minwidth-1"><a
+                              href="">Source-Host</a></th>
+                            <th
+                              class="table-header-repeat line-left minwidth-1"><a
+                              href="">Source-Port</a></th>
+                            <th class="table-header-repeat line-left"><a
+                              href="">Remote-Host</a></th>
+                            <th class="table-header-repeat line-left"><a
+                              href="">Remote-Port</a></th>
+                            <th class="table-header-repeat line-left"><a
+                              href="">Type</a></th>
+                            <th class="table-header-options line-left"><a
+                              href="">Options</a></th>
+                          </tr>
+                          <tr ng-repeat="forward in client.Forward">
+                            <td><input type="checkbox"
+                              class="ui-helper-hidden-accessible"><span
+                              class="ui-checkbox"></span></td>
+                            <td>{{forward['@sHost']}}</td>
+                            <td>{{forward['@sPort']}}</td>
+                            <td>{{forward['@rHost']}}</td>
+                            <td>{{forward['@rPort']}}</td>
+                            <td>{{forward['@type']}}</td>
+                            <td class="options-width"><a
+                              class="icon-1 info-tooltip" href=""></a> <a
+                              class="icon-2 info-tooltip" href=""></a> <a
+                              class="icon-3 info-tooltip" href=""></a> <a
+                              class="icon-4 info-tooltip" href=""></a> <a
+                              class="icon-5 info-tooltip" href=""></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <!--  end product-table................................... -->
+                    </div>
+                  </form>
+                </div>
+                <!--  end content-table  -->
+
+                <!--  start actions-box ............................................... -->
+                <div id="actions-box">
+                  <a class="action-slider" href=""></a>
+                  <div id="actions-box-slider">
+                    <a class="action-edit" href="">Edit</a> <a
+                      class="action-delete" href="">Delete</a>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+                <!-- end actions-box........... -->
+
+                <!--  start paging..................................................... -->
+                <table cellspacing="0" cellpadding="0" border="0"
+                  id="paging-table">
+                  <tbody>
+                    <tr>
+                      <td><a class="page-far-left" href=""></a> <a
+                        class="page-left" href=""></a>
+                        <div id="page-info">
+                          Page <strong>1</strong> / 15
+                        </div> <a class="page-right" href=""></a> <a
+                        class="page-far-right" href=""></a></td>
+                      <td><input type="text" id="_input"
+                        class="styledselect_pages" autocomplete="off"
+                        readonly="" tabindex="0">
+                        <div id="_container" class="selectbox-wrapper2"
+                          style="display: none; width: 130px;">
+                          <ul>
+                            <li id="_input_" class="selected2">Number
+                              of rows</li>
+                            <li id="_input_">1</li>
+                            <li id="_input_">2</li>
+                            <li id="_input_">3</li>
+                          </ul>
+                        </div> <select class="styledselect_pages"
+                        style="display: none;">
+                          <option value="">Number of rows</option>
+                          <option value="">1</option>
+                          <option value="">2</option>
+                          <option value="">3</option>
+                      </select></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--  end paging................ -->
+
+                <div class="clear"></div>
+
+              </div> <!--  end content-table-inner ............................................END  -->
+            </td>
+            <td id="tbl-border-right"></td>
+          </tr>
+          <tr>
+            <th class="sized bottomleft"></th>
+            <td id="tbl-border-bottom">&nbsp;</td>
+            <th class="sized bottomright"></th>
+          </tr>
+        </tbody>
+      </table>
+      <div class="clear">&nbsp;</div>
+
+    </div>
+    <!--  end content -->
+    <div class="clear">&nbsp;</div>
+  </div>
+  <div class="clear">&nbsp;</div>
+  <div id="footer">
+    <!--  start footer-left -->
+    <div id="footer-left">
+
+      Admin Skin &copy; Copyright Internet Dreams Ltd. <span
+        id="spanYear"></span> <a href="">www.netdreams.co.uk</a>. All
+      rights reserved.
+    </div>
+    <!--  end footer-left -->
+    <div class="clear">&nbsp;</div>
+  </div>
+
+
+
+
+  <script src="js/libs/jquery-1.7.2.min.js"></script>
+  <script src="js/libs/angular-1.0.1.js"></script>
+  <script src="js/libs/angular-resource-1.0.1.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

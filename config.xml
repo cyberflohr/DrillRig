@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Configuration xmlns:ns2="http:///www.flohr-it.de/resources/xsd/DrillRigConfiguration.xsd">
+    <ns2:SshClient id="1312312" name="SAM1" description="sam account for xflohw">
+        <ns2:MachineAccount password="xflohrw123" user="xflohrw"  host="cgn-sam-01" port="22"/>
+        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2222" sHost="*" description="svn tunnel"/>
+        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2223" sHost="*" description="svn tunnel"/>
+        <ns2:Forward type="R" rHost="cgn-sam-01" rPort="9999" sPort="8080" sHost="localhost" description="jetty admin port"/>
+    </ns2:SshClient>
+    <ns2:SshClient id="1312313" name="SAM1" description="sam account for xflohw">
+        <ns2:MachineAccount password="xflohrw123" user="xflohrw"  host="cgn-sam-01" port="22"/>
+        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2224" sHost="*" description="svn tunnel"/>
+        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2225" sHost="*" description="svn tunnel"/>
+        <ns2:Forward type="R" rHost="cgn-sam-01" rPort="9998" sPort="8080" sHost="localhost" description="jetty admin port"/>
+    </ns2:SshClient>
+</ns2:Configuration>
