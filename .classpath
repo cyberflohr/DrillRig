@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="target/generated/java"/>
+  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.2.2/jaxb-api-2.2.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/sshd/sshd-core/0.7.0/sshd-core-0.7.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.4/mina-core-2.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/sshd/sshd-pam/0.7.0/sshd-pam-0.7.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk15/140/bcprov-jdk15-140.jar"/>
+  <classpathentry kind="var" path="M2_REPO/tomcat/tomcat-apr/5.5.23/tomcat-apr-5.5.23.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/schmizz/sshj/0.8.0/sshj-0.8.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-server/8.1.4.v20120524/jetty-server-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/orbit/javax.servlet/3.0.0.v201112011016/javax.servlet-3.0.0.v201112011016.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-continuation/8.1.4.v20120524/jetty-continuation-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-http/8.1.4.v20120524/jetty-http-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-io/8.1.4.v20120524/jetty-io-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-util/8.1.4.v20120524/jetty-util-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-webapp/8.1.4.v20120524/jetty-webapp-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-xml/8.1.4.v20120524/jetty-xml-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-servlet/8.1.4.v20120524/jetty-servlet-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-security/8.1.4.v20120524/jetty-security-8.1.4.v20120524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-servlet/1.13-b01/jersey-servlet-1.13-b01.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-server/1.13-b01/jersey-server-1.13-b01.jar"/>
+  <classpathentry kind="var" path="M2_REPO/asm/asm/3.1/asm-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-core/1.13-b01/jersey-core-1.13-b01.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/jersey/jersey-json/1.13-b01/jersey-json-1.13-b01.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jettison/jettison/1.1/jettison-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.9.2/jackson-core-asl-1.9.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.9.2/jackson-mapper-asl-1.9.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-jaxrs/1.9.2/jackson-jaxrs-1.9.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-xc/1.9.2/jackson-xc-1.9.2.jar"/>
+</classpath>
