@@ -37,15 +37,14 @@ public class SshClientManager {
 	}
 
 	public void stop() {
-		// notify thread termination
-		for (SshClientMonitor mon : sshClientMonitor) {
-			mon.interrupt();
-		}
+
 
 		while (!sshClientMonitor.isEmpty()) {
 			Iterator<SshClientMonitor> iter = sshClientMonitor.iterator();
 			while (iter.hasNext()) {
-				if (!iter.next().isAlive()) {
+				SshClientMonitor mon = iter.next();
+				mon.interrupt();
+				if (!mon.isAlive()) {
 					iter.remove();
 				}
 			}

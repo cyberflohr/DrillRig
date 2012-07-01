@@ -1,4 +1,4 @@
-package de.flohrit.drillrig.controller;
+package de.flohrit.drillrig.services;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -10,18 +10,18 @@ import de.flohrit.drillrig.DrillServer;
 public class RuntimeHandler {
 	
 	@GET
-	@Path("read")
+	@Path("stop")
 	@Produces("application/json")
-	public boolean stop() {
+	public void stop() {
 		DrillServer.stopSshClients();
-		return true;
+		Object x=null;
+		x.toString();
 	}	
 
 	@GET
-	@Path("read")
+	@Path("start")
 	@Produces("application/json")
-	public boolean start() {
+	public void start() {
 		DrillServer.startSshClients();
-		return true;
 	}	
 }

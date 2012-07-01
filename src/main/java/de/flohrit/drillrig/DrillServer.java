@@ -2,14 +2,15 @@ package de.flohrit.drillrig;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,18 @@ public class DrillServer {
 		}
 */
 		readConfiguration();
-		startSshClients();
+	startSshClients();
 		
 		Server server = new Server(8080);
 		
 		WebAppContext webapp = new WebAppContext();
 		webapp.setContextPath("/");
         webapp.setWar("webapp");
+        
+        HashLoginService loginService = new HashLoginService();
+        loginService.putUser("root", Credential.getCredential("test"), new String[] {"user"});
+        webapp.getSecurityHandler().setLoginService(loginService);
+        
         server.setHandler(webapp);
         
         try {
