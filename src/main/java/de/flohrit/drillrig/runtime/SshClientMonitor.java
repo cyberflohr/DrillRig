@@ -143,11 +143,12 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 	
 	@Override
 	public void run() {
-		while (!isInterrupted()) {
+		while (!interrupted()) {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				logger.error("SshClientMonitor thread interrupted -> exiting now");
+				break;
 			}
 			
 			if (sshClient==null) {
@@ -184,7 +185,9 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 				myLocalPortForwarder.close();
 			}
 			portForwarders.clear();
-			sshClient.close();
+			if (sshClient != null) {
+				sshClient.close();
+			}
 		} catch (IOException e) {
 		}
 		logger.info("Shuting down SshClientMonitor thread completed");

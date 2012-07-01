@@ -1,4 +1,4 @@
-package de.flohrit.drillrig.controller;
+package de.flohrit.drillrig.services;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

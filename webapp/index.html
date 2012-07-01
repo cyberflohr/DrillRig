@@ -4,7 +4,7 @@
 <!--[if IE 8 ]>    <html lang="en" class="ie8" ng-app> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="ie9" ng-app> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
-<html lang="en" ng-app="DrillRigServices">
+<html lang="en" ng-app="DrillRig">
 <!--<![endif]-->
 <head>
 <meta charset="UTF-8">
@@ -40,7 +40,7 @@
 
 </head>
 
-<body ng-controller="PhoneListCtrl">
+<body ng-controller="RuntimeManagerCtrl">
 
   <div id="page-top-outer">
 
@@ -74,7 +74,7 @@
             src="images/shared/nav/nav_myaccount.gif">
         </div>
         <div class="nav-divider">&nbsp;</div>
-        <a id="logout" href=""><img width="64" height="14" alt=""
+        <a id="logout" href="logout"><img width="64" height="14" alt=""
           src="images/shared/nav/nav_logout.gif"></a>
         <div class="clear">&nbsp;</div>
 
@@ -157,6 +157,9 @@
         <h1>Tunnels by Maschine</h1>
       </div>
       <!-- end page-heading -->
+
+<button ng-click="stopSshClients()">stop</button>
+<button ng-click="startSshClients()">start</button>
 
       <table width="100%" cellspacing="0" cellpadding="0" border="0"
         id="content-table">
@@ -314,8 +317,10 @@
   <script src="js/libs/jquery-1.7.2.min.js"></script>
   <script src="js/libs/angular-1.0.1.js"></script>
   <script src="js/libs/angular-resource-1.0.1.js"></script>
-  <script src="js/services.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/resources.js"></script>
+  <script src="js/controller.js"></script>
+  <script src="js/services.js"></script>
 
 </body>
 </html>
