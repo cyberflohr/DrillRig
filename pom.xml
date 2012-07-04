@@ -56,7 +56,6 @@
 						<include>**/*.xsd</include>
 					</schemaIncludes>
 					<generateDirectory>${basedir}/target/generated/java </generateDirectory>
-					<generatePackage>de.flohrit.drillrig.config</generatePackage>
 					<forceRegenerate>true</forceRegenerate>
 				</configuration>
 			</plugin>

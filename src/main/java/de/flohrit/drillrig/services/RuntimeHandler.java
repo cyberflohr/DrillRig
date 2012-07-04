@@ -1,10 +1,14 @@
 package de.flohrit.drillrig.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import de.flohrit.drillrig.DrillServer;
+import de.flohrit.drillrig.runtime.SshClientMonitor;
 
 @Path("/runtime")
 public class RuntimeHandler {
@@ -13,15 +17,27 @@ public class RuntimeHandler {
 	@Path("stop")
 	@Produces("application/json")
 	public void stop() {
-		DrillServer.stopSshClients();
-		Object x=null;
-		x.toString();
+		DrillServer.getSshClientManager().stop();
 	}	
 
 	@GET
 	@Path("start")
 	@Produces("application/json")
 	public void start() {
-		DrillServer.startSshClients();
+		DrillServer.getSshClientManager().start();
+	}	
+	
+	@GET
+	@Path("/monitor/forwards")
+	@Produces("application/json")
+	public List<ForwardStateInfo> getForwardStateInfo() {
+		
+		
+		List<ForwardStateInfo> fwdInfos = new ArrayList<ForwardStateInfo>();
+		for (SshClientMonitor monitor : DrillServer.getSshClientManager().getSshClientMonitors()) {
+			fwdInfos.addAll(monitor.getForwardStateInfos());
+		}
+		
+		return fwdInfos;
 	}	
 }

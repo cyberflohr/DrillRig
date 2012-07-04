@@ -16,15 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Configuration;
-import de.flohrit.drillrig.config.Forward;
-import de.flohrit.drillrig.config.MachineAccount;
-import de.flohrit.drillrig.config.SshClient;
 import de.flohrit.drillrig.runtime.AutoKnownHostsVerifier;
 import de.flohrit.drillrig.runtime.SshClientManager;
 
 public class DrillServer {
 	final static private Logger logger = LoggerFactory
 			.getLogger(AutoKnownHostsVerifier.class);
+	
 	private static SshClientManager sshClientManager;
 	private static Configuration configuration;
 
@@ -59,8 +57,9 @@ public class DrillServer {
 			e.printStackTrace();
 		}
 */
-		readConfiguration();
-	startSshClients();
+		
+		reloadServer(); 
+//		writeConfiguration(configuration);
 		
 		Server server = new Server(8080);
 		
@@ -82,18 +81,12 @@ public class DrillServer {
 		}
 	}
 
-	public static Configuration getConfiguration() {
-		return configuration;
+	public static SshClientManager getSshClientManager() {
+		return sshClientManager;
 	}
 
-	public static void startSshClients() {
-		logger.info("Starting ssh client sessions");
-		sshClientManager = new SshClientManager(configuration.getSshClient());
-		sshClientManager.start();
-	}
-	
-	public static void stopSshClients() {
-		sshClientManager.stop();
+	public static Configuration getConfiguration() {
+		return configuration;
 	}
 
 	/**
@@ -116,10 +109,25 @@ public class DrillServer {
 			}
 
 		} catch (JAXBException e3) {
-			logger.error("Error reading configuration file config.xml");
+			logger.error("Error reading configuration file config.xml", e3);
 		}
 	}
-
+	
+	/**
+	 * 
+	 */
+	public static void reloadServer() {
+	
+		if (sshClientManager != null) {
+			sshClientManager.stop();
+		}
+		
+		readConfiguration();
+		
+		sshClientManager = new SshClientManager(configuration.getSshClient());
+		sshClientManager.start();
+	}
+	
 	/**
 	 * Write configuration file config.xml
 	 * @param configuration to write 
@@ -129,22 +137,6 @@ public class DrillServer {
 			JAXBContext jc = JAXBContext
 					.newInstance("de.flohrit.drillrig.config");
 			Marshaller m = jc.createMarshaller();
-			SshClient sshClient = new SshClient();
-			MachineAccount mAccount = new MachineAccount();
-			mAccount.setHost("cgn-sam-01");
-			mAccount.setUser("xflohrw");
-			mAccount.setPassword("xflohrw123");
-			sshClient.setMachineAccount(mAccount);
-
-			Forward fwd = new Forward();
-			fwd.setDescription("svn tunnel");
-			fwd.setSHost("*");
-			fwd.setSPort(13690);
-			fwd.setRHost("cgn-sam-01");
-			fwd.setRPort(3690);
-			sshClient.getForward().add(fwd);
-
-			configuration.getSshClient().add(sshClient);
 
 			m.setProperty("jaxb.formatted.output", true);
 			FileOutputStream config = new FileOutputStream("config.xml");

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:dr="http:///www.flohr-it.de/resources/xsd/DrillRigConfiguration.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http:///www.flohr-it.de/resources/xsd/DrillRigConfiguration.xsd">
+<xsd:schema xmlns:dr="http:///www.flohrit.de/drillrig/config.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http:///www.flohrit.de/drillrig/config.xsd">
     <xsd:element name="SshServer">
     	<xsd:complexType>
     		<xsd:sequence>
@@ -40,8 +40,8 @@
     <xsd:element name="Forward">
     	<xsd:complexType>
     		<xsd:attribute ref="dr:enabled"></xsd:attribute>
-            <xsd:attribute name="description" type="xsd:string"></xsd:attribute>
-            <xsd:attribute name="type">
+    		<xsd:attribute name="description" type="xsd:string"></xsd:attribute>
+    		<xsd:attribute name="type">
     			<xsd:simpleType>
     				<xsd:restriction base="xsd:string">
     					<xsd:enumeration value="R"></xsd:enumeration>
@@ -49,11 +49,12 @@
     				</xsd:restriction>
     			</xsd:simpleType>
     		</xsd:attribute>
-            <xsd:attribute name="sHost" type="xsd:string"></xsd:attribute>
-            <xsd:attribute name="sPort" type="xsd:int"></xsd:attribute>
-            <xsd:attribute name="rHost" type="xsd:string"></xsd:attribute>
-            <xsd:attribute name="rPort" type="xsd:int"></xsd:attribute>
+    		<xsd:attribute name="sHost" type="xsd:string"></xsd:attribute>
+    		<xsd:attribute name="sPort" type="xsd:int"></xsd:attribute>
+    		<xsd:attribute name="rHost" type="xsd:string"></xsd:attribute>
+    		<xsd:attribute name="rPort" type="xsd:int"></xsd:attribute>
 
+    		<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
     	</xsd:complexType>
     </xsd:element>
 

@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import net.schmizz.concurrent.Event;
 import net.schmizz.sshj.common.StreamCopier;
 import net.schmizz.sshj.connection.channel.Channel;
-import net.schmizz.sshj.connection.channel.OpenFailException.Reason;
 import net.schmizz.sshj.connection.channel.SocketStreamCopyMonitor;
 import net.schmizz.sshj.connection.channel.forwarded.ConnectListener;
 

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Configuration xmlns:ns2="http:///www.flohr-it.de/resources/xsd/DrillRigConfiguration.xsd">
-    <ns2:SshClient id="1312312" name="SAM1" description="sam account for xflohw">
-        <ns2:MachineAccount password="xflohrw123" user="xflohrw"  host="cgn-sam-01" port="22"/>
-        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2222" sHost="*" description="svn tunnel"/>
-        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2223" sHost="*" description="svn tunnel"/>
-        <ns2:Forward type="R" rHost="cgn-sam-01" rPort="9999" sPort="8080" sHost="localhost" description="jetty admin port"/>
+<ns2:Configuration xmlns:ns2="http:///www.flohrit.de/drillrig/config.xsd">
+    <ns2:SshClient id="ID13413855018231379983922822331" name="SAM1" description="sam account for xflohw">
+        <ns2:MachineAccount host="cgn-sam-01" port="22" user="xflohrw" password="xflohrw123"/>
+        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2222" rHost="cgn-sam-01" rPort="22" id="ID13413855018231379983922822339"/>
+        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2223" rHost="cgn-sam-01" rPort="22" id="ID13413855018251379983924863893"/>
+        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="cgn-sam-01" rPort="9999" id="ID13413855018261379983925231076"/>
     </ns2:SshClient>
-    <ns2:SshClient id="1312313" name="SAM1" description="sam account for xflohw">
-        <ns2:MachineAccount password="xflohrw123" user="xflohrw"  host="cgn-sam-01" port="22"/>
-        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2224" sHost="*" description="svn tunnel"/>
-        <ns2:Forward type="L" rHost="cgn-sam-01" rPort="22" sPort="2225" sHost="*" description="svn tunnel"/>
-        <ns2:Forward type="R" rHost="cgn-sam-01" rPort="9998" sPort="8080" sHost="localhost" description="jetty admin port"/>
+    <ns2:SshClient id="ID13413855027231379984822041940" name="cyberflohr" description="cyberflohr account for xflohw">
+        <ns2:MachineAccount host="85.214.50.194" port="22" user="wflohr" password="Madmadshoe!)"/>
+        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2224" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822041941"/>
+        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2225" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822573711"/>
+        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="cgn-sam-01" rPort="9998" id="ID13413855027241379984822950777"/>
     </ns2:SshClient>
 </ns2:Configuration>

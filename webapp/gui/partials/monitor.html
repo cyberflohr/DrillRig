@@ -1,0 +1,138 @@
+
+<!--  start page-heading -->
+<div id="page-heading">
+  <h1 style="float:left">Tunnels by Client</h1>
+  <div style="float:right;margin-right:15px; ">
+    <button class="form-button red" ng-click="stopSshClients()">stop</button>
+    <button class="form-button" ng-click="startSshClients()">start</button>
+  </div>
+  <div class="clear">&nbsp;</div>
+</div>
+<!-- end page-heading -->
+
+
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0"
+  id="content-table">
+  <tbody>
+    <tr>
+      <th class="sized" rowspan="3"><img width="20" height="300"
+        alt="" src="images/shared/side_shadowleft.jpg"></th>
+      <th class="topleft"></th>
+      <td id="tbl-border-top">&nbsp;</td>
+      <th class="topright"></th>
+      <th class="sized" rowspan="3"><img width="20" height="300"
+        alt="" src="images/shared/side_shadowright.jpg"></th>
+    </tr>
+    <tr>
+      <td id="tbl-border-left"></td>
+      <td>
+        <!--  start content-table-inner ...................................................................... START -->
+        <div id="content-table-inner">
+
+          <!--  start table-content  -->
+          <div id="table-content">
+
+            <!--  start product-table ..................................................................................... -->
+            <form action="" id="mainform">
+              <div ng-repeat="client in config.SshClient">
+                <h2>via {{client['@name']}} -
+                  {{client['@description']}}
+                  ({{client.MachineAccount['@user']}}@{{client.MachineAccount['@host']}})</h2>
+                <table width="100%" cellspacing="0" cellpadding="0"
+                  border="0" id="product-table">
+                  <tbody>
+                    <tr>
+                      <th class="table-header-check"></th>
+                      <th
+                        class="table-header-repeat line-left minwidth-1"><a
+                        href="">Source-Host</a></th>
+                      <th
+                        class="table-header-repeat line-left minwidth-1"><a
+                        href="">Source-Port</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Remote-Host</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Remote-Port</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Type</a></th>
+                    </tr>
+                    <tr ng-repeat="forward in client.Forward">
+                      <td><span class="status-symbol {{forwardStatus[forward['@id']]}}"></span></td>
+                      <td>{{forward['@sHost']}}</td>
+                      <td>{{forward['@sPort']}}</td>
+                      <td>{{forward['@rHost']}}</td>
+                      <td>{{forward['@rPort']}}</td>
+                      <td>{{forward['@type']}}</td>
+                       
+                    </tr>
+                  </tbody>
+                </table>
+                <!--  end product-table................................... -->
+              </div>
+            </form>
+          </div>
+          <!--  end content-table  -->
+
+          <!--  start actions-box ............................................... -->
+          <div id="actions-box">
+            <a class="action-slider" href=""></a>
+            <div id="actions-box-slider">
+              <a class="action-edit" href="">Edit</a> <a
+                class="action-delete" href="">Delete</a>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <!-- end actions-box........... -->
+
+          <!--  start paging..................................................... -->
+          <table cellspacing="0" cellpadding="0" border="0"
+            id="paging-table">
+            <tbody>
+              <tr>
+                <td><a class="page-far-left" href=""></a> <a
+                  class="page-left" href=""></a>
+                  <div id="page-info">
+                    Page <strong>1</strong> / 15
+                  </div> <a class="page-right" href=""></a> <a
+                  class="page-far-right" href=""></a></td>
+                <td><input type="text" id="_input"
+                  class="styledselect_pages" autocomplete="off"
+                  readonly="" tabindex="0">
+                  <div id="_container" class="selectbox-wrapper2"
+                    style="display: none; width: 130px;">
+                    <ul>
+                      <li id="_input_" class="selected2">Number of
+                        rows</li>
+                      <li id="_input_">1</li>
+                      <li id="_input_">2</li>
+                      <li id="_input_">3</li>
+                    </ul>
+                  </div> <select class="styledselect_pages"
+                  style="display: none;">
+                    <option value="">Number of rows</option>
+                    <option value="">1</option>
+                    <option value="">2</option>
+                    <option value="">3</option>
+                </select></td>
+              </tr>
+            </tbody>
+          </table>
+          <!--  end paging................ -->
+
+          <div class="clear"></div>
+
+        </div> <!--  end content-table-inner ............................................END  -->
+      </td>
+      <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+      <th class="sized bottomleft"></th>
+      <td id="tbl-border-bottom">&nbsp;</td>
+      <th class="sized bottomright"></th>
+    </tr>
+  </tbody>
+</table>
+<div class="clear">&nbsp;</div>
+
+</div>

@@ -1,4 +1,4 @@
-package de.flohrit.drillrig.controller;
+package de.flohrit.drillrig.web;
 
 import java.io.IOException;
 
