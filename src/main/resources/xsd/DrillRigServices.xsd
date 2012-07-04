@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http:///www.flohrit.de/drillrig/services.xsd" targetNamespace="http:///www.flohrit.de/drillrig/services.xsd">
+    <element name="ForwardStateInfo">
+    	<complexType>
+    		<attribute name="id" type="ID"></attribute>
+    		<attribute name="state">
+    			<simpleType>
+    				<restriction base="string">
+    					<enumeration value="Stopped"></enumeration>
+    					<enumeration value="Running"></enumeration>
+    					<enumeration value="Restarting"></enumeration>
+    					<enumeration value="Failed"></enumeration>
+    				</restriction>
+    			</simpleType>
+    		</attribute>
+    	</complexType>
+    </element>
+</schema>

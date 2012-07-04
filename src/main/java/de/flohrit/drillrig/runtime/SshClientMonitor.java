@@ -2,15 +2,15 @@ package de.flohrit.drillrig.runtime;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.DisconnectReason;
 import net.schmizz.sshj.common.Message;
 import net.schmizz.sshj.common.SSHPacket;
-import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.transport.DisconnectListener;
 import net.schmizz.sshj.transport.TransportException;
 
@@ -20,79 +20,57 @@ import org.slf4j.LoggerFactory;
 import de.flohrit.drillrig.config.Forward;
 import de.flohrit.drillrig.config.MachineAccount;
 import de.flohrit.drillrig.config.SshClient;
+import de.flohrit.drillrig.services.ForwardStateInfo;
 
 public class SshClientMonitor extends Thread implements DisconnectListener {
 	final static private Logger logger = LoggerFactory
 			.getLogger(SshClientMonitor.class);
 
-	
-	private Map<Forward,MyLocalPortForwarder> portForwarders = new LinkedHashMap<Forward,MyLocalPortForwarder>();
-	private SSHClient sshClient;
+	private Map<Forward, PortForwarder> portForwarders = new LinkedHashMap<Forward, PortForwarder>();
+	private SSHClient sshClientSession;
 	private SshClient sshClientsCfg;
-	
+
 	public SshClientMonitor(SshClient sshClientsCfg) throws IOException {
-	
+
 		super(sshClientsCfg.getName());
 		setDaemon(true);
 		this.sshClientsCfg = sshClientsCfg;
 
 		// create ssh session
-		sshClient = createSshTransportSession(sshClientsCfg);
+		sshClientSession = createSshTransportSession(sshClientsCfg);
 	}
 
-	private void createPortForwardings(SSHClient sshClient, SshClient sshClientsCfg) {
-		
+	private void createPortForwardings(SSHClient sshClient,
+			SshClient sshClientsCfg) {
+
 		for (Forward forward : sshClientsCfg.getForward()) {
 
-			createPortForwarding(sshClient, forward);		
+			createPortForwarding(sshClient, forward);
 
 		}
 	}
 
 	public void createPortForwarding(SSHClient sshClient, Forward forward) {
-		if ("L".equals(forward.getType())) {
-			MyLocalPortForwarder fwd;
-			try {
+		PortForwarder fwd;
+		if ("".equals(forward.getId())) {
+			forward.setId("ID" + System.currentTimeMillis()
+					+ String.valueOf(System.nanoTime()));
+		}
+
+		try {
+			if ("L".equals(forward.getType())) {
 				fwd = new MyLocalPortForwarder(sshClient, forward);
 
-				portForwarders.put(forward, fwd);
-				fwd.start();
-			} catch (IOException e) {
-				logger.error(
-						"Can't create local port {} listener for interface {}",
-						new Object[] { forward.getSPort(), e.toString() });
+			} else {
+
+				fwd = new MyRemotePortForwarder(sshClient, forward);
 			}
 
-		} else {
-
-			/*
-			 * We make _server_ listen on port 8080, which forwards all
-			 * connections to us as a channel, and we further forward all such
-			 * channels to google.com:80
-			 */
-			try {
-				sshClient
-						.getRemotePortForwarder()
-						.bind(
-						// where the server should listen
-								"*".equals(forward.getRHost()) ?
-						new net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder.Forward(
-								forward.getRPort()) : new net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder.Forward(forward.getRHost(),
-										forward.getRPort()),
-						// what we do with incoming connections that are
-						// forwarded to us
-								new MySocketConnectListener(
-										new InetSocketAddress(forward.getSHost(), forward.getSPort())));
-				
-				portForwarders.put(forward, null);
-			} catch (ConnectionException e) {
-				logger.error(
-						"Can't remote port {} listener for interface {}", forward.getRPort());
-			} catch (TransportException e) {
-				logger.error(
-						"Can't remote port {} listener for interface {}", forward.getRPort());
-			}
-
+			portForwarders.put(forward, fwd);
+			fwd.start();
+		} catch (IOException e) {
+			logger.error("Can't create port {} listener for interface {}",
+					new Object[] { forward.getSPort(), e.toString() });
 		}
 	}
 
@@ -100,21 +78,22 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 		SSHClient sshClient = new SSHClient();
 		MachineAccount maschineAccount = sshClientsCfg.getMachineAccount();
 		try {
-			logger.info("create ssh session for user {}@{}", new Object[] { maschineAccount.getUser(),
-							maschineAccount.getHost() });
-			sshClient.addHostKeyVerifier(new AutoKnownHostsVerifier(
-					new File("known_hosts")));
+			logger.info("create ssh session for user {}@{}", new Object[] {
+					maschineAccount.getUser(), maschineAccount.getHost() });
+			sshClient.addHostKeyVerifier(new AutoKnownHostsVerifier(new File(
+					"known_hosts")));
 
 			sshClient.connect(maschineAccount.getHost(),
 					maschineAccount.getPort());
 			sshClient.authPassword(maschineAccount.getUser(),
 					maschineAccount.getPassword());
-					
+
 			sshClient.getTransport().setDisconnectListener(this);
-					
+
 			createPortForwardings(sshClient, sshClientsCfg);
 		} catch (IOException e) {
-			logger.error("Authentication failed for user {}@{}: {}",
+			logger.error(
+					"Authentication failed for user {}@{}: {}",
 					new Object[] { maschineAccount.getUser(),
 							maschineAccount.getHost(), e });
 			try {
@@ -126,21 +105,20 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 		return sshClient;
 	}
 
-
 	@Override
 	public void notifyDisconnect(DisconnectReason paramDisconnectReason) {
-		synchronized(portForwarders) {
-			logger.info("Disconnect event received, reason: {}", paramDisconnectReason);
-			for (MyLocalPortForwarder forward : portForwarders.values()) {
-				if (forward!=null) {
-					forward.close();
-				}
+		synchronized (portForwarders) {
+			logger.info("Disconnect event received, reason: {}",
+					paramDisconnectReason);
+
+			for (PortForwarder forward : portForwarders.values()) {
+				forward.close();
 			}
 			portForwarders.clear();
-			sshClient=null;
+			sshClientSession = null;
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		while (!interrupted()) {
@@ -150,47 +128,75 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 				logger.error("SshClientMonitor thread interrupted -> exiting now");
 				break;
 			}
-			
-			if (sshClient==null) {
-				sshClient = createSshTransportSession(sshClientsCfg);
-			} else {
-				try {
-					sshClient.getTransport().write(new SSHPacket(Message.IGNORE));
-				} catch (TransportException e) {
-					logger.error("SshClientMonitor failed to send heartbeat message");
-				}
 
-				synchronized(portForwarders) {
-					for (Forward forward : sshClientsCfg.getForward()) {
-						if ("L".equals(forward.getType())) {
-							MyLocalPortForwarder myLocalPortForwarder = portForwarders.get(forward);
-							if (myLocalPortForwarder == null) {
-								createPortForwarding(sshClient, forward);
-							} else if (!myLocalPortForwarder.isAlive()) {
-								createPortForwarding(sshClient, forward);
-							}
-						} else {
-							if (!portForwarders.containsKey(forward)) {
-								createPortForwarding(sshClient, forward);
-							}
+			synchronized (portForwarders) {
+				if (sshClientSession == null) {
+					sshClientSession = createSshTransportSession(sshClientsCfg);
+				} else {
+					try {
+						sshClientSession.getTransport().write(
+								new SSHPacket(Message.IGNORE));
+					} catch (TransportException e) {
+						logger.error("SshClientMonitor failed to send heartbeat message");
+						try {
+							sshClientSession.close();
+						} catch (IOException e1) {
 						}
 					}
-				}										
+
+					for (Forward forward : sshClientsCfg.getForward()) {
+						PortForwarder myLocalPortForwarder = portForwarders
+								.get(forward);
+						if (myLocalPortForwarder == null
+								|| !myLocalPortForwarder.isAlive()) {
+							createPortForwarding(sshClientSession, forward);
+						}
+					}
+				}
 			}
 		}
-		
+
 		logger.info("Shuting down SshClientMonitor thread");
 		try {
-			for (MyLocalPortForwarder myLocalPortForwarder : portForwarders.values()) {
-				myLocalPortForwarder.close();
+			synchronized (portForwarders) {
+				for (PortForwarder myPortForwarder : portForwarders.values()) {
+					myPortForwarder.close();
+				}
+				portForwarders.clear();
 			}
-			portForwarders.clear();
-			if (sshClient != null) {
-				sshClient.close();
+			if (sshClientSession != null) {
+				sshClientSession.close();
+				sshClientSession = null;
 			}
 		} catch (IOException e) {
 		}
 		logger.info("Shuting down SshClientMonitor thread completed");
-	}		
-}
+	}
 
+	public List<ForwardStateInfo> getForwardStateInfos() {
+
+		List<ForwardStateInfo> infos = new ArrayList<ForwardStateInfo>();
+		synchronized (portForwarders) {
+			for (Forward forward : sshClientsCfg.getForward()) {
+				ForwardStateInfo info = new ForwardStateInfo();
+				info.setId(forward.getId());
+
+				PortForwarder myLocalPortForwarder = portForwarders
+						.get(forward);
+				if (!forward.isEnabled()) {
+					info.setState("deactivated");
+				} else if (myLocalPortForwarder == null) {
+					info.setState("stopped");
+				} else if (myLocalPortForwarder.isAlive()) {
+					info.setState("running");
+				} else {
+					info.setState("retry");
+				}
+
+				infos.add(info);
+			}
+		}
+
+		return infos;
+	}
+}

@@ -7,40 +7,38 @@
 <html lang="en" ng-app="DrillRig">
 <!--<![endif]-->
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-<title></title>
-<meta name="description" content="">
-<meta name="author" content="">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="css/screen.css" type="text/css"
-  media="screen" title="default" />
-
-<!--[if lt IE 9]>
-      <script src="js/libs/html5.js"></script>
-      <![endif]-->
-<!--  jquery core -->
-<script src="js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
-
-<!-- Custom jquery scripts -->
-<script src="js/jquery/custom_jquery.js" type="text/javascript"></script>
-
-<!-- MUST BE THE LAST SCRIPT IN <HEAD></HEAD></HEAD> png fix -->
-<script src="js/jquery/jquery.pngFix.pack.js" type="text/javascript"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(document).pngFix();
-	});
-</script>
+  <title>DrillRig Admin</title>
+  
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="css/screen.css" type="text/css"
+    media="screen" title="default" />
+  
+  <!--[if lt IE 9]>
+        <script src="js/libs/html5.js"></script>
+        <![endif]-->
+  <!--  jquery core -->
+  <script src="js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+  
+  <!-- Custom jquery scripts -->
+  <script src="js/jquery/custom_jquery.js" type="text/javascript"></script>
+  
+  <!-- MUST BE THE LAST SCRIPT IN <HEAD></HEAD></HEAD> png fix -->
+  <script src="js/jquery/jquery.pngFix.pack.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(document).pngFix();
+  	});
+  </script>
 
 </head>
 
-<body ng-controller="RuntimeManagerCtrl">
+<body>
 
   <div id="page-top-outer">
 
@@ -102,7 +100,7 @@
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
               <div class="select_sub show">
                 <ul class="sub">
-                  <li class="sub_show"><a href="#nogo">Tunnels by Maschine</a></li>
+                  <li class="sub_show"><a href="#nogo">Tunnels by Client</a></li>
                   <li><a href="#nogo">Tunnels by Categorie</a></li>
                 </ul>
               </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
@@ -148,156 +146,29 @@
     <!--  start nav-outer -->
   </div>
   <div class="clear"></div>
+  
+  
   <div id="content-outer">
     <!-- start content -->
     <div id="content">
 
-      <!--  start page-heading -->
-      <div id="page-heading">
-        <h1>Tunnels by Maschine</h1>
-      </div>
-      <!-- end page-heading -->
+        <!--  start message-red -->
+        <div id="message" class="error" style="display:none">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="left">{{globalMessage}}</a></td>
+          <td class="right"><a class="close"><img src="images/shared/blank.gif"   alt="" /></a></td>
+        </tr>
+        </table>
+        </div>
 
-<button ng-click="stopSshClients()">stop</button>
-<button ng-click="startSshClients()">start</button>
-
-      <table width="100%" cellspacing="0" cellpadding="0" border="0"
-        id="content-table">
-        <tbody>
-          <tr>
-            <th class="sized" rowspan="3"><img width="20"
-              height="300" alt=""
-              src="images/shared/side_shadowleft.jpg"></th>
-            <th class="topleft"></th>
-            <td id="tbl-border-top">&nbsp;</td>
-            <th class="topright"></th>
-            <th class="sized" rowspan="3"><img width="20"
-              height="300" alt=""
-              src="images/shared/side_shadowright.jpg"></th>
-          </tr>
-          <tr>
-            <td id="tbl-border-left"></td>
-            <td>
-              <!--  start content-table-inner ...................................................................... START -->
-              <div id="content-table-inner">
-
-                <!--  start table-content  -->
-                <div id="table-content">
-
-                  <!--  start product-table ..................................................................................... -->
-                  <form action="" id="mainform">
-                    <div ng-repeat="client in config.SshClient">
-                      <h2>via {{client['@name']}} - {{client['@description']}} ({{client.MachineAccount['@user']}}@{{client.MachineAccount['@host']}})</h2>
-                      <table width="100%" cellspacing="0"
-                        cellpadding="0" border="0" id="product-table">
-                        <tbody>
-                          <tr>
-                            <th class="table-header-check"><a
-                              id="toggle-all"></a></th>
-                            <th
-                              class="table-header-repeat line-left minwidth-1"><a
-                              href="">Source-Host</a></th>
-                            <th
-                              class="table-header-repeat line-left minwidth-1"><a
-                              href="">Source-Port</a></th>
-                            <th class="table-header-repeat line-left"><a
-                              href="">Remote-Host</a></th>
-                            <th class="table-header-repeat line-left"><a
-                              href="">Remote-Port</a></th>
-                            <th class="table-header-repeat line-left"><a
-                              href="">Type</a></th>
-                            <th class="table-header-options line-left"><a
-                              href="">Options</a></th>
-                          </tr>
-                          <tr ng-repeat="forward in client.Forward">
-                            <td><input type="checkbox"
-                              class="ui-helper-hidden-accessible"><span
-                              class="ui-checkbox"></span></td>
-                            <td>{{forward['@sHost']}}</td>
-                            <td>{{forward['@sPort']}}</td>
-                            <td>{{forward['@rHost']}}</td>
-                            <td>{{forward['@rPort']}}</td>
-                            <td>{{forward['@type']}}</td>
-                            <td class="options-width"><a
-                              class="icon-1 info-tooltip" href=""></a> <a
-                              class="icon-2 info-tooltip" href=""></a> <a
-                              class="icon-3 info-tooltip" href=""></a> <a
-                              class="icon-4 info-tooltip" href=""></a> <a
-                              class="icon-5 info-tooltip" href=""></a></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <!--  end product-table................................... -->
-                    </div>
-                  </form>
-                </div>
-                <!--  end content-table  -->
-
-                <!--  start actions-box ............................................... -->
-                <div id="actions-box">
-                  <a class="action-slider" href=""></a>
-                  <div id="actions-box-slider">
-                    <a class="action-edit" href="">Edit</a> <a
-                      class="action-delete" href="">Delete</a>
-                  </div>
-                  <div class="clear"></div>
-                </div>
-                <!-- end actions-box........... -->
-
-                <!--  start paging..................................................... -->
-                <table cellspacing="0" cellpadding="0" border="0"
-                  id="paging-table">
-                  <tbody>
-                    <tr>
-                      <td><a class="page-far-left" href=""></a> <a
-                        class="page-left" href=""></a>
-                        <div id="page-info">
-                          Page <strong>1</strong> / 15
-                        </div> <a class="page-right" href=""></a> <a
-                        class="page-far-right" href=""></a></td>
-                      <td><input type="text" id="_input"
-                        class="styledselect_pages" autocomplete="off"
-                        readonly="" tabindex="0">
-                        <div id="_container" class="selectbox-wrapper2"
-                          style="display: none; width: 130px;">
-                          <ul>
-                            <li id="_input_" class="selected2">Number
-                              of rows</li>
-                            <li id="_input_">1</li>
-                            <li id="_input_">2</li>
-                            <li id="_input_">3</li>
-                          </ul>
-                        </div> <select class="styledselect_pages"
-                        style="display: none;">
-                          <option value="">Number of rows</option>
-                          <option value="">1</option>
-                          <option value="">2</option>
-                          <option value="">3</option>
-                      </select></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <!--  end paging................ -->
-
-                <div class="clear"></div>
-
-              </div> <!--  end content-table-inner ............................................END  -->
-            </td>
-            <td id="tbl-border-right"></td>
-          </tr>
-          <tr>
-            <th class="sized bottomleft"></th>
-            <td id="tbl-border-bottom">&nbsp;</td>
-            <th class="sized bottomright"></th>
-          </tr>
-        </tbody>
-      </table>
-      <div class="clear">&nbsp;</div>
-
-    </div>
+      <ng:view></ng:view>
+      
     <!--  end content -->
     <div class="clear">&nbsp;</div>
   </div>
+  
+  
   <div class="clear">&nbsp;</div>
   <div id="footer">
     <!--  start footer-left -->

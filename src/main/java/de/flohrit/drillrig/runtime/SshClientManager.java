@@ -17,15 +17,24 @@ public class SshClientManager {
 			
 	private List<SshClient> sshClientsCfg;
 	private List<SshClientMonitor> sshClientMonitor = new ArrayList<SshClientMonitor>();
+	private State state;
+	
+	private enum State { ACTIVE, INACTIVE };
 	
 	public SshClientManager(List<SshClient> sshClientsCfg) {
 
+		this.state = State.INACTIVE;
 		this.sshClientsCfg = sshClientsCfg;
 	}
 
-	public void start() {
+	synchronized public void start() {
+		if (State.ACTIVE == state) {
+			return;
+		}
+		
+		sshClientMonitor.clear();
 		for (SshClient client : sshClientsCfg) {
-	
+
 			try {
 				SshClientMonitor mon = new SshClientMonitor(client);
 				mon.start();
@@ -34,24 +43,38 @@ public class SshClientManager {
 				logger.error("Failed to start monitor for client: {}", client);
 			}
 		}
+		this.state = State.ACTIVE;
 	}
 
-	public void stop() {
+	synchronized public void stop() {
 
+		if (State.INACTIVE == state) {
+			return;
+		}
 
-		while (!sshClientMonitor.isEmpty()) {
+		boolean doPoll=true;
+		while (doPoll) {
+			
+			doPoll=false;
 			Iterator<SshClientMonitor> iter = sshClientMonitor.iterator();
 			while (iter.hasNext()) {
 				SshClientMonitor mon = iter.next();
 				mon.interrupt();
-				if (!mon.isAlive()) {
-					iter.remove();
+				if (mon.isAlive()) {
+					doPoll=true;
 				}
 			}
 			try {
-				Thread.sleep(5000);
+				if (doPoll) {
+					Thread.sleep(5000);
+				}
 			} catch (InterruptedException e) {
 			}
 		}
+		this.state = State.INACTIVE;
+	}
+	
+	synchronized public List<SshClientMonitor> getSshClientMonitors() {
+		return sshClientMonitor;
 	}
 }

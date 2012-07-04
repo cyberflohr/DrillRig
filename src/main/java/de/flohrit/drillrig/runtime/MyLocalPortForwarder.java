@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Forward;
 
-public 	class MyLocalPortForwarder extends Thread {
+public 	class MyLocalPortForwarder extends Thread implements PortForwarder {
 	final static private Logger logger = LoggerFactory
 			.getLogger(MyLocalPortForwarder.class);
 	
