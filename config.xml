@@ -2,14 +2,12 @@
 <ns2:Configuration xmlns:ns2="http:///www.flohrit.de/drillrig/config.xsd">
     <ns2:SshClient id="ID13413855018231379983922822331" name="SAM1" description="sam account for xflohw">
         <ns2:MachineAccount host="cgn-sam-01" port="22" user="xflohrw" password="xflohrw123"/>
-        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2222" rHost="cgn-sam-01" rPort="22" id="ID13413855018231379983922822339"/>
-        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2223" rHost="cgn-sam-01" rPort="22" id="ID13413855018251379983924863893"/>
-        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="cgn-sam-01" rPort="9999" id="ID13413855018261379983925231076"/>
+        <ns2:Forward description="ssh tunnel" type="L" sHost="*" sPort="2222" rHost="cgn-sam-01" rPort="22" id="ID13413855018231379983922822339"/>
+        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="0.0.0.0" rPort="9999" id="ID13413855018261379983925231076"/>
     </ns2:SshClient>
     <ns2:SshClient id="ID13413855027231379984822041940" name="cyberflohr" description="cyberflohr account for xflohw">
         <ns2:MachineAccount host="85.214.50.194" port="22" user="wflohr" password="Madmadshoe!)"/>
-        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2224" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822041941"/>
-        <ns2:Forward description="svn tunnel" type="L" sHost="*" sPort="2225" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822573711"/>
-        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="cgn-sam-01" rPort="9998" id="ID13413855027241379984822950777"/>
+        <ns2:Forward description="ssh tunnel" type="L" sHost="*" sPort="2224" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822041941"/>
+        <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="*" rPort="9998" id="ID13413855027241379984822950777"/>
     </ns2:SshClient>
 </ns2:Configuration>

@@ -1,7 +1,7 @@
 
 <!--  start page-heading -->
 <div id="page-heading">
-  <h1>Tunnels by Client</h1>
+  <h1>Tunnel Configuration</h1>
 </div>
 <!-- end page-heading -->
 
@@ -75,8 +75,8 @@
           <div id="actions-box">
             <a class="action-slider" href=""></a>
             <div id="actions-box-slider">
-              <a class="action-edit" ng-click="stopSshClients()" href="">Stop</a> <a
-                class="action-delete" ng-click="startSshClients()" href="">Start</a>
+              <a class="action-edit" href="">Edit</a> <a
+                class="action-delete" href="">Delete</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -133,11 +133,3 @@
 <div class="clear">&nbsp;</div>
 
 </div>
-
-<script>
-    $(".action-slider").click(function () {
-        $("#actions-box-slider").slideToggle("fast");
-        $(this).toggleClass("activated");
-        return false;
-    });
-</script>
