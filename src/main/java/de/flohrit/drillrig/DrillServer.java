@@ -30,7 +30,7 @@ public class DrillServer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		/*
+		/* 
 		SshServer sshd = SshServer.setUpDefaultServer();
 		sshd.setPort(22);
 		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(

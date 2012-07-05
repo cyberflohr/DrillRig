@@ -24,7 +24,7 @@ DrillRig.service('runtimeServices', [ 'localServices', '$http', '$timeout', func
 				url : '/services/runtime/start'
 					
 			}).success(function(data, status) {
-				$scope.onMonitoringStartet();
+				//$scope.onMonitoringStartet();
 				localServices.logMessageBar(localServices.logLevel.INFO, 'SSH sessions started');
 			}).error(function(data, status) {
 				localServices.logMessageBar(localServices.logLevel.INFO, 'SSH sessions failed to start');
