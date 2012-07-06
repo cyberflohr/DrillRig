@@ -51,17 +51,20 @@
                         href="">Remote-Port</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">Type</a></th>
-                      <th class="table-header-repeat line-left"><a href="">Description</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Description</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td><span class="status-symbol {{forwardStatus[forward['@id']]}}" title="{{forwardStatus[forward['@id']]}}"></span></td>
+                      <td><span
+                        class="status-symbol {{forwardStatus[forward['@id']]}}"
+                        title="{{forwardStatus[forward['@id']]}}"></span></td>
                       <td>{{forward['@sHost']}}</td>
                       <td>{{forward['@sPort']}}</td>
                       <td>{{forward['@rHost']}}</td>
                       <td>{{forward['@rPort']}}</td>
                       <td>{{forward['@type']}}</td>
                       <td>{{forward['@description']}}</td>
-                       
+
                     </tr>
                   </tbody>
                 </table>
@@ -75,8 +78,9 @@
           <div id="actions-box">
             <a class="action-slider" href=""></a>
             <div id="actions-box-slider">
-              <a class="action-edit" ng-click="stopSshClients()" href="">Stop</a> <a
-                class="action-delete" ng-click="startSshClients()" href="">Start</a>
+              <a class="action-edit" ng-click="stopSshClients()" href="">Stop</a>
+              <a class="action-delete" ng-click="startSshClients()"
+                href="">Start</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -135,9 +139,9 @@
 </div>
 
 <script>
-    $(".action-slider").click(function () {
-        $("#actions-box-slider").slideToggle("fast");
-        $(this).toggleClass("activated");
-        return false;
-    });
+	$(".action-slider").click(function() {
+		$("#actions-box-slider").slideToggle("fast");
+		$(this).toggleClass("activated");
+		return false;
+	});
 </script>

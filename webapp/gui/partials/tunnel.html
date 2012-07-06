@@ -51,17 +51,20 @@
                         href="">Remote-Port</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">Type</a></th>
-                      <th class="table-header-repeat line-left"><a href="">Description</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Description</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td><span class="status-symbol {{forwardStatus[forward['@id']]}}" title="{{forwardStatus[forward['@id']]}}"></span></td>
+                      <td><span
+                        class="status-symbol {{forwardStatus[forward['@id']]}}"
+                        title="{{forwardStatus[forward['@id']]}}"></span></td>
                       <td>{{forward['@sHost']}}</td>
                       <td>{{forward['@sPort']}}</td>
                       <td>{{forward['@rHost']}}</td>
                       <td>{{forward['@rPort']}}</td>
                       <td>{{forward['@type']}}</td>
                       <td>{{forward['@description']}}</td>
-                       
+
                     </tr>
                   </tbody>
                 </table>
@@ -75,8 +78,7 @@
           <div id="actions-box">
             <a class="action-slider" href=""></a>
             <div id="actions-box-slider">
-              <a class="action-edit" href="">Edit</a> <a
-                class="action-delete" href="">Delete</a>
+              <a class="action-edit" ng-click="showAddTunnelDialog()" href="">Add</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -132,4 +134,32 @@
 </table>
 <div class="clear">&nbsp;</div>
 
+<div id="dialog-form" style="display:none" title="Add new tunnel">
+  <p class="validateTips">All form fields are required.</p>
+
+  <form>
+    <fieldset>
+      <label for="clientId">Client Session:</label> <select ng-model="configTunnel.SSHClientId" id="clientId" ng-options="c['@name'] for c in config.SshClient" ></select><br>
+       
+      <label for="description">Description</label> <input type="text" ng-model="configTunnel.description" id="description" value="" /><br>
+      <label for="enabled">Enabled</label> <input type="checkbox" ng-model="configTunnel.enabled" id="enabled" value="" /><br/>
+      <label for="type">Type</label> <select ng-model="configTunnel.type" id="type">
+        <option value="L">Local</option>
+        <option value="R">Remote</option>
+      </select>
+      
+      <label for="sourceHost">Source-Host</label> <input type="text" ng-model="configTunnel.sHost" id="sourceHost" value="" /><br>
+      <label for="sourcePort">Source-Port</label> <input type="range" min="1" max="65535" ng-model="configTunnel.sPort" id="sourcePort" value="" /><br>
+      <label for="remoteHost">Remote-Host</label> <input type="text" ng-model="configTunnel.rHost" id="remoteHost" value="" /><br>
+      <label for="remotePort">Remote-Port</label> <input type="range" min="1" max="65535" ng-model="configTunnel.rPort" id="remotePort" value="" /><br>
+    </fieldset>
+  </form>
 </div>
+
+<script>
+  $(".action-slider").click(function() {
+    $("#actions-box-slider").slideToggle("fast");
+    $(this).toggleClass("activated");
+    return false;
+  });
+</script>

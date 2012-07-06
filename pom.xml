@@ -41,7 +41,8 @@
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
+				<artifactId>maven-jaxb22-plugin</artifactId>
+				<version>0.8.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -57,6 +58,8 @@
 					</schemaIncludes>
 					<generateDirectory>${basedir}/target/generated/java </generateDirectory>
 					<forceRegenerate>true</forceRegenerate>
+					<catalog>${basedir}/src/main/resources/catalog.catx</catalog>
+					<debug>true</debug>
 				</configuration>
 			</plugin>
 			<plugin>
