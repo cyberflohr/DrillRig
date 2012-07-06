@@ -53,6 +53,8 @@
 			<web-resource-name>ALL Manager</web-resource-name>
 			<url-pattern>/gui</url-pattern>
 			<url-pattern>/services</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>user</role-name>

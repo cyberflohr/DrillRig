@@ -51,7 +51,6 @@ public 	class MyRemotePortForwarder implements PortForwarder {
 					// forwarded to us
 					new MySocketConnectListener(
 							new InetSocketAddress(forwardCfg.getSHost(), forwardCfg.getSPort())));
-			int x=0;
 		} catch (ConnectionException e) {
 			logger.error("Starting remote port tunnel failed.", e);
 		} catch (TransportException e) {

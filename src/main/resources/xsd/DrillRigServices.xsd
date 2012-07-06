@@ -1,18 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http:///www.flohrit.de/drillrig/services.xsd" targetNamespace="http:///www.flohrit.de/drillrig/services.xsd">
-    <element name="ForwardStateInfo">
-    	<complexType>
-    		<attribute name="id" type="ID"></attribute>
-    		<attribute name="state">
-    			<simpleType>
-    				<restriction base="string">
-    					<enumeration value="Stopped"></enumeration>
-    					<enumeration value="Running"></enumeration>
-    					<enumeration value="Restarting"></enumeration>
-    					<enumeration value="Failed"></enumeration>
-    				</restriction>
-    			</simpleType>
-    		</attribute>
-    	</complexType>
-    </element>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http:///www.flohrit.de/drillrig/services.xsd"
+	targetNamespace="http:///www.flohrit.de/drillrig/services.xsd" xmlns:drc="http:///www.flohrit.de/drillrig/config.xsd">
+
+	<element name="ForwardStateInfo">
+		<complexType>
+			<attribute name="id" type="ID"></attribute>
+			<attribute name="state">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="Stopped"></enumeration>
+						<enumeration value="Running"></enumeration>
+						<enumeration value="Restarting"></enumeration>
+						<enumeration value="Failed"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
+
+
+	<element name="ServiceResponse">
+		<complexType>
+			<sequence>
+				<element name="msg" type="string"></element>
+				<element name="code" type="string"></element>
+				<any />
+			</sequence>
+		</complexType>
+	</element>
+
+
+	<element name="ForwardActionRequest">
+		<complexType>
+			<sequence>
+				<element name="SSHClientId" type="ID"></element>
+				<element name="enabled" type="boolean"></element>
+				<element name="description" type="string"></element>
+				<element name="sHost" type="string"></element>
+				<element name="sPort">
+					<simpleType>
+						<restriction base="int">
+							<minInclusive value="1"></minInclusive>
+							<maxInclusive value="65535"></maxInclusive>
+						</restriction>
+					</simpleType>
+				</element>
+				<element name="rHost" type="string"></element>
+				<element name="rPort">
+					<simpleType>
+						<restriction base="int">
+							<minInclusive value="1"></minInclusive>
+							<maxInclusive value="65535"></maxInclusive>
+						</restriction>
+					</simpleType>
+				</element>
+				<element name="type">
+					<simpleType>
+						<restriction base="string">							<enumeration value="L"></enumeration>
+							<enumeration value="R"></enumeration>
+						</restriction>
+					</simpleType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
 </schema>

@@ -80,29 +80,4 @@ $(document).ready(function () {
  $('#spanYear').html(new Date().getFullYear()); 
  
 // END -----------------------------  6 
-  
- $(document).ready(function () {
  
-	$( "#dialog-form" ).dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
-		buttons: {
-			"Create an account": function() {
-					$( this ).dialog( "close" );
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		close: function() {
-		}
-	});
-
-	$( "#create-user" )
-		.button()
-		.click(function() {
-			$( "#dialog-form" ).dialog( "open" );
-		}); 
- });
