@@ -14,16 +14,34 @@ angular.module('DrillRig.config', [ ])
   	}])
 
 
- 	.controller('ConfigCtrl', [ '$scope', 'configServices','Config', function($scope, configServices, Config) {
+ 	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', function($q, $scope, configServices, Config) {
 		
 		$scope.configTunnel = {};
-		
+		$scope.dialog;
+		$scope.infoMessages = [];
 		
 		$scope.addTunnel = function() {
-			configServices.addTunnel($scope);
+			var deferred = $q.defer();
+			if ($scope.AddTunnelForm.$valid) {
+				configServices.addTunnel($scope).then(function(reason) {
+					$scope.$apply($scope.refreshConfig());
+					$scope.infoMessages = reason; 
+					deferred.resolve(reason);
+
+				}, function(reason) {
+					$scope.infoMessages = reason; 
+					deferred.reject(reason);
+				});
+			} else {
+				$scope.infoMessages = ['Bitte füllen sie alle Formularfelder korrekt aus.'];
+				deferred.reject();
+			}
+			return deferred.promise;
 		};
 		
 		$scope.showAddTunnelDialog = function() {
+			$scope.infoMessages = [];
+			$scope.configTunnel = {};
 			showAddTunnelDialog();
 		};
 		
@@ -35,29 +53,54 @@ angular.module('DrillRig.config', [ ])
 			});
 		};
 		
-		createDialog($scope);
+		$scope.dialog = createDialog($scope.addTunnel);
 		$scope.refreshConfig();		
 		
 	}])
 	
-	.service('configServices', [ '$rootScope',  'localServices', '$http', function($root, localServices, $http ) {
+	.service('configServices', [ '$q', '$rootScope',  'localServices', '$http', function($q, $root, localServices, $http ) {
+		
+		var isServiceResultOK = function(data, status) {
+			return status == 200 && data && data.ServiceStatus.code == 'OK';
+		};
+		var getServiceMessages = function(data) {
+			if (data && data.ServiceStatus) {
+				if (typeof data.ServiceStatus.msg == 'string') {
+					return [data.ServiceStatus.msg];
+				} else {
+					return data.ServiceStatus.msg;
+				}
+			} else {
+				return [];
+			}
+		}
+		
 		return {
 			addTunnel : function($scope) {
 				
+				var deferred = $q.defer();
+
 				// detach the object data an work only with the ID   
-				$scope.configTunnel.SSHClientId = $scope.configTunnel.SSHClientId['@id'];
+				$scope.configTunnel.SSHClientId = $scope.configTunnel.SSHClientId ? $scope.configTunnel.SSHClientId['@id'] : '';
 				
 				$http({
 					method : 'POST',
 					url : '/services/config/tunnel/add',
 					data : angular.toJson( $scope.configTunnel )
-				}).success(function(data, status) {
-					localServices.logMessageBar(localServices.logLevel.INFO, 'SSH tunnel added');
-					$scope.refreshConfig();		
 					
+				}).success(function(data, status) {
+					if (isServiceResultOK(data,status)) {
+						localServices.logMessageBar(localServices.logLevel.INFO, 'SSH tunnel added');
+						deferred.resolve(getServiceMessages(data))
+					} else {
+						deferred.reject(getServiceMessages(data))
+					}
 				}).error(function(data, status) {
 					localServices.logMessageBar(localServices.logLevel.ERROR, 'Failure addding SSH tunnel');
+					deferred.reject({ data: data, status : status})
 				});
+
+				return deferred.promise;
 			}
 		}
 	} ]);
@@ -67,17 +110,19 @@ angular.module('DrillRig.config', [ ])
 		$( "#dialog-form" ).dialog( "open" );
 	}
 	
-	function createDialog($scope) {
+	function createDialog(addTunnelCB) {
 		
-		$("#dialog-form").dialog({
+		var dialog  = $("#dialog-form");
+		dialog.dialog({
 			autoOpen : false,
-			height : 300,
-			width : 350,
+			width : 420,
 			modal : true,
 			buttons : {
 				"add tunnel" : function() {
-					$scope.addTunnel($scope);
-					$(this).dialog("close");
+					var dialogBtn = this;
+					$(this).scope().$apply(addTunnelCB).then(function() {
+						$(dialogBtn).dialog("close");
+					});
 				},
 				cancel : function() {
 					$(this).dialog("close");
@@ -86,6 +131,8 @@ angular.module('DrillRig.config', [ ])
 			close : function() {
 			}
 		});
+		
+		return dialog;
 	}
 	
  })();

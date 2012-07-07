@@ -15,6 +15,10 @@ angular.module('DrillRig.logging', [ ])
 			logMessageBar : function(type, msg) {
 				$root.globalMessage=msg;
 				$("#message").fadeIn("slow");
+			},
+			logDialogMessageBar : function(dialog, type, msg) {
+				$root.globalMessage=msg;
+				$("#message").fadeIn("slow");
 			}
 		}
 	} ]);
