@@ -148,10 +148,10 @@
         <option value="R">Remote</option>
       </select>
       
-      <label for="sourceHost">Source-Host</label> <input type="text" ng-model="configTunnel.sHost" id="sourceHost" value="" /><br>
-      <label for="sourcePort">Source-Port</label> <input type="range" min="1" max="65535" ng-model="configTunnel.sPort" id="sourcePort" value="" /><br>
-      <label for="remoteHost">Remote-Host</label> <input type="text" ng-model="configTunnel.rHost" id="remoteHost" value="" /><br>
-      <label for="remotePort">Remote-Port</label> <input type="range" min="1" max="65535" ng-model="configTunnel.rPort" id="remotePort" value="" /><br>
+      <label for="sourceHost">Source-Host</label> <input type="text" required ng-model="configTunnel.sHost" id="sourceHost" value="" /><br>
+      <label for="sourcePort">Source-Port</label> <input type="number" required min="1" max="65535" ng-model="configTunnel.sPort" id="sourcePort" value="" /><br>
+      <label for="remoteHost">Remote-Host</label> <input type="text" required ng-model="configTunnel.rHost" id="remoteHost" value="" /><br>
+      <label for="remotePort">Remote-Port</label> <input type="number" required min="1" max="65535" ng-model="configTunnel.rPort" id="remotePort" value="" /><br>
     </fieldset>
   </form>
 </div>
