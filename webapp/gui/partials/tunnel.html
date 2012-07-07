@@ -134,25 +134,44 @@
 </table>
 <div class="clear">&nbsp;</div>
 
-<div id="dialog-form" style="display:none" title="Add new tunnel">
-  <p class="validateTips">All form fields are required.</p>
+<div id="dialog-form" class="dialog" title="Add new tunnel">
 
-  <form>
+  <div class="dialogMessageArea">
+      <ul class="ui-widget" ng-show="infoMessages.length>0">
+         <li class="ui-state-error ui-corner-all" ng-repeat="msg in infoMessages">{{msg}}</li>
+      </ul>
+  </div>
+  
+  <form name="AddTunnelForm">
     <fieldset>
-      <label for="clientId">Client Session:</label> <select ng-model="configTunnel.SSHClientId" id="clientId" ng-options="c['@name'] for c in config.SshClient" ></select><br>
+      <label for="clientId">Client Session:</label>
+      <select  ng-model="configTunnel.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
        
-      <label for="description">Description</label> <input type="text" ng-model="configTunnel.description" id="description" value="" /><br>
-      <label for="enabled">Enabled</label> <input type="checkbox" ng-model="configTunnel.enabled" id="enabled" value="" /><br/>
-      <label for="type">Type</label> <select ng-model="configTunnel.type" id="type">
+      <label for="description">Description:</label>
+      <input type="text" required ng-model="configTunnel.description" name="description" value="" />
+      
+      <label for="enabled">Enabled:</label>
+      <input type="checkbox" ng-model="configTunnel.enabled" name="enabled" value="" />
+      
+      <label for="type">Type:</label>
+      <select required ng-model="configTunnel.type" id="type">
         <option value="L">Local</option>
         <option value="R">Remote</option>
       </select>
       
-      <label for="sourceHost">Source-Host</label> <input type="text" required ng-model="configTunnel.sHost" id="sourceHost" value="" /><br>
-      <label for="sourcePort">Source-Port</label> <input type="number" required min="1" max="65535" ng-model="configTunnel.sPort" id="sourcePort" value="" /><br>
-      <label for="remoteHost">Remote-Host</label> <input type="text" required ng-model="configTunnel.rHost" id="remoteHost" value="" /><br>
-      <label for="remotePort">Remote-Port</label> <input type="number" required min="1" max="65535" ng-model="configTunnel.rPort" id="remotePort" value="" /><br>
+      <label for="sourceHost">Source-Host:</label>
+      <input type="text" required ng-model="configTunnel.sHost" name="sourceHost" value="" />
+      
+      <label for="sourcePort">Source-Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="configTunnel.sPort" name="sourcePort" value="" />
+      
+      <label for="remoteHost">Remote-Host:</label>
+      <input type="text" required ng-model="configTunnel.rHost" name="remoteHost" value="" />
+      
+      <label for="remotePort">Remote-Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="configTunnel.rPort" name="remotePort" value="" />
     </fieldset>
+    
   </form>
 </div>
 

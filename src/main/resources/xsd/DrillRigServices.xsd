@@ -19,13 +19,20 @@
 		</complexType>
 	</element>
 
+	<element name="ServiceStatus">
+		<complexType>
+			<sequence>
+                <element name="code" type="string"></element>
+                <element name="msg" type="string" minOccurs="1" maxOccurs="10"></element>
+			</sequence>
+		</complexType>
+	</element>
 
 	<element name="ServiceResponse">
 		<complexType>
 			<sequence>
-				<element name="msg" type="string"></element>
-				<element name="code" type="string"></element>
-				<any />
+                <element ref="tns:ServiceStatus"></element>
+                <any />
 			</sequence>
 		</complexType>
 	</element>

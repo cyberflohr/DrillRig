@@ -73,5 +73,8 @@
 		<description>Customers of ACME corp</description>
 		<role-name>user</role-name>
 	</security-role>
-
+	<error-page>
+		<error-code>404</error-code>
+		<location>/</location>
+	</error-page>
 </web-app>

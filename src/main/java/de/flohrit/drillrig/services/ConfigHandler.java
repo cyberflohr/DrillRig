@@ -43,15 +43,23 @@ public class ConfigHandler {
 				sshClient.getForward().add(fwd);
 
 				ServiceResponse sr = new ServiceResponse();
-				sr.setCode("OK");
-				sr.setMsg("Tunnel added to SSH Client.");
+				ServiceStatus ss = new ServiceStatus();
+				ss.setCode("OK");
+				ss.getMsg().add("SSH forward added");
+				
+				sr.setServiceStatus(ss);
+				
 				return sr;
 			}
 		}
 		
 		ServiceResponse sr = new ServiceResponse();
-		sr.setCode("NOK");
-		sr.setMsg("SSH Client not found.");
+		ServiceStatus ss = new ServiceStatus();
+		ss.setCode("NOK");
+		ss.getMsg().add("SSH client not found");
+		ss.getMsg().add("SSH client not found and more");
+
+		sr.setServiceStatus(ss);
 		return sr;
 	}
 	
