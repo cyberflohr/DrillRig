@@ -24,8 +24,10 @@ angular.module('DrillRig.config', [ ])
 			var deferred = $q.defer();
 			if ($scope.AddTunnelForm.$valid) {
 				configServices.addTunnel($scope).then(function(reason) {
-					$scope.$apply($scope.refreshConfig());
-					$scope.infoMessages = reason; 
+					$scope.$apply(function() {
+						$scope.infoMessages = reason;
+					});
+					$scope.refreshConfig();
 					deferred.resolve(reason);
 
 				}, function(reason) {
@@ -46,13 +48,26 @@ angular.module('DrillRig.config', [ ])
 		};
 		
 		$scope.refreshConfig = function() {
-			$scope.config = Config.read(function() {
+			$scope.config = Config.edit(function() {
 				if ($scope.config.SshClient) {
 					$scope.configTunnel.SSHClientId = $scope.config.SshClient[0];
 				}
 			});
 		};
 		
+		$scope.saveConfiguration = function() {
+			configServices.saveConfiguration($scope).then(function(reason) {
+				$scope.infoMessages = reason; 
+
+			}, function(reason) {
+				$scope.infoMessages = reason; 
+			});			
+		};
+		
+		$scope.$on('$routeChangeStart', function(ev) {
+			$scope.dialog.dialog("destroy");
+		});
+
 		$scope.dialog = createDialog($scope.addTunnel);
 		$scope.refreshConfig();		
 		
@@ -101,7 +116,32 @@ angular.module('DrillRig.config', [ ])
 				});
 
 				return deferred.promise;
-			}
+			},
+			saveConfiguration : function($scope) {
+				
+				var deferred = $q.defer();
+
+				// detach the object data an work only with the ID   
+				$scope.configTunnel.SSHClientId = $scope.configTunnel.SSHClientId ? $scope.configTunnel.SSHClientId['@id'] : '';
+				
+				$http({
+					method : 'GET',
+					url : '/services/config/save',
+					
+				}).success(function(data, status) {
+					if (isServiceResultOK(data,status)) {
+						localServices.logMessageBar(localServices.logLevel.INFO, 'New configuration loaded.');
+						deferred.resolve(getServiceMessages(data))
+					} else {
+						deferred.reject(getServiceMessages(data))
+					}
+				}).error(function(data, status) {
+					localServices.logMessageBar(localServices.logLevel.ERROR, 'Failure loading configuration');
+					deferred.reject({ data: data, status : status})
+				});
+
+				return deferred.promise;
+			}			
 		}
 	} ]);
 
