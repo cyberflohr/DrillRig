@@ -1,5 +1,7 @@
 package de.flohrit.drillrig.services;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -68,6 +70,7 @@ public class ConfigHandler {
 			if (sshClient.getId().equals(forwardReq.getSSHClientId())) {
 				
 				Forward fwd = new Forward();
+				fwd.setId(createUUID());
 				fwd.setDescription(forwardReq.getDescription());
 				fwd.setEnabled(forwardReq.isEnabled());
 				fwd.setSHost(forwardReq.getSHost());
@@ -98,4 +101,7 @@ public class ConfigHandler {
 		return sr;
 	}
 	
+	private String createUUID() {
+		return "ID" + UUID.randomUUID().toString().replace('-','_');
+	}
 }
