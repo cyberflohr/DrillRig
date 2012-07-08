@@ -5,6 +5,9 @@
 /* Config Module */
 angular.module('DrillRig.config', [ ])
 
+	/**
+	 * module route configuration
+	 */
   	.config(['$routeProvider', function($routeProvider) {
 
   		$routeProvider.when('/configuration', {
@@ -14,6 +17,9 @@ angular.module('DrillRig.config', [ ])
   	}])
 
 
+	/**
+	 * Config screen controller
+	 */
  	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', function($q, $scope, configServices, Config) {
 		
 		$scope.configTunnel = {};
@@ -72,6 +78,9 @@ angular.module('DrillRig.config', [ ])
 		
 	}])
 	
+	/**
+	 * configuration services 
+	 */
 	.service('configServices', [ '$q', '$rootScope',  'localServices', '$http', function($q, $root, localServices, $http ) {
 		
 		var isServiceResultOK = function(data, status) {
@@ -116,13 +125,10 @@ angular.module('DrillRig.config', [ ])
 
 				return deferred.promise;
 			},
-			saveConfiguration : function($scope) {
+			saveConfiguration : function() {
 				
 				var deferred = $q.defer();
 
-				// detach the object data an work only with the ID   
-				$scope.configTunnel.SSHClientId = $scope.configTunnel.SSHClientId ? $scope.configTunnel.SSHClientId['@id'] : '';
-				
 				$http({
 					method : 'GET',
 					url : '/services/config/save',

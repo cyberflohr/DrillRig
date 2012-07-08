@@ -9,7 +9,6 @@
         <ns2:MachineAccount host="85.214.50.194" port="22" user="wflohr" password="Madmadshoe!)"/>
         <ns2:Forward description="ssh tunnel" type="L" sHost="*" sPort="2224" rHost="cgn-sam-01" rPort="22" id="ID13413855027231379984822041941"/>
         <ns2:Forward description="jetty admin port" type="R" sHost="localhost" sPort="8080" rHost="*" rPort="9998" id="ID13413855027241379984822950777"/>
-        <ns2:Forward ns2:enabled="true" description="Wolfgang" type="L" sHost="localhost" sPort="22" rHost="localhost" rPort="22" id="ID697a1c9e_56ad_40a0_b935_1daf3d24e9fd"/>
-        <ns2:Forward ns2:enabled="true" description="zu" type="L" sHost="localhost" sPort="22" rHost="localhost" rPort="22" id="ID00a8189a_fefa_4653_a31a_4b6b791a766e"/>
+ 
     </ns2:SshClient>
 </ns2:Configuration>
