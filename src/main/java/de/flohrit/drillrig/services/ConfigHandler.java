@@ -74,7 +74,7 @@ public class ConfigHandler {
 				fwd.setDescription(forwardReq.getDescription());
 				fwd.setEnabled(forwardReq.isEnabled());
 				fwd.setSHost(forwardReq.getSHost());
-				fwd.setSPort(forwardReq.getRPort());
+				fwd.setSPort(forwardReq.getSPort());
 				fwd.setRHost(forwardReq.getRHost());
 				fwd.setRPort(forwardReq.getRPort());
 				fwd.setType(forwardReq.getType());
