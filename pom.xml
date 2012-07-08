@@ -41,13 +41,31 @@
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb22-plugin</artifactId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
 				<version>0.8.1</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>generate</goal>
 						</goals>
+						<configuration>
+							<extension>true</extension>
+							<args>
+								<arg>-XtoString</arg>
+								<arg>-Xequals</arg>
+								<arg>-XhashCode</arg>
+								<arg>-Xcopyable</arg>
+							</args>
+							<plugins>
+								<plugin>
+									<groupId>org.jvnet.jaxb2_commons</groupId>
+									<artifactId>jaxb2-basics</artifactId>
+									<version>0.6.3</version>
+								</plugin>
+							</plugins>
+						</configuration>
+
+
 					</execution>
 				</executions>
 				<configuration>
@@ -59,7 +77,8 @@
 					<generateDirectory>${basedir}/target/generated/java </generateDirectory>
 					<forceRegenerate>true</forceRegenerate>
 					<catalog>${basedir}/src/main/resources/catalog.catx</catalog>
-					<debug>true</debug>
+					<extension>true</extension>
+
 				</configuration>
 			</plugin>
 			<plugin>
@@ -117,5 +136,11 @@
 			<artifactId>jersey-json</artifactId>
 			<version>1.13-b01</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+
 	</dependencies>
 </project>
