@@ -79,6 +79,7 @@
             <a class="action-slider" href=""></a>
             <div id="actions-box-slider">
               <a class="action-edit" ng-click="showAddTunnelDialog()" href="">Add</a>
+              <a class="action-edit" ng-click="saveConfiguration()" href="">Save</a>
             </div>
             <div class="clear"></div>
           </div>
@@ -137,15 +138,15 @@
 <div id="dialog-form" class="dialog" title="Add new tunnel">
 
   <div class="dialogMessageArea">
-      <ul class="ui-widget" ng-show="infoMessages.length>0">
-         <li class="ui-state-error ui-corner-all" ng-repeat="msg in infoMessages">{{msg}}</li>
+      <ul class="info" ng-show="infoMessages.length>0">
+         <li ng-repeat="msg in infoMessages">{{msg}}</li>
       </ul>
   </div>
   
   <form name="AddTunnelForm">
     <fieldset>
       <label for="clientId">Client Session:</label>
-      <select  ng-model="configTunnel.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
+      <select ng-model="configTunnel.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
        
       <label for="description">Description:</label>
       <input type="text" required ng-model="configTunnel.description" name="description" value="" />
