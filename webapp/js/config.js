@@ -24,9 +24,7 @@ angular.module('DrillRig.config', [ ])
 			var deferred = $q.defer();
 			if ($scope.AddTunnelForm.$valid) {
 				configServices.addTunnel($scope).then(function(reason) {
-					$scope.$apply(function() {
-						$scope.infoMessages = reason;
-					});
+					$scope.infoMessages = reason;
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 
@@ -66,6 +64,7 @@ angular.module('DrillRig.config', [ ])
 		
 		$scope.$on('$routeChangeStart', function(ev) {
 			$scope.dialog.dialog("destroy");
+			$( "#dialog-form" ).remove();
 		});
 
 		$scope.dialog = createDialog($scope.addTunnel);

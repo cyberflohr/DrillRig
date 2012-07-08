@@ -52,10 +52,6 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 
 	public void createPortForwarding(SSHClient sshClient, Forward forward) {
 		PortForwarder fwd;
-		if ("".equals(forward.getId())) {
-			forward.setId("ID" + System.currentTimeMillis()
-					+ String.valueOf(System.nanoTime()));
-		}
 
 		try {
 			if ("L".equals(forward.getType())) {

@@ -5,7 +5,7 @@
 /* Monitoring Module */
 angular.module('DrillRig.runtime', [ 'DrillRig.logging' ])
 
-	.service('runtimeServices', [ 'localServices', '$http', '$timeout', function(localServices, $http, $timeout ) {
+	.service('runtimeServices', [ 'localServices', '$http', '$q', function(localServices, $http, $q ) {
 
 		return {
 			stopSshClients : function() {
@@ -35,38 +35,27 @@ angular.module('DrillRig.runtime', [ 'DrillRig.logging' ])
 				});
 			},
 			
-			startMonitoring : function($scope) {
-				if ($scope.monitoringTimer) {
-					$timeout.cancel($scope.monitoringTimer);
-					$scope.monitoringTimer=null;
-				}
+			getForwardStateInfo : function() {
 
-				var timerFctn = function() {
+				var deferred = $q.defer();
+				$http({
+					method : 'GET',
+					url : '/services/runtime/monitor/forwards'
+				}).success(function(data, status) {
 					
-					$http({
-						method : 'GET',
-						url : '/services/runtime/monitor/forwards'
-					}).success(function(data, status) {
-						
-						angular.forEach(data.ForwardStateInfo, function(v,k) {
-							$scope.forwardStatus[v['@id']] = v['@state'];
-						});
-						$scope.monitoringTimer = $timeout(timerFctn, 5000, false);
-						
-					}).error(function(data, status) {
-	
+					var forwardStatus = {};
+					angular.forEach(data.ForwardStateInfo, function(v,k) {
+						forwardStatus[v['@id']] = v['@state'];
 					});
+					deferred.resolve(forwardStatus);
+					//$scope.monitoringTimer =
 					
-				}
-				timerFctn();
+				}).error(function(data, status) {
+					deferred.reject();
+
+				});
+				return deferred.promise;
 			},
-			
-			stopMonitoring : function($scope) {
-				if ($scope.monitoringTimer) {
-					$timeout.cancel($scope.monitoringTimer);
-					$scope.monitoringTimer=null;
-				}
-			}
 		}
 	}]);
 
