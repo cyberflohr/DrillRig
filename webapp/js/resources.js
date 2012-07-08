@@ -3,7 +3,11 @@ angular.module('DrillRig.resources', [ 'ngResource' ]).factory('Config',
 			return $resource('services/config/read', {}, {
 				read : {
 					method : 'GET',
-					params : {}
+					params : { }
+				},
+				edit : {
+					method : 'GET',
+					params : { edit:true }
 				}
 			});
 		});
