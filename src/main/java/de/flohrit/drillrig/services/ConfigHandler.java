@@ -1,13 +1,16 @@
 package de.flohrit.drillrig.services;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -60,10 +63,10 @@ public class ConfigHandler {
 	}
 
 	@POST
-	@Path("tunnel/add")
+	@Path("forward/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse addTunnel(@Context HttpServletRequest req,ForwardActionRequest forwardReq) {
+	public ServiceResponse addForward(@Context HttpServletRequest req,ForwardActionRequest forwardReq) {
 		Configuration cfg = getEditConfiguration(req);
 		
 		for (SshClient sshClient : cfg.getSshClient()) {
@@ -80,27 +83,60 @@ public class ConfigHandler {
 				fwd.setType(forwardReq.getType());
 				sshClient.getForward().add(fwd);
 
-				ServiceResponse sr = new ServiceResponse();
-				ServiceStatus ss = new ServiceStatus();
-				ss.setCode("OK");
-				ss.getMsg().add("SSH forward added");
-				
-				sr.setServiceStatus(ss);
-				
-				return sr;
+				return ServiceUtils.createOKResponse("SSH forward added");
 			}
 		}
 		
-		ServiceResponse sr = new ServiceResponse();
-		ServiceStatus ss = new ServiceStatus();
-		ss.setCode("NOK");
-		ss.getMsg().add("SSH client not found");
-		ss.getMsg().add("SSH client not found and more");
+		return ServiceUtils.createNOKResponse("SSH client not found");
+	}
 
-		sr.setServiceStatus(ss);
-		return sr;
+	@DELETE
+	@Path("forward/delete/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse deleteForward(@Context HttpServletRequest req, @PathParam("id") String id) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		for (SshClient sshClient : cfg.getSshClient()) {
+			Iterator<Forward> iter = sshClient.getForward().iterator();
+			while (iter.hasNext()) {
+				Forward fwd = iter.next();
+				if (fwd.getId().equals(id)) {
+					iter.remove();
+					return ServiceUtils.createOKResponse("Forward removed");
+				}
+			}
+		}
+		return ServiceUtils.createOKResponse("Forward not found: " + id);
 	}
 	
+	@POST
+	@Path("forward/change/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse changeForward(@Context HttpServletRequest req, @PathParam("id") String id, ForwardActionRequest forwardReq) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		for (SshClient sshClient : cfg.getSshClient()) {
+			Iterator<Forward> iter = sshClient.getForward().iterator();
+			while (iter.hasNext()) {
+				Forward fwd = iter.next();
+				if (fwd.getId().equals(id)) {
+
+					fwd.setDescription(forwardReq.getDescription());
+					fwd.setEnabled(forwardReq.isEnabled());
+					fwd.setType(forwardReq.getType());
+					fwd.setRHost(forwardReq.getRHost());
+					fwd.setSHost(forwardReq.getSHost());
+					fwd.setRPort(forwardReq.getRPort());
+					fwd.setSPort(forwardReq.getSPort());
+
+					return ServiceUtils.createOKResponse("Forward changed");
+				}
+			}
+		}
+		return ServiceUtils.createOKResponse("Forward not found: " + id);
+	}
+
 	private String createUUID() {
 		return "ID" + UUID.randomUUID().toString().replace('-','_');
 	}

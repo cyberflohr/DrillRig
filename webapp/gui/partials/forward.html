@@ -1,7 +1,7 @@
 
 <!--  start page-heading -->
 <div id="page-heading">
-  <h1>Tunnel Configuration</h1>
+  <h1>Forward Configuration</h1>
 </div>
 <!-- end page-heading -->
 
@@ -38,7 +38,6 @@
                   border="0" id="product-table">
                   <tbody>
                     <tr>
-                      <th class="table-header-check"></th>
                       <th
                         class="table-header-repeat line-left minwidth-1"><a
                         href="">Source-Host</a></th>
@@ -53,18 +52,19 @@
                         href="">Type</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">Description</a></th>
+                      <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td><span
-                        class="status-symbol {{forwardStatus[forward['@id']]}}"
-                        title="{{forwardStatus[forward['@id']]}}"></span></td>
                       <td>{{forward['@sHost']}}</td>
                       <td>{{forward['@sPort']}}</td>
                       <td>{{forward['@rHost']}}</td>
                       <td>{{forward['@rPort']}}</td>
                       <td>{{forward['@type']}}</td>
                       <td>{{forward['@description']}}</td>
-
+                      <td>
+                        <a class="icon icon-edit" title="edit" ng-click="showEditForward(forward)" href=""></a>
+                        <a class="icon icon-delete" title="delete" ng-click="deleteForward(forward)" href=""></a>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -136,7 +136,7 @@
 <div class="clear">&nbsp;</div>
 
 <!-- begin: Add forward Dialog -->
-<div id="AddForwardDialog" class="dialog" title="Add new tunnel">
+<div id="AddForwardDialog" class="dialog" title="Add new forward">
 
   <div class="dialogMessageArea">
       <ul class="info" ng-show="infoMessages.length>0">
@@ -144,39 +144,79 @@
       </ul>
   </div>
   
-  <form name="AddTunnelForm">
+  <form name="AddForwardForm">
     <fieldset>
       <label for="clientId">Client Session:</label>
-      <select ng-model="configTunnel.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
+      <select ng-model="configForward.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
        
       <label for="description">Description:</label>
-      <input type="text" required ng-model="configTunnel.description" name="description" value="" />
+      <input type="text" required ng-model="configForward.description" name="description" value="" />
       
       <label for="enabled">Enabled:</label>
-      <input type="checkbox" ng-model="configTunnel.enabled" name="enabled" value="" />
+      <input type="checkbox" ng-model="configForward.enabled" name="enabled" value="" />
       
       <label for="type">Type:</label>
-      <select required ng-model="configTunnel.type" id="type">
+      <select required ng-model="configForward.type" id="type">
         <option value="L">Local</option>
         <option value="R">Remote</option>
       </select>
       
       <label for="sourceHost">Source-Host:</label>
-      <input type="text" required ng-model="configTunnel.sHost" name="sourceHost" value="" />
+      <input type="text" required ng-model="configForward.sHost" name="sourceHost" value="" />
       
       <label for="sourcePort">Source-Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="configTunnel.sPort" name="sourcePort" value="" />
+      <input type="number" required min="1" max="65535" ng-model="configForward.sPort" name="sourcePort" value="" />
       
       <label for="remoteHost">Remote-Host:</label>
-      <input type="text" required ng-model="configTunnel.rHost" name="remoteHost" value="" />
+      <input type="text" required ng-model="configForward.rHost" name="remoteHost" value="" />
       
       <label for="remotePort">Remote-Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="configTunnel.rPort" name="remotePort" value="" />
+      <input type="number" required min="1" max="65535" ng-model="configForward.rPort" name="remotePort" value="" />
     </fieldset>
     
   </form>
 </div>
 <!-- end: Add forward Dialog -->
+
+<!-- begin: Edit forward Dialog -->
+<div id="EditForwardDialog" class="dialog" title="Edit forward">
+
+  <div class="dialogMessageArea">
+      <ul class="info" ng-show="infoMessages.length>0">
+         <li ng-repeat="msg in infoMessages">{{msg}}</li>
+      </ul>
+  </div>
+  
+  <form name="EditForwardForm">
+    <fieldset>
+      <label for="description">Description:</label>
+      <input type="text" required ng-model="editForward.description" name="description" value="" />
+      
+      <label for="enabled">Enabled:</label>
+      <input type="checkbox" ng-model="editForward.enabled" name="enabled" value="" />
+      
+      <label for="type">Type:</label>
+      <select required ng-model="editForward.type" id="type">
+        <option value="L">Local</option>
+        <option value="R">Remote</option>
+      </select>
+      
+      <label for="sourceHost">Source-Host:</label>
+      <input type="text" required ng-model="editForward.sHost" name="sourceHost" value="" />
+      
+      <label for="sourcePort">Source-Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="editForward.sPort" name="sourcePort" value="" />
+      
+      <label for="remoteHost">Remote-Host:</label>
+      <input type="text" required ng-model="editForward.rHost" name="remoteHost" value="" />
+      
+      <label for="remotePort">Remote-Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="editForward.rPort" name="remotePort" value="" />
+    </fieldset>
+    
+  </form>
+</div>
+<!-- end: Edit forward Dialog -->
 
 <script>
   $(".action-slider").click(function() {
