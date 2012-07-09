@@ -19,24 +19,36 @@
 
 
     <xsd:element name="Configuration">
-    	<xsd:complexType>
-    		<xsd:sequence>
-    			<xsd:element ref="dr:SshServer"></xsd:element>
-    			<xsd:element ref="dr:SshClient" maxOccurs="unbounded" minOccurs="0"></xsd:element>
-    		</xsd:sequence>
-    	</xsd:complexType>
+   	<xsd:complexType>
+   		<xsd:sequence>
+                <xsd:element ref="dr:Security"></xsd:element>
+                <xsd:element ref="dr:MachineAccount"
+   				maxOccurs="unbounded" minOccurs="0">
+   			</xsd:element>
+   			<xsd:element ref="dr:SshServer"></xsd:element>
+   			<xsd:element ref="dr:SshClient" maxOccurs="unbounded"
+   				minOccurs="0">
+   			</xsd:element>
+   		</xsd:sequence>
+   		<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+   		<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
+
+   		<xsd:attribute name="creationDate" type="xsd:dateTime"></xsd:attribute>
+   		<xsd:attribute name="modificationDate" type="xsd:dateTime"></xsd:attribute>
+   	</xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="MachineAccount">
-    	<xsd:complexType>
-            <xsd:attribute name="host" type="xsd:string"></xsd:attribute>
-    		<xsd:attribute name="port" type="xsd:int" default="22"></xsd:attribute>
+	<xsd:element name="MachineAccount">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+			<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="port" type="xsd:int" default="22"></xsd:attribute>
 
-    		<xsd:attribute name="user" type="xsd:string"></xsd:attribute>
-    		<xsd:attribute name="password" type="xsd:string"></xsd:attribute>
-    	</xsd:complexType>
-    </xsd:element>
-
+			<xsd:attribute name="user" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="password" type="xsd:string"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+   
     <xsd:element name="Forward">
     	<xsd:complexType>
     		<xsd:attribute ref="dr:enabled"></xsd:attribute>
@@ -61,21 +73,40 @@
     <xsd:element name="SshClient">
     	<xsd:complexType>
     		<xsd:sequence>
-    			<xsd:element ref="dr:MachineAccount" maxOccurs="1"
-    				minOccurs="1">
-    			</xsd:element>
-
     			<xsd:element ref="dr:Forward" minOccurs="0"
     				maxOccurs="unbounded">
     			</xsd:element>
     		</xsd:sequence>
 
-            <xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    		<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+            <xsd:attribute name="machineAccount" type="xsd:IDREF"></xsd:attribute>
             <xsd:attribute ref="dr:enabled"></xsd:attribute>
     		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
     		<xsd:attribute name="description" type="xsd:string"></xsd:attribute>
+
     	</xsd:complexType>
     </xsd:element>
 
     <xsd:attribute name="enabled" type="xsd:boolean" default="true"></xsd:attribute>
+
+
+    <xsd:element name="User">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="role" type="xsd:string" maxOccurs="10"></xsd:element>
+    		</xsd:sequence>
+    		<xsd:attribute ref="dr:enabled"></xsd:attribute>
+    		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+    		<xsd:attribute name="password" type="xsd:string"></xsd:attribute>
+    		<xsd:attribute name="email" type="xsd:string"></xsd:attribute>
+    	</xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="Security">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element ref="dr:User" maxOccurs="unbounded"></xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
 </xsd:schema>

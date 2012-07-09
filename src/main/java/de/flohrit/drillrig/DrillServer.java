@@ -2,20 +2,31 @@ package de.flohrit.drillrig;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.UserIdentity;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import util.StringEncDecoder;
+import util.StringUtils;
 import de.flohrit.drillrig.config.Configuration;
+import de.flohrit.drillrig.config.Security;
+import de.flohrit.drillrig.config.User;
 import de.flohrit.drillrig.runtime.AutoKnownHostsVerifier;
 import de.flohrit.drillrig.runtime.SshClientManager;
 
@@ -25,7 +36,9 @@ public class DrillServer {
 	
 	private static SshClientManager sshClientManager;
 	private static Configuration configuration;
-
+	private static StringEncDecoder encDecoder;
+	private static HashLoginService loginService;
+	
 	/**
 	 * @param args
 	 */
@@ -67,9 +80,7 @@ public class DrillServer {
 		webapp.setContextPath("/");
         webapp.setWar("webapp");
         
-        HashLoginService loginService = new HashLoginService();
-        loginService.putUser("root", Credential.getCredential("test"), new String[] {"user"});
-        webapp.getSecurityHandler().setLoginService(loginService);
+        webapp.getSecurityHandler().setLoginService(getLoginService());
         
         server.setHandler(webapp);
         
@@ -80,7 +91,16 @@ public class DrillServer {
 			e1.printStackTrace();
 		}
 	}
-
+	   public static String getAnonymizedString(String val, int readable) {
+	    	if (val.length()-readable <= 0) {
+	    		return val;
+	    	}
+	    	
+			byte[] bytes = val.getBytes();
+			Arrays.fill(bytes, 0,val.length()-readable,"*".getBytes()[0]);
+			return new String(bytes);
+	    }
+	   
 	public static SshClientManager getSshClientManager() {
 		return sshClientManager;
 	}
@@ -105,11 +125,34 @@ public class DrillServer {
 						.unmarshal(configFile);
 			} else {
 				configuration = new Configuration();
+				
+				GregorianCalendar gcal = new GregorianCalendar();
+			      XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
+			            .newXMLGregorianCalendar(gcal);
+			      
+				configuration.setCreationDate(xgcal);
+				configuration.setModificationDate(xgcal);
+				configuration.setVersion("0.1");
+				configuration.setId(StringUtils.createUUID());
+				
+				User user = new User();
+				user.setName("admin");
+				user.setEmail("admin@localhost");
+				user.setEnabled(true);
+				user.setPassword("");
+				user.getRole().add("admin");
+				user.getRole().add("user");
+				
+				configuration.setSecurity(new Security());
+				configuration.getSecurity().getUser().add(user);
+				
 				writeConfiguration(configuration);
 			}
 
 		} catch (JAXBException e3) {
 			logger.error("Error reading configuration file config.xml", e3);
+		} catch (DatatypeConfigurationException e) {
+			logger.error("XMLGregorianCalendar not found", e);
 		}
 	}
 	
@@ -146,5 +189,33 @@ public class DrillServer {
 		} catch (Exception e) {
 			logger.error("Error writing configuration file config.xml", e);
 		}
+	}
+	
+	public static StringEncDecoder getEncDecorder() {
+		if (encDecoder == null) {
+			encDecoder = new StringEncDecoder(getConfiguration());
+		}
+		
+		return encDecoder;
+	}
+	
+	public static HashLoginService getLoginService() {
+		if (loginService == null) {
+	        loginService = new HashLoginService() {
+
+				@Override
+				public UserIdentity login(String username, Object credentials) {
+					return super.login(username, "".equals(credentials) ? credentials : getEncDecorder().enrypt((String) credentials));
+				}
+	        	
+	        };
+	        for (User user : getConfiguration().getSecurity().getUser()) {
+	        	if (user.isEnabled()) {
+	        		loginService.putUser(user.getName(), Credential.getCredential(user.getPassword()), (String[]) user.getRole().toArray(new String[0]));
+	        	}
+	        }
+		}
+		
+		return loginService;
 	}
 }

@@ -20,7 +20,7 @@ angular.module('DrillRig.config', [ ])
 	/**
 	 * Config screen controller
 	 */
- 	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices', function($q, $scope, configServices, Config, dialogServices) {
+ 	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices','localServices', function($q, $scope, configServices, Config, dialogServices,localServices) {
 		
  		$scope.dialogId = '#AddForwardDialog';
 		$scope.configForward = {};
@@ -34,7 +34,7 @@ angular.module('DrillRig.config', [ ])
 			if ($scope.AddForwardForm.$valid) {
 
 				// detach the object data an work only with the ID   
-				$scope.configForward.SSHClientId = $scope.configForward.SSHClientId ? $scope.configForward.SSHClientId['@id'] : '';
+				$scope.configForward.SSHClientId = $scope.configForward.SSHClientId ? $scope.configForward.SSHClientId['id'] : '';
 				
 				configServices.addForward($scope.configForward).then(function(reason) {
 					$scope.infoMessages = reason;
@@ -56,7 +56,7 @@ angular.module('DrillRig.config', [ ])
 		 * Delete forward to configuration
 		 */
 		$scope.deleteForward = function(forward) {
-			configServices.deleteForward(forward['@id']).then(function(reason) {
+			configServices.deleteForward(forward['id']).then(function(reason) {
 				$scope.refreshConfig();
 
 			}, function(reason) {
@@ -72,14 +72,14 @@ angular.module('DrillRig.config', [ ])
 			$scope.infoMessages = [];
 
 			var editFwd = {};
-			editFwd.id = forward['@id'];
-			editFwd.description = forward['@description'];
-			editFwd.type = forward['@type'];
-			editFwd.rHost = forward['@rHost'];
-			editFwd.sHost = forward['@sHost'];
-			editFwd.rPort = parseInt(forward['@rPort']);
-			editFwd.sPort = parseInt(forward['@sPort']);
-			editFwd.enabled = "true" == forward['@enabled'];
+			editFwd.id = forward['id'];
+			editFwd.description = forward['description'];
+			editFwd.type = forward['type'];
+			editFwd.rHost = forward['rHost'];
+			editFwd.sHost = forward['sHost'];
+			editFwd.rPort = forward['rPort'];
+			editFwd.sPort = forward['sPort'];
+			editFwd.enabled = forward['enabled'];
 			
 			$scope.editForward = editFwd;
 			dialogServices.showDialog("#EditForwardDialog");
@@ -131,6 +131,7 @@ angular.module('DrillRig.config', [ ])
 		$scope.saveConfiguration = function() {
 			configServices.saveConfiguration($scope).then(function(reason) {
 				$scope.infoMessages = reason; 
+				localServices.logMessageBar(localServices.logLevel.INFO, 'New configuration activated.');
 
 			}, function(reason) {
 				$scope.infoMessages = reason; 
@@ -249,10 +250,11 @@ angular.module('DrillRig.config', [ ])
 			},
 			
 			changeForward : function(data) {
-				
+				var id = data.id;
+				delete data.id;
 				return httpService({
 					method : 'POST',
-					url : '/services/config/forward/change/' + data.id,
+					url : '/services/config/forward/change/' + id,
 					data : angular.toJson( data )
 				});
 			},

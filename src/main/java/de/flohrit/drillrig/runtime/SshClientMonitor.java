@@ -17,6 +17,7 @@ import net.schmizz.sshj.transport.TransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Forward;
 import de.flohrit.drillrig.config.MachineAccount;
 import de.flohrit.drillrig.config.SshClient;
@@ -72,7 +73,7 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 
 	private SSHClient createSshTransportSession(SshClient sshClientsCfg) {
 		SSHClient sshClient = new SSHClient();
-		MachineAccount maschineAccount = sshClientsCfg.getMachineAccount();
+		MachineAccount maschineAccount = (MachineAccount) sshClientsCfg.getMachineAccount();
 		try {
 			logger.info("create ssh session for user {}@{}", new Object[] {
 					maschineAccount.getUser(), maschineAccount.getHost() });
@@ -81,9 +82,11 @@ public class SshClientMonitor extends Thread implements DisconnectListener {
 
 			sshClient.connect(maschineAccount.getHost(),
 					maschineAccount.getPort());
+			
 			sshClient.authPassword(maschineAccount.getUser(),
-					maschineAccount.getPassword());
+					DrillServer.getEncDecorder().decrypt(maschineAccount.getPassword()));
 
+			
 			sshClient.getTransport().setDisconnectListener(this);
 
 			createPortForwardings(sshClient, sshClientsCfg);

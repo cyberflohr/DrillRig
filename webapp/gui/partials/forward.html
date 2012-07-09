@@ -31,9 +31,8 @@
             <!--  start product-table ..................................................................................... -->
             <form action="" id="mainform">
               <div ng-repeat="client in config.SshClient">
-                <h2>via {{client['@name']}} -
-                  {{client['@description']}}
-                  ({{client.MachineAccount['@user']}}@{{client.MachineAccount['@host']}})</h2>
+                <h2>via {{client['name']}} -
+                  {{client['description']}}</h2>
                 <table width="100%" cellspacing="0" cellpadding="0"
                   border="0" id="product-table">
                   <tbody>
@@ -55,12 +54,12 @@
                       <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td>{{forward['@sHost']}}</td>
-                      <td>{{forward['@sPort']}}</td>
-                      <td>{{forward['@rHost']}}</td>
-                      <td>{{forward['@rPort']}}</td>
-                      <td>{{forward['@type']}}</td>
-                      <td>{{forward['@description']}}</td>
+                      <td>{{forward['sHost']}}</td>
+                      <td>{{forward['sPort']}}</td>
+                      <td>{{forward['rHost']}}</td>
+                      <td>{{forward['rPort']}}</td>
+                      <td>{{forward['type']}}</td>
+                      <td>{{forward['description']}}</td>
                       <td>
                         <a class="icon icon-edit" title="edit" ng-click="showEditForward(forward)" href=""></a>
                         <a class="icon icon-delete" title="delete" ng-click="deleteForward(forward)" href=""></a>
@@ -147,7 +146,7 @@
   <form name="AddForwardForm">
     <fieldset>
       <label for="clientId">Client Session:</label>
-      <select ng-model="configForward.SSHClientId" name="clientId" ng-options="c['@name'] for c in config.SshClient" ></select>
+      <select ng-model="configForward.SSHClientId" name="clientId" ng-options="c['name'] for c in config.SshClient" ></select>
        
       <label for="description">Description:</label>
       <input type="text" required ng-model="configForward.description" name="description" value="" />
