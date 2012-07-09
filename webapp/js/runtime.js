@@ -44,8 +44,8 @@ angular.module('DrillRig.runtime', [ 'DrillRig.logging' ])
 				}).success(function(data, status) {
 					
 					var forwardStatus = {};
-					angular.forEach(data.ForwardStateInfo, function(v,k) {
-						forwardStatus[v['@id']] = v['@state'];
+					angular.forEach(data, function(v,k) {
+						forwardStatus[v.id] = v.state;
 					});
 					deferred.resolve(forwardStatus);
 					//$scope.monitoringTimer =

@@ -31,9 +31,8 @@
             <!--  start product-table ..................................................................................... -->
             <form action="" id="mainform">
               <div ng-repeat="client in config.SshClient">
-                <h2>via {{client['@name']}} -
-                  {{client['@description']}}
-                  ({{client.MachineAccount['@user']}}@{{client.MachineAccount['@host']}})</h2>
+                <h2>via {{client['name']}} -
+                  {{client['description']}}</h2>
                 <table width="100%" cellspacing="0" cellpadding="0"
                   border="0" id="product-table">
                   <tbody>
@@ -56,14 +55,14 @@
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
                       <td><span
-                        class="status-symbol {{forwardStatus[forward['@id']]}}"
-                        title="{{forwardStatus[forward['@id']]}}"></span></td>
-                      <td>{{forward['@sHost']}}</td>
-                      <td>{{forward['@sPort']}}</td>
-                      <td>{{forward['@rHost']}}</td>
-                      <td>{{forward['@rPort']}}</td>
-                      <td>{{forward['@type']}}</td>
-                      <td>{{forward['@description']}}</td>
+                        class="status-symbol {{forwardStatus[forward['id']]}}"
+                        title="{{forwardStatus[forward['id']]}}"></span></td>
+                      <td>{{forward['sHost']}}</td>
+                      <td>{{forward['sPort']}}</td>
+                      <td>{{forward['rHost']}}</td>
+                      <td>{{forward['rPort']}}</td>
+                      <td>{{forward['type']}}</td>
+                      <td>{{forward['description']}}</td>
 
                     </tr>
                   </tbody>

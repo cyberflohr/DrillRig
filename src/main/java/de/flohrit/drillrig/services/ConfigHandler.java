@@ -1,7 +1,6 @@
 package de.flohrit.drillrig.services;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import util.StringUtils;
 import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Configuration;
 import de.flohrit.drillrig.config.Forward;
@@ -73,7 +73,7 @@ public class ConfigHandler {
 			if (sshClient.getId().equals(forwardReq.getSSHClientId())) {
 				
 				Forward fwd = new Forward();
-				fwd.setId(createUUID());
+				fwd.setId(StringUtils.createUUID());
 				fwd.setDescription(forwardReq.getDescription());
 				fwd.setEnabled(forwardReq.isEnabled());
 				fwd.setSHost(forwardReq.getSHost());
@@ -135,9 +135,5 @@ public class ConfigHandler {
 			}
 		}
 		return ServiceUtils.createOKResponse("Forward not found: " + id);
-	}
-
-	private String createUUID() {
-		return "ID" + UUID.randomUUID().toString().replace('-','_');
 	}
 }
