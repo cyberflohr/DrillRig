@@ -6,18 +6,6 @@
 angular.module('DrillRig.config', [ ])
 
 	/**
-	 * module route configuration
-	 */
-  	.config(['$routeProvider', function($routeProvider) {
-
-  		$routeProvider.when('/configuration', {
-  			templateUrl: 'gui/partials/forward.html', 
-  			controller: 'ConfigCtrl'
-  		});
-  	}])
-
-
-	/**
 	 * Config screen controller
 	 */
  	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices','localServices', function($q, $scope, configServices, Config, dialogServices,localServices) {

@@ -101,7 +101,7 @@
       <div class="nav">
         <div class="table">
 
-          <ul class="current">
+          <ul ng-class="{ true:'current',false:'select'}[$location.path().indexOf('/monitor')==0]">
             <li><a href="/monitor"><b>Monitoring</b> <!--[if IE 7]><!--></a>
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
               <div class="select_sub show">
@@ -113,7 +113,7 @@
 
           <div class="nav-divider">&nbsp;</div>
 
-          <ul class="select">
+          <ul ng-class="{ true:'current',false:'select'}[$location.path().indexOf('/configuration')==0]">
             <li><a href="/configuration"><b>Configuration</b> <!--[if IE 7]><!--></a>
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
               <div class="select_sub">
