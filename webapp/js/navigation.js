@@ -9,13 +9,7 @@ angular.module('DrillRig.navigation', [ ])
 
   		$routeProvider.when('/configuration', {
   			templateUrl: 'gui/partials/forward.html', 
-  			controller: 'ConfigCtrl', 
-  			resolve : {
-  				navi : function() {
-  					//$scope.firstLevel=2;
-  					//$scope.secondLevel=1;
-  				}
-  			}
+  			controller: 'ConfigCtrl'
   		});
 
 		$routeProvider.when('/monitor', {
@@ -31,6 +25,7 @@ angular.module('DrillRig.navigation', [ ])
   		
   	}])
   	
-  	.controller('NavigationCtrl', [ function() {
+  	.controller('NavigationCtrl', [ '$scope', '$location', function($scope, $location) {
+  		$scope.$location = $location;
   		
   	}]);
