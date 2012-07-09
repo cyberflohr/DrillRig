@@ -11,7 +11,7 @@ angular.module('DrillRig.config', [ ])
   	.config(['$routeProvider', function($routeProvider) {
 
   		$routeProvider.when('/configuration', {
-  			templateUrl: 'gui/partials/tunnel.html', 
+  			templateUrl: 'gui/partials/forward.html', 
   			controller: 'ConfigCtrl'
   		});
   	}])
@@ -23,13 +23,20 @@ angular.module('DrillRig.config', [ ])
  	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices', function($q, $scope, configServices, Config, dialogServices) {
 		
  		$scope.dialogId = '#AddForwardDialog';
-		$scope.configTunnel = {};
+		$scope.configForward = {};
 		$scope.infoMessages = [];
 		
+		/**
+		 * Add new forward to configuration
+		 */
 		$scope.addForward = function() {
 			var deferred = $q.defer();
-			if ($scope.AddTunnelForm.$valid) {
-				configServices.addTunnel($scope).then(function(reason) {
+			if ($scope.AddForwardForm.$valid) {
+
+				// detach the object data an work only with the ID   
+				$scope.configForward.SSHClientId = $scope.configForward.SSHClientId ? $scope.configForward.SSHClientId['@id'] : '';
+				
+				configServices.addForward($scope.configForward).then(function(reason) {
 					$scope.infoMessages = reason;
 					$scope.refreshConfig();
 					deferred.resolve(reason);
@@ -44,21 +51,83 @@ angular.module('DrillRig.config', [ ])
 			}
 			return deferred.promise;
 		};
-		
-		$scope.showAddForwardDialog = function() {
-			$scope.infoMessages = [];
-			$scope.configTunnel = {};
-			dialogServices.showDialog("#AddForwardDialog");
-		};
-		
-		$scope.refreshConfig = function() {
-			$scope.config = Config.edit(function() {
-				if ($scope.config.SshClient) {
-					$scope.configTunnel.SSHClientId = $scope.config.SshClient[0];
-				}
+
+		/**
+		 * Delete forward to configuration
+		 */
+		$scope.deleteForward = function(forward) {
+			configServices.deleteForward(forward['@id']).then(function(reason) {
+				$scope.refreshConfig();
+
+			}, function(reason) {
+
 			});
 		};
 		
+		/**
+		 * Edit forward to configuration
+		 */
+		$scope.showEditForward = function(forward) {
+			
+			$scope.infoMessages = [];
+
+			var editFwd = {};
+			editFwd.id = forward['@id'];
+			editFwd.description = forward['@description'];
+			editFwd.type = forward['@type'];
+			editFwd.rHost = forward['@rHost'];
+			editFwd.sHost = forward['@sHost'];
+			editFwd.rPort = parseInt(forward['@rPort']);
+			editFwd.sPort = parseInt(forward['@sPort']);
+			editFwd.enabled = "true" == forward['@enabled'];
+			
+			$scope.editForward = editFwd;
+			dialogServices.showDialog("#EditForwardDialog");
+		};
+
+		/**
+		 * Edit forward to configuration
+		 */
+		$scope.changeForward = function() {
+			var deferred = $q.defer();
+			if ($scope.EditForwardForm.$valid) {
+				configServices.changeForward( $scope.editForward).then(function(reason) {
+					$scope.refreshConfig();
+					deferred.resolve(reason);
+	
+				}, function(reason) {
+					$scope.infoMessages = reason; 
+					deferred.reject(reason);
+				});
+			} else {
+				$scope.infoMessages = ['Bitte füllen sie alle Formularfelder korrekt aus.'];
+				deferred.reject();
+			}
+			return deferred.promise;
+		};
+		
+		/**
+		 * Show "add new forward" dialog
+		 */
+		$scope.showAddForwardDialog = function() {
+			$scope.infoMessages = [];
+			$scope.configForward = {};
+			if ($scope.config.SshClient) {
+				$scope.configForward.SSHClientId = $scope.config.SshClient[0];
+			}
+			dialogServices.showDialog("#AddForwardDialog");
+		};
+		
+		/** 
+		 * reload edit configuration
+		 */
+		$scope.refreshConfig = function() {
+			$scope.config = Config.edit();
+		};
+		
+		/**
+		 * save "edit" configuration
+		 */
 		$scope.saveConfiguration = function() {
 			configServices.saveConfiguration($scope).then(function(reason) {
 				$scope.infoMessages = reason; 
@@ -68,16 +137,23 @@ angular.module('DrillRig.config', [ ])
 			});			
 		};
 		
+		/**
+		 * Scope destroy handling
+		 */
 		$scope.$on('$destroy', function(ev) {
 			dialogServices.destroyDialog("#AddForwardDialog");
+			dialogServices.destroyDialog("#EditForwardDialog");
 		});
 
+		/**
+		 * create "add new forward" dialog
+		 */
 		dialogServices.createDialog("#AddForwardDialog", {
 			autoOpen : false,
 			width : 420,
 			modal : true,
 			buttons : {
-				"add tunnel" : function() {
+				"add forward" : function() {
 					$scope.$apply($scope.addForward).then(function() {
 						dialogServices.closeDialog("#AddForwardDialog");
 					});		
@@ -90,6 +166,28 @@ angular.module('DrillRig.config', [ ])
 			}
 		});
 		
+		/**
+		 * create "edit forward" dialog
+		 */
+		dialogServices.createDialog("#EditForwardDialog", {
+			autoOpen : false,
+			width : 420,
+			modal : true,
+			buttons : {
+				"change" : function() {
+					$scope.$apply($scope.changeForward).then(function() {
+						dialogServices.closeDialog("#EditForwardDialog");
+					});		
+				},
+				cancel : function() {
+					dialogServices.closeDialog("#EditForwardDialog");
+				}
+			},
+			close : function() {
+			}
+		});
+
+		// init edit configuration
 		$scope.refreshConfig();		
 		
 	}])
@@ -112,56 +210,60 @@ angular.module('DrillRig.config', [ ])
 			} else {
 				return [];
 			}
-		}
+		};
+		var httpService = function(data) {
+			
+			var deferred = $q.defer();
+
+			$http(data).success(function(data, status) {
+				if (isServiceResultOK(data,status)) {
+					deferred.resolve(getServiceMessages(data))
+				} else {
+					deferred.reject(getServiceMessages(data))
+				}
+			}).error(function(data, status) {
+//				localServices.logMessageBar(localServices.logLevel.ERROR, 'Failure addding SSH tunnel');
+				deferred.reject({ data: data, status : status})
+			});
+
+			return deferred.promise;
+		};
 		
 		return {
-			addTunnel : function($scope) {
+			addForward : function(configForward) {
 				
-				var deferred = $q.defer();
-
-				// detach the object data an work only with the ID   
-				$scope.configTunnel.SSHClientId = $scope.configTunnel.SSHClientId ? $scope.configTunnel.SSHClientId['@id'] : '';
-				
-				$http({
+				return httpService({
 					method : 'POST',
-					url : '/services/config/tunnel/add',
-					data : angular.toJson( $scope.configTunnel )
+					url : '/services/config/forward/add',
+					data : angular.toJson( configForward )
 					
-				}).success(function(data, status) {
-					if (isServiceResultOK(data,status)) {
-						localServices.logMessageBar(localServices.logLevel.INFO, 'SSH tunnel added');
-						deferred.resolve(getServiceMessages(data))
-					} else {
-						deferred.reject(getServiceMessages(data))
-					}
-				}).error(function(data, status) {
-					localServices.logMessageBar(localServices.logLevel.ERROR, 'Failure addding SSH tunnel');
-					deferred.reject({ data: data, status : status})
 				});
-
-				return deferred.promise;
 			},
+
+			deleteForward : function(forwardId) {
+				
+				return httpService({
+					method : 'DELETE',
+					url : '/services/config/forward/delete/' + forwardId
+				});
+			},
+			
+			changeForward : function(data) {
+				
+				return httpService({
+					method : 'POST',
+					url : '/services/config/forward/change/' + data.id,
+					data : angular.toJson( data )
+				});
+			},
+
 			saveConfiguration : function() {
 				
-				var deferred = $q.defer();
-
-				$http({
+				return httpService({
 					method : 'GET',
 					url : '/services/config/save',
 					
-				}).success(function(data, status) {
-					if (isServiceResultOK(data,status)) {
-						localServices.logMessageBar(localServices.logLevel.INFO, 'New configuration loaded.');
-						deferred.resolve(getServiceMessages(data))
-					} else {
-						deferred.reject(getServiceMessages(data))
-					}
-				}).error(function(data, status) {
-					localServices.logMessageBar(localServices.logLevel.ERROR, 'Failure loading configuration');
-					deferred.reject({ data: data, status : status})
 				});
-
-				return deferred.promise;
 			}			
 		}
 	} ]);
