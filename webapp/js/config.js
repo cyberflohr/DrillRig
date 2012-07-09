@@ -20,13 +20,13 @@ angular.module('DrillRig.config', [ ])
 	/**
 	 * Config screen controller
 	 */
- 	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', function($q, $scope, configServices, Config) {
+ 	.controller('ConfigCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices', function($q, $scope, configServices, Config, dialogServices) {
 		
+ 		$scope.dialogId = '#AddForwardDialog';
 		$scope.configTunnel = {};
-		$scope.dialog;
 		$scope.infoMessages = [];
 		
-		$scope.addTunnel = function() {
+		$scope.addForward = function() {
 			var deferred = $q.defer();
 			if ($scope.AddTunnelForm.$valid) {
 				configServices.addTunnel($scope).then(function(reason) {
@@ -45,10 +45,10 @@ angular.module('DrillRig.config', [ ])
 			return deferred.promise;
 		};
 		
-		$scope.showAddTunnelDialog = function() {
+		$scope.showAddForwardDialog = function() {
 			$scope.infoMessages = [];
 			$scope.configTunnel = {};
-			showAddTunnelDialog();
+			dialogServices.showDialog("#AddForwardDialog");
 		};
 		
 		$scope.refreshConfig = function() {
@@ -68,12 +68,28 @@ angular.module('DrillRig.config', [ ])
 			});			
 		};
 		
-		$scope.$on('$routeChangeStart', function(ev) {
-			$scope.dialog.dialog("destroy");
-			$( "#dialog-form" ).remove();
+		$scope.$on('$destroy', function(ev) {
+			dialogServices.destroyDialog("#AddForwardDialog");
 		});
 
-		$scope.dialog = createDialog($scope.addTunnel);
+		dialogServices.createDialog("#AddForwardDialog", {
+			autoOpen : false,
+			width : 420,
+			modal : true,
+			buttons : {
+				"add tunnel" : function() {
+					$scope.$apply($scope.addForward).then(function() {
+						dialogServices.closeDialog("#AddForwardDialog");
+					});		
+				},
+				cancel : function() {
+					dialogServices.closeDialog("#AddForwardDialog");
+				}
+			},
+			close : function() {
+			}
+		});
+		
 		$scope.refreshConfig();		
 		
 	}])
@@ -150,35 +166,6 @@ angular.module('DrillRig.config', [ ])
 		}
 	} ]);
 
-	// general purpose functions
-	function showAddTunnelDialog() {
-		$( "#dialog-form" ).dialog( "open" );
-	}
-	
-	function createDialog(addTunnelCB) {
-		
-		var dialog  = $("#dialog-form");
-		dialog.dialog({
-			autoOpen : false,
-			width : 420,
-			modal : true,
-			buttons : {
-				"add tunnel" : function() {
-					var dialogBtn = this;
-					$(this).scope().$apply(addTunnelCB).then(function() {
-						$(dialogBtn).dialog("close");
-					});
-				},
-				cancel : function() {
-					$(this).dialog("close");
-				}
-			},
-			close : function() {
-			}
-		});
-		
-		return dialog;
-	}
 	
  })();
 
