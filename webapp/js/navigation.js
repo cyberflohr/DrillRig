@@ -8,18 +8,24 @@ angular.module('DrillRig.navigation', [ ])
   	.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
   		$routeProvider.when('/configuration', {
+			redirectTo : '/configuration_forward'
+  		});
+  		$routeProvider.when('/configuration_forward', {
   			templateUrl: 'gui/partials/forward.html', 
-  			controller: 'ConfigCtrl'
+  			controller: 'ConfigForwardCtrl'
+  		});
+  		$routeProvider.when('/configuration_machine', {
+  			templateUrl: 'gui/partials/machine.html', 
+  			controller: 'ConfigMachineCtrl'
   		});
 
 		$routeProvider.when('/monitor', {
 			templateUrl : 'gui/partials/monitor.html',
 			controller : 'MonitoringCtrl'
 		});
-
-		$routeProvider.otherwise({
-			redirectTo : '/monitor'
-		});
+		//$routeProvider.when('/logout');
+		
+		$routeProvider.otherwise({redirectTo: '/monitor'});
 
 		$locationProvider.html5Mode(true);
   		
@@ -28,4 +34,7 @@ angular.module('DrillRig.navigation', [ ])
   	.controller('NavigationCtrl', [ '$scope', '$location', function($scope, $location) {
   		$scope.$location = $location;
   		
+  		$scope.naviCSS = function($location, path, active, inactive) {
+  			return $location.path().indexOf(path)==0 ? active : inactive;
+  		}
   	}]);

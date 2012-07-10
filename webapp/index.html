@@ -101,34 +101,35 @@
       <div class="nav">
         <div class="table">
 
-          <ul ng-class="{ true:'current',false:'select'}[$location.path().indexOf('/monitor')==0]">
+          <ul ng-class="naviCSS($location,'/monitor','current','select')">
             <li><a href="/monitor"><b>Monitoring</b> <!--[if IE 7]><!--></a>
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
-              <div class="select_sub show">
+              <div class="select_sub" ng-class="naviCSS($location,'/monitor','show','')">
                 <ul class="sub">
-                  <li class="sub_show"><a href="#monitor">Forwards by Client</a></li>
+                  <li class="sub_show"><a href="/monitor">Forwards by Session</a></li>
                 </ul>
               </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
           </ul>
 
           <div class="nav-divider">&nbsp;</div>
 
-          <ul ng-class="{ true:'current',false:'select'}[$location.path().indexOf('/configuration')==0]">
+          <ul ng-class="naviCSS($location,'/configuration','current','select')">
             <li><a href="/configuration"><b>Configuration</b> <!--[if IE 7]><!--></a>
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
-              <div class="select_sub">
+              <div class="select_sub" ng-class="naviCSS($location,'/configuration','show','')">
                 <ul class="sub">
-                  <li><a href="#configuration">Forward</a></li>
+                  <li ng-class="naviCSS($location,'/configuration_forward','sub_show','')"><a href="/configuration_forward">Forward</a></li>
+                  <li ng-class="naviCSS($location,'/configuration_maschine','sub_show','')"><a href="/configuration_machine">MachineAccount</a></li>
                 </ul>
               </div> <!--[if lte IE 6]></td></tr></table></a><![endif]--></li>
           </ul>
 
           <div class="nav-divider">&nbsp;</div>
 
-          <ul class="select">
-            <li><a href="#nogo"><b>Accounts</b> <!--[if IE 7]><!--></a>
+          <ul ng-class="naviCSS($location,'/account','current','select')">
+            <li><a href="/account"><b>Accounts</b> <!--[if IE 7]><!--></a>
               <!--<![endif]--> <!--[if lte IE 6]><table><tr><td><![endif]-->
-              <div class="select_sub">
+              <div class="select_sub" ng-class="naviCSS($location,'/account','show','')">
                 <ul class="sub">
                   <li><a href="#nogo">Manage</a></li>
                 </ul>
