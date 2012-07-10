@@ -15,10 +15,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import util.StringEncDecoder;
 import util.StringUtils;
 import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Configuration;
 import de.flohrit.drillrig.config.Forward;
+import de.flohrit.drillrig.config.MachineAccount;
 import de.flohrit.drillrig.config.SshClient;
 
 @Path("/config")
@@ -62,6 +64,12 @@ public class ConfigHandler {
 		return cfg;
 	}
 
+	/**
+	 * Add new forward to configuration.
+	 * @param req HTTP request 
+	 * @param forwardReq forward data
+	 * @return service response.
+	 */
 	@POST
 	@Path("forward/add")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -90,6 +98,12 @@ public class ConfigHandler {
 		return ServiceUtils.createNOKResponse("SSH client not found");
 	}
 
+	/**
+	 * Delete forward from configuration.
+	 * @param req HTTP request 
+	 * @param id forward id to delete
+	 * @return service response.
+	 */
 	@DELETE
 	@Path("forward/delete/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -109,6 +123,12 @@ public class ConfigHandler {
 		return ServiceUtils.createOKResponse("Forward not found: " + id);
 	}
 	
+	/**
+	 * Change forward configuration.
+	 * @param req HTTP request 
+	 * @param id forward id to change
+	 * @return service response.
+	 */
 	@POST
 	@Path("forward/change/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -136,4 +156,110 @@ public class ConfigHandler {
 		}
 		return ServiceUtils.createOKResponse("Forward not found: " + id);
 	}
+	
+	/**
+	 * Add new machine to configuration.
+	 * @param req HTTP request 
+	 * @param machineCfg forward data
+	 * @return service response.
+	 */
+	@POST
+	@Path("machine/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse addMachine(@Context HttpServletRequest req,MachineAccount machineCfg) {
+		Configuration cfg = getEditConfiguration(req);
+		
+		machineCfg.setId(StringUtils.createUUID());
+		machineCfg.setPassword(DrillServer.getEncDecorder().encrypt(
+				machineCfg.getPassword()));
+		cfg.getMachineAccount().add(machineCfg);
+		
+		return ServiceUtils.createOKResponse("Machine account added");
+	}
+
+	/**
+	 * Delete machine from configuration.
+	 * @param req HTTP request 
+	 * @param id forward id to delete
+	 * @return service response.
+	 */
+	@DELETE
+	@Path("machine/delete/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse deleteMachine(@Context HttpServletRequest req, @PathParam("id") String id) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		for (SshClient sshClient : cfg.getSshClient()) {
+			if (((MachineAccount)sshClient.getMachineAccount()).getId().equals(id)) {
+				return ServiceUtils.createNOKResponse("Machine is in use by session " + sshClient.getName());
+			}
+		}
+		Iterator<MachineAccount> iter = cfg.getMachineAccount().iterator();
+		while (iter.hasNext()) {
+			MachineAccount machine = iter.next();
+			if (machine.getId().equals(id)) {
+				iter.remove();
+				return ServiceUtils.createOKResponse("Machine account deleted");
+			}
+		}
+		
+		return ServiceUtils.createOKResponse("Machine not found: " + id);
+	}
+	
+	/**
+	 * Change machine configuration.
+	 * @param req HTTP request 
+	 * @param id forward id to change
+	 * @return service response.
+	 */
+	@POST
+	@Path("machine/change/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse changeMachine(@Context HttpServletRequest req, @PathParam("id") String id, MachineAccount forwardReq) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		for (MachineAccount account : cfg.getMachineAccount()) {
+				if (account.getId().equals(id)) {
+
+					account.setName(forwardReq.getName());
+					account.setHost(forwardReq.getHost());
+					account.setPort(forwardReq.getPort());
+					account.setUser(forwardReq.getUser());
+					account.setPassword(forwardReq.getPassword().endsWith("==") ? forwardReq
+						.getPassword() : DrillServer.getEncDecorder().encrypt(
+						forwardReq.getPassword()));
+
+					return ServiceUtils.createOKResponse("Machine account changed");
+				}
+		}
+		return ServiceUtils.createOKResponse("Machine account not found: " + id);
+	}
+	
+	/**
+	 * Add new session to configuration.
+	 * @param req HTTP request 
+	 * @param forwardReq forward data
+	 * @return service response.
+	 */
+	@POST
+	@Path("session/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse addSession(@Context HttpServletRequest req, SshClient sessionCfg) {
+		Configuration cfg = getEditConfiguration(req);
+		
+		sessionCfg.setId(StringUtils.createUUID());
+		for (MachineAccount mAccount : cfg.getMachineAccount()) {
+			if (mAccount.getId().equals(sessionCfg.getMachineAccount())) {
+				sessionCfg.setMachineAccount(mAccount);
+				cfg.getSshClient().add(sessionCfg);
+				
+				return ServiceUtils.createOKResponse("SSH client session added");
+			}
+		}
+		
+		return ServiceUtils.createNOKResponse("Machine account not found: " + sessionCfg.getMachineAccount());
+	}	
 }

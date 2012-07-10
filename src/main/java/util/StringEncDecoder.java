@@ -23,7 +23,7 @@ public class StringEncDecoder {
 		 secret = new SecretKeySpec(secretStr.getBytes(), "AES");
 	}
 	
-	public String enrypt(String input) {
+	public String encrypt(String input) {
 		Cipher cipher;
 		try {
 			cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "SunJCE");
