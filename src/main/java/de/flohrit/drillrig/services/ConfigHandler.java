@@ -15,7 +15,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import util.StringEncDecoder;
 import util.StringUtils;
 import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Configuration;
