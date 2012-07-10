@@ -1,9 +1,12 @@
 package de.flohrit.drillrig;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import javax.xml.bind.JAXBContext;
@@ -70,7 +73,7 @@ public class DrillServer {
 			e.printStackTrace();
 		}
 */
-		
+	
 		reloadServer(); 
 //		writeConfiguration(configuration);
 		
@@ -121,8 +124,11 @@ public class DrillServer {
 						.newInstance("de.flohrit.drillrig.config");
 	
 				Unmarshaller um = jc.createUnmarshaller();
-				configuration = (Configuration) um
-						.unmarshal(configFile);
+
+				Configuration newConfiguration = (Configuration) um
+										.unmarshal(configFile);
+				configuration = newConfiguration;
+				
 			} else {
 				configuration = new Configuration();
 				
@@ -176,18 +182,34 @@ public class DrillServer {
 	 * @param configuration to write 
 	 */
 	public static void writeConfiguration(Configuration configuration) {
+		File configFile = new File("config.xml");
+		File backFile = new File("config.xml.tmp");
+		FileOutputStream config = null;
+		
 		try {
 			JAXBContext jc = JAXBContext
 					.newInstance("de.flohrit.drillrig.config");
 			Marshaller m = jc.createMarshaller();
 
 			m.setProperty("jaxb.formatted.output", true);
-			FileOutputStream config = new FileOutputStream("config.xml");
+			
+			config = new FileOutputStream(backFile);
 			m.marshal(configuration, config);
 			config.close();
 
+			if (!configFile.exists() || configFile.delete()) {
+				backFile.renameTo(configFile);
+			}
+
 		} catch (Exception e) {
 			logger.error("Error writing configuration file config.xml", e);
+		} finally {
+			if (config!=null) {
+				try {
+					config.close();
+				} catch (IOException e1) {
+				}
+			}
 		}
 	}
 	
@@ -205,7 +227,7 @@ public class DrillServer {
 
 				@Override
 				public UserIdentity login(String username, Object credentials) {
-					return super.login(username, "".equals(credentials) ? credentials : getEncDecorder().enrypt((String) credentials));
+					return super.login(username, "".equals(credentials) ? credentials : getEncDecorder().encrypt((String) credentials));
 				}
 	        	
 	        };

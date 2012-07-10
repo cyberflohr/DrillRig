@@ -1,0 +1,162 @@
+
+<!--  start page-heading -->
+<div id="page-heading">
+  <h1>MachineAccount Configuration</h1>
+
+  <!--  start actions-box ............................................... -->
+  <div id="actions-box">
+    <a class="action-slider" href=""></a>
+    <div id="actions-box-slider">
+      <a class="action-edit" ng-click="showAddMachineDialog()" href="">Add</a>
+      <a class="action-edit" ng-click="saveConfiguration()" href="">Save</a>
+    </div>
+  </div>
+  <!-- end actions-box........... -->
+</div>
+<!-- end page-heading -->
+
+
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0"
+  id="content-table">
+  <tbody>
+    <tr>
+      <th class="sized" rowspan="3"><img width="20" height="300"
+        alt="" src="images/shared/side_shadowleft.jpg"></th>
+      <th class="topleft"></th>
+      <td id="tbl-border-top">&nbsp;</td>
+      <th class="topright"></th>
+      <th class="sized" rowspan="3"><img width="20" height="300"
+        alt="" src="images/shared/side_shadowright.jpg"></th>
+    </tr>
+    <tr>
+      <td id="tbl-border-left"></td>
+      <td>
+        <!--  start content-table-inner ...................................................................... START -->
+        <div id="content-table-inner">
+
+          <!--  start table-content  -->
+          <div id="table-content">
+
+            <!--  start product-table ..................................................................................... -->
+            <form action="" id="mainform">
+              <div>
+                <table width="100%" cellspacing="0" cellpadding="0"
+                  border="0" id="product-table">
+                  <tbody>
+                    <tr>
+                      <th class="table-header-repeat line-left"><a
+                        href="">Name</a></th>
+                      <th
+                        class="table-header-repeat line-left minwidth-1"><a
+                        href="">Host</a></th>
+                      <th
+                        class="table-header-repeat line-left minwidth-1"><a
+                        href="">Port</a></th>
+                      <th class="table-header-repeat line-left"><a
+                        href="">User</a></th>
+                      <th class="table-header-repeat"><a href="">Actions</a></th>
+                    </tr>
+                    <tr ng-repeat="machine in config.MachineAccount">
+                      <td>{{machine['name']}}</td>
+                      <td>{{machine['host']}}</td>
+                      <td>{{machine['port']}}</td>
+                      <td>{{machine['user']}}</td>
+                      <td>
+                        <a class="icon icon-edit" title="edit" ng-click="showEditMachine(machine)" href=""></a>
+                        <a class="icon icon-delete" title="delete" ng-click="deleteMachine(machine)" href=""></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--  end product-table................................... -->
+              </div>
+            </form>
+          </div>
+          <!--  end content-table  -->
+
+          <div class="clear"></div>
+
+        </div> <!--  end content-table-inner ............................................END  -->
+      </td>
+      <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+      <th class="sized bottomleft"></th>
+      <td id="tbl-border-bottom">&nbsp;</td>
+      <th class="sized bottomright"></th>
+    </tr>
+  </tbody>
+</table>
+<div class="clear">&nbsp;</div>
+
+<!-- begin: Add machine Dialog -->
+<div id="AddMachineDialog" class="dialog" title="Add new machine">
+
+  <div class="dialogMessageArea">
+      <ul class="info" ng-show="infoMessages.length>0">
+         <li ng-repeat="msg in infoMessages">{{msg}}</li>
+      </ul>
+  </div>
+  
+  <form name="AddMachineForm">
+    <fieldset>
+      <label for="name">Name:</label>
+      <input type="text" required ng-model="configMachine.name" name="name" value="" />
+      
+      <label for="host">Host:</label>
+      <input type="text" required ng-model="configMachine.host" name="host" value="" />
+      
+      <label for="port">Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="configMachine.port" name="port" value="" />
+
+      <label for="user">User:</label>
+      <input type="text" required ng-model="configMachine.user" name="user" value="" />
+      
+      <label for="password">Password:</label>
+      <input type="password" required ng-model="configMachine.password" name="password" value="" />
+
+    </fieldset>
+    
+  </form>
+</div>
+<!-- end: Add machine Dialog -->
+
+<!-- begin: Edit machine Dialog -->
+<div id="EditMachineDialog" class="dialog" title="Edit machine">
+
+  <div class="dialogMessageArea">
+      <ul class="info" ng-show="infoMessages.length>0">
+         <li ng-repeat="msg in infoMessages">{{msg}}</li>
+      </ul>
+  </div>
+  
+  <form name="EditMachineForm">
+    <fieldset>
+      <label for="name">Name:</label>
+      <input type="text" required ng-model="editMachine.name" name="name" value="" />
+      
+      <label for="host">Host:</label>
+      <input type="text" required ng-model="editMachine.host" name="host" value="" />
+      
+      <label for="port">Port:</label>
+      <input type="number" required min="1" max="65535" ng-model="editMachine.port" name="port" value="" />
+
+      <label for="user">User:</label>
+      <input type="text" required ng-model="editMachine.user" name="user" value="" />
+      
+      <label for="password">Password:</label>
+      <input type="password" required ng-model="editMachine.password" name="password" value="" />
+    </fieldset>
+    
+  </form>
+</div>
+<!-- end: Edit machine Dialog -->
+
+<script>
+  $(".action-slider").click(function() {
+    $("#actions-box-slider").slideToggle("fast");
+    $(this).toggleClass("activated");
+    return false;
+  });
+</script>
