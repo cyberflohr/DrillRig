@@ -1,7 +1,18 @@
 
 <!--  start page-heading -->
 <div id="page-heading">
-  <h1>Forwards by Client</h1>
+  <h1>Forwards by Session</h1>
+  
+  <!--  start actions-box ............................................... -->
+  <div id="actions-box">
+    <a class="action-slider" href=""></a>
+    <div id="actions-box-slider">
+      <a class="action-edit" ng-click="stopSshClients()" href="">Stop</a>
+      <a class="action-delete" ng-click="startSshClients()"
+        href="">Start</a>
+    </div>
+  </div>
+  <!-- end actions-box........... -->
 </div>
 <!-- end page-heading -->
 
@@ -31,7 +42,7 @@
             <!--  start product-table ..................................................................................... -->
             <form action="" id="mainform">
               <div ng-repeat="client in config.SshClient">
-                <h2>via {{client['name']}} -
+                <h2>Session: {{client['name']}} -
                   {{client['description']}}</h2>
                 <table width="100%" cellspacing="0" cellpadding="0"
                   border="0" id="product-table">
@@ -72,53 +83,6 @@
             </form>
           </div>
           <!--  end content-table  -->
-
-          <!--  start actions-box ............................................... -->
-          <div id="actions-box">
-            <a class="action-slider" href=""></a>
-            <div id="actions-box-slider">
-              <a class="action-edit" ng-click="stopSshClients()" href="">Stop</a>
-              <a class="action-delete" ng-click="startSshClients()"
-                href="">Start</a>
-            </div>
-            <div class="clear"></div>
-          </div>
-          <!-- end actions-box........... -->
-
-          <!--  start paging..................................................... -->
-          <table cellspacing="0" cellpadding="0" border="0"
-            id="paging-table">
-            <tbody>
-              <tr>
-                <td><a class="page-far-left" href=""></a> <a
-                  class="page-left" href=""></a>
-                  <div id="page-info">
-                    Page <strong>1</strong> / 15
-                  </div> <a class="page-right" href=""></a> <a
-                  class="page-far-right" href=""></a></td>
-                <td><input type="text" id="_input"
-                  class="styledselect_pages" autocomplete="off"
-                  readonly="" tabindex="0">
-                  <div id="_container" class="selectbox-wrapper2"
-                    style="display: none; width: 130px;">
-                    <ul>
-                      <li id="_input_" class="selected2">Number of
-                        rows</li>
-                      <li id="_input_">1</li>
-                      <li id="_input_">2</li>
-                      <li id="_input_">3</li>
-                    </ul>
-                  </div> <select class="styledselect_pages"
-                  style="display: none;">
-                    <option value="">Number of rows</option>
-                    <option value="">1</option>
-                    <option value="">2</option>
-                    <option value="">3</option>
-                </select></td>
-              </tr>
-            </tbody>
-          </table>
-          <!--  end paging................ -->
 
           <div class="clear"></div>
 

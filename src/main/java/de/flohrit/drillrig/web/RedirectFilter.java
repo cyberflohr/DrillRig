@@ -17,7 +17,7 @@ public class RedirectFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 
 		// check if "role" attribute is null
-		if (req.getUserPrincipal() == null) {
+		if (req.getUserPrincipal() == null && ((req.getRequestURI().indexOf(".")<0) || (req.getRequestURI().endsWith(".html") && !req.getRequestURI().endsWith("login.html")))) {
 			// forward request to login.jsp
 			req.getRequestDispatcher("/login.html").forward(request, response);
 		} else {
