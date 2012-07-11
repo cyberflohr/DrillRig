@@ -14,6 +14,16 @@ angular.module('DrillRig.config', [ ])
 		$scope.configForward = {};
 		$scope.infoMessages = [];
 		
+		var findElement = function(id, arr) {
+			var el=null;
+			$(arr).each(function(k,v) {
+				if (v.id === id) {
+					el=v;
+				}
+			});
+			return el;
+		};
+
 		/**
 		 * Add new forward to configuration
 		 */
@@ -79,9 +89,68 @@ angular.module('DrillRig.config', [ ])
 		};
 		
 		/**
+		 * Delete session from configuration
+		 */
+		$scope.deleteSession = function(session) {
+			configServices.deleteSession(session['id']).then(function(reason) {
+				$scope.refreshConfig();
+
+			}, function(reason) {
+
+			});
+		};
+		
+		/**
 		 * Edit forward to configuration
 		 */
-		$scope.showEditForward = function(forward) {
+		$scope.updateForward = function() {
+			var deferred = $q.defer();
+			if ($scope.EditForwardForm.$valid) {
+				configServices.updateForward( $scope.editForward).then(function(reason) {
+					$scope.refreshConfig();
+					deferred.resolve(reason);
+	
+				}, function(reason) {
+					$scope.infoMessages = reason; 
+					deferred.reject(reason);
+				});
+			} else {
+				$scope.infoMessages = ['Bitte füllen sie alle Formularfelder korrekt aus.'];
+				deferred.reject();
+			}
+			return deferred.promise;
+		};
+		
+		/**
+		 * Edit session configuration
+		 */
+		$scope.updateSession = function() {
+			var deferred = $q.defer();
+			if ($scope.EditSessionForm.$valid) {
+				var machineAccount =  $scope.configSession.machineAccount;
+				$scope.configSession.machineAccount = machineAccount.id;
+				
+				configServices.updateSession( $scope.configSession).then(function(reason) {
+					$scope.refreshConfig();
+					deferred.resolve(reason);
+	
+				}, function(reason) {
+					$scope.infoMessages = reason; 
+					$scope.configSession.machineAccount = machineAccount;
+					
+					deferred.reject(reason);
+				});
+			} else {
+				$scope.infoMessages = ['Bitte füllen sie alle Formularfelder korrekt aus.'];
+				deferred.reject();
+			}
+			return deferred.promise;
+		};
+
+		/**
+		 * Edit forward to configuration
+		 */
+		$scope.showEditForwardDialog = function(forward) {
 			
 			$scope.infoMessages = [];
 
@@ -99,27 +168,6 @@ angular.module('DrillRig.config', [ ])
 			dialogServices.showDialog("#EditForwardDialog");
 		};
 
-		/**
-		 * Edit forward to configuration
-		 */
-		$scope.changeForward = function() {
-			var deferred = $q.defer();
-			if ($scope.EditForwardForm.$valid) {
-				configServices.changeForward( $scope.editForward).then(function(reason) {
-					$scope.refreshConfig();
-					deferred.resolve(reason);
-	
-				}, function(reason) {
-					$scope.infoMessages = reason; 
-					deferred.reject(reason);
-				});
-			} else {
-				$scope.infoMessages = ['Bitte füllen sie alle Formularfelder korrekt aus.'];
-				deferred.reject();
-			}
-			return deferred.promise;
-		};
-		
 		/**
 		 * Show "add new forward" dialog
 		 */
@@ -139,11 +187,26 @@ angular.module('DrillRig.config', [ ])
 			$scope.infoMessages = [];
 			$scope.configSession = {};
 			if ($scope.config.MachineAccount) {
-				$scope.configForward.machineAccount = $scope.config.MachineAccount[0];
+				$scope.configSession.machineAccount = $scope.config.MachineAccount[0];
 			}
 			dialogServices.showDialog("#AddSessionDialog");
 		};
 		
+		/**
+		 * Show "edit session" dialog
+		 */
+		$scope.showEditSessionDialog = function(session) {
+			$scope.infoMessages = [];
+			$scope.configSession = {};
+			
+			$scope.configSession.id = session.id;
+			$scope.configSession.machineAccount = findElement(session.machineAccount.id, $scope.config.MachineAccount);
+			$scope.configSession.name = session.name;
+			$scope.configSession.description = session.description;
+
+			dialogServices.showDialog("#EditSessionDialog");
+		};
+
 		/** 
 		 * reload edit configuration
 		 */
@@ -216,6 +279,27 @@ angular.module('DrillRig.config', [ ])
 		});
 
 		/**
+		 * create "edit session" dialog
+		 */
+		dialogServices.createDialog("#EditSessionDialog", {
+			autoOpen : false,
+			width : 420,
+			modal : true,
+			buttons : {
+				"update session" : function() {
+					$scope.$apply($scope.updateSession).then(function() {
+						dialogServices.closeDialog("#EditSessionDialog");
+					});		
+				},
+				cancel : function() {
+					dialogServices.closeDialog("#EditSessionDialog");
+				}
+			},
+			close : function() {
+			}
+		});
+
+		/**
 		 * create "edit forward" dialog
 		 */
 		dialogServices.createDialog("#EditForwardDialog", {
@@ -223,8 +307,8 @@ angular.module('DrillRig.config', [ ])
 			width : 420,
 			modal : true,
 			buttons : {
-				"change" : function() {
-					$scope.$apply($scope.changeForward).then(function() {
+				"update forward" : function() {
+					$scope.$apply($scope.updateForward).then(function() {
 						dialogServices.closeDialog("#EditForwardDialog");
 					});		
 				},
@@ -304,10 +388,10 @@ angular.module('DrillRig.config', [ ])
 		/**
 		 * Edit machine configuration
 		 */
-		$scope.changeMachine = function() {
+		$scope.updateMachine = function() {
 			var deferred = $q.defer();
 			if ($scope.EditMachineForm.$valid) {
-				configServices.changeMachine( $scope.editMachine).then(function(reason) {
+				configServices.updateMachine( $scope.editMachine).then(function(reason) {
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 	
@@ -391,7 +475,7 @@ angular.module('DrillRig.config', [ ])
 			modal : true,
 			buttons : {
 				"change" : function() {
-					$scope.$apply($scope.changeMachine).then(function() {
+					$scope.$apply($scope.updateMachine).then(function() {
 						dialogServices.closeDialog("#EditMachineDialog");
 					});		
 				},
@@ -465,12 +549,20 @@ angular.module('DrillRig.config', [ ])
 				});
 			},
 			
-			changeForward : function(data) {
+			deleteSession : function(sessionId) {
+				
+				return httpService({
+					method : 'DELETE',
+					url : '/services/config/session/delete/' + sessionId
+				});
+			},
+
+			updateForward : function(data) {
 				var id = data.id;
 				delete data.id;
 				return httpService({
 					method : 'POST',
-					url : '/services/config/forward/change/' + id,
+					url : '/services/config/forward/update/' + id,
 					data : angular.toJson( data )
 				});
 			},
@@ -503,12 +595,20 @@ angular.module('DrillRig.config', [ ])
 				});
 			},
 			
-			changeMachine : function(data) {
+			updateMachine : function(data) {
 				var id = data.id;
 				delete data.id;
 				return httpService({
 					method : 'POST',
-					url : '/services/config/machine/change/' + id,
+					url : '/services/config/machine/update/' + id,
+					data : angular.toJson( data )
+				});
+			},
+
+			updateSession : function(data) {
+				return httpService({
+					method : 'POST',
+					url : '/services/config/session/update/' + data.id,
 					data : angular.toJson( data )
 				});
 			},
