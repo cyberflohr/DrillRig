@@ -40,7 +40,9 @@
             <form action="" id="mainform">
               <div ng-repeat="client in config.SshClient">
                 <h2>Session: {{client['name']}} -
-                  {{client['description']}}</h2>
+                  {{client['description']}}                         <a class="icon icon-edit" title="edit" ng-click="showEditSessionDialog(client)" href=""></a>
+                        <a class="icon icon-delete" title="delete" ng-click="deleteSession(client)" href=""></a>
+                  </h2>
                 <table width="100%" cellspacing="0" cellpadding="0"
                   border="0" id="product-table">
                   <tbody>
@@ -69,7 +71,7 @@
                       <td>{{forward['type']}}</td>
                       <td>{{forward['description']}}</td>
                       <td>
-                        <a class="icon icon-edit" title="edit" ng-click="showEditForward(forward)" href=""></a>
+                        <a class="icon icon-edit" title="edit" ng-click="showEditForwardDialog(forward)" href=""></a>
                         <a class="icon icon-delete" title="delete" ng-click="deleteForward(forward)" href=""></a>
                       </td>
                     </tr>
@@ -123,6 +125,32 @@
   </form>
 </div>
 <!-- end: Add session Dialog -->
+
+<!-- begin: Edit session Dialog -->
+<div id="EditSessionDialog" class="dialog" title="Edit forward">
+
+  <div class="dialogMessageArea">
+      <ul class="info" ng-show="infoMessages.length>0">
+         <li ng-repeat="msg in infoMessages">{{msg}}</li>
+      </ul>
+  </div>
+  
+  <form name="EditSessionForm">
+    <fieldset>
+      <label for="machineAccount">MachineAccount:</label>
+      <select ng-model="configSession.machineAccount" name="machineAccount" ng-options="c['name'] for c in config.MachineAccount" ></select>
+       
+      <label for="name">Name:</label>
+      <input type="text" required ng-model="configSession.name" name="name" value="" />
+
+      <label for="description">Description:</label>
+      <input type="text" ng-model="configSession.description" name="description" value="" />
+      
+    </fieldset>
+    
+  </form>
+</div>
+<!-- end: Edit session Dialog -->
 
 <!-- begin: Add forward Dialog -->
 <div id="AddForwardDialog" class="dialog" title="Add new forward">

@@ -129,7 +129,7 @@ public class ConfigHandler {
 	 * @return service response.
 	 */
 	@POST
-	@Path("forward/change/{id}")
+	@Path("forward/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceResponse changeForward(@Context HttpServletRequest req, @PathParam("id") String id, ForwardActionRequest forwardReq) {
@@ -213,7 +213,7 @@ public class ConfigHandler {
 	 * @return service response.
 	 */
 	@POST
-	@Path("machine/change/{id}")
+	@Path("machine/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceResponse changeMachine(@Context HttpServletRequest req, @PathParam("id") String id, MachineAccount forwardReq) {
@@ -260,5 +260,64 @@ public class ConfigHandler {
 		}
 		
 		return ServiceUtils.createNOKResponse("Machine account not found: " + sessionCfg.getMachineAccount());
-	}	
+	}
+	
+	/**
+	 * Delete session from configuration.
+	 * @param req HTTP request 
+	 * @param id session id to delete
+	 * @return service response.
+	 */
+	@DELETE
+	@Path("session/delete/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse deleteSession(@Context HttpServletRequest req, @PathParam("id") String id) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		Iterator<SshClient> iter = cfg.getSshClient().iterator();
+		while (iter.hasNext()) {
+			SshClient sshClient = iter.next();
+			if (sshClient.getId().equals(id)) {
+				iter.remove();
+				return ServiceUtils.createOKResponse("Session '" + sshClient.getName() + "' deleted");
+			}
+		}
+		
+		return ServiceUtils.createNOKResponse("Session not found: " + id);
+	}
+	
+	/**
+	 * Change session configuration.
+	 * @param req HTTP request 
+	 * @param id session id to change
+	 * @return service response.
+	 */
+	@POST
+	@Path("session/update/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceResponse changeSession(@Context HttpServletRequest req, @PathParam("id") String id, SshClient newSessionCfg) {
+		
+		Configuration cfg = getEditConfiguration(req);
+		for (SshClient sessionCfg : cfg.getSshClient()) {
+				if (sessionCfg.getId().equals(id)) {
+
+					for (MachineAccount machine : cfg.getMachineAccount()) {
+						if (machine.getId().equals(newSessionCfg.getMachineAccount())) {
+							
+							sessionCfg.setName(newSessionCfg.getName());
+							sessionCfg.setEnabled(newSessionCfg.isEnabled());
+							sessionCfg.setDescription(newSessionCfg.getDescription());
+							sessionCfg.setMachineAccount(machine);
+
+							return ServiceUtils.createOKResponse("Session configuration changed");
+						}
+					}
+					
+					return ServiceUtils.createNOKResponse("Maschine configuration not found changed");
+				}
+		}
+		return ServiceUtils.createOKResponse("Session not found: " + id);
+	}
+	
 }

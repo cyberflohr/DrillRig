@@ -3,6 +3,7 @@ package de.flohrit.drillrig;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
@@ -17,6 +18,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
@@ -78,7 +80,11 @@ public class DrillServer {
 		
 		WebAppContext webapp = new WebAppContext();
 		webapp.setContextPath("/");
-        webapp.setWar("webapp");
+		if (new File("webapp").isDirectory()) {
+			webapp.setWar("webapp");
+		} else {
+			webapp.setBaseResource(Resource.newClassPathResource("./"));
+		}
         
         webapp.getSecurityHandler().setLoginService(getLoginService());
         
