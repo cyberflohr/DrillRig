@@ -15,11 +15,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Configuration;
 import de.flohrit.drillrig.config.Forward;
 import de.flohrit.drillrig.config.MachineAccount;
 import de.flohrit.drillrig.config.SshClient;
+import de.flohrit.drillrig.runtime.DrillServer;
 import de.flohrit.drillrig.util.StringUtils;
 
 @Path("/config")
@@ -32,7 +32,7 @@ public class ConfigHandler {
 
 		Configuration cfg = getEditConfiguration(req);
 		DrillServer.writeConfiguration(cfg);
-		DrillServer.reloadServer();
+		DrillServer.restartService();
 		
 		ServiceResponse sr = new ServiceResponse();
 		ServiceStatus ss = new ServiceStatus();

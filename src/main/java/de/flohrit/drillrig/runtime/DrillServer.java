@@ -1,4 +1,4 @@
-package de.flohrit.drillrig;
+package de.flohrit.drillrig.runtime;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,101 +14,22 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.UserIdentity;
-import org.eclipse.jetty.util.security.Credential;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Configuration;
 import de.flohrit.drillrig.config.Security;
 import de.flohrit.drillrig.config.User;
-import de.flohrit.drillrig.runtime.AutoKnownHostsVerifier;
-import de.flohrit.drillrig.runtime.SshClientManager;
 import de.flohrit.drillrig.util.StringEncDecoder;
 import de.flohrit.drillrig.util.StringUtils;
 
 public class DrillServer {
 	final static private Logger logger = LoggerFactory
-			.getLogger(AutoKnownHostsVerifier.class);
+			.getLogger(DrillServer.class);
 
 	private static SshClientManager sshClientManager;
 	private static Configuration configuration;
 	private static StringEncDecoder encDecoder;
-	private static HashLoginService loginService;
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		/*
-		 * SshServer sshd = SshServer.setUpDefaultServer(); sshd.setPort(22);
-		 * sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
-		 * "hostkey.ser"));
-		 * 
-		 * sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
-		 * 
-		 * @Override public boolean authenticate(String paramString1, String
-		 * paramString2, ServerSession paramServerSession) { // TODO
-		 * Auto-generated method stub return true; } });
-		 * sshd.setShellFactory(new ProcessShellFactory( new String[] {
-		 * "cmd.exe" }, EnumSet.of( ProcessShellFactory.TtyOptions.Echo,
-		 * ProcessShellFactory.TtyOptions.ICrNl,
-		 * ProcessShellFactory.TtyOptions.ONlCr)));
-		 * 
-		 * try { sshd.start(); } catch (IOException e) { e.printStackTrace(); }
-		 */
-
-		reloadServer();
-		// writeConfiguration(configuration);
-
-		Server server = new Server(8080);
-
-		WebAppContext webapp = new WebAppContext();
-		webapp.setContextPath("/");
-		if (new File("webapp").isDirectory()) {
-			webapp.setWar("webapp");
-		} else {
-			File tmpdir = new File(System.getProperty("java.io.tmpdir") + "/drillrig");
-			if (tmpdir.isDirectory()) {
-				deleteDirectory(tmpdir.getAbsoluteFile()); 
-				tmpdir.mkdir();
-			}
-			
-			webapp.setTempDirectory(tmpdir);
-			webapp.setWar("rsrc:internal.war");
-			webapp.setCopyWebDir(true);
-			webapp.setCopyWebInf(true);
-			webapp.setParentLoaderPriority(true);
-		}
-
-		webapp.getSecurityHandler().setLoginService(getLoginService());
-		server.setHandler(webapp);
-
-		try {
-			server.start();
-			server.join();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-	}
-	
-	static public boolean deleteDirectory(File path) {
-	    if( path.exists() ) {
-	      File[] files = path.listFiles();
-	      for(int i=0; i<files.length; i++) {
-	         if(files[i].isDirectory()) {
-	           deleteDirectory(files[i]);
-	         }
-	         else {
-	           files[i].delete();
-	         }
-	      }
-	    }
-	    return( path.delete() );
-	  }	
 
 	public static String getAnonymizedString(String val, int readable) {
 		if (val.length() - readable <= 0) {
@@ -182,7 +103,7 @@ public class DrillServer {
 	/**
 	 * 
 	 */
-	public static void reloadServer() {
+	public static void restartService() {
 
 		if (sshClientManager != null) {
 			sshClientManager.stop();
@@ -239,30 +160,16 @@ public class DrillServer {
 
 		return encDecoder;
 	}
-
-	public static HashLoginService getLoginService() {
-		if (loginService == null) {
-			loginService = new HashLoginService() {
-
-				@Override
-				public UserIdentity login(String username, Object credentials) {
-					return super.login(
-							username,
-							"".equals(credentials) ? credentials
-									: getEncDecorder().encrypt(
-											(String) credentials));
-				}
-
-			};
-			for (User user : getConfiguration().getSecurity().getUser()) {
-				if (user.isEnabled()) {
-					loginService.putUser(user.getName(),
-							Credential.getCredential(user.getPassword()),
-							(String[]) user.getRole().toArray(new String[0]));
-				}
-			}
+	
+	public static void startService() {
+		restartService();
+	}
+	
+	public static void stopService() {
+		
+		if (sshClientManager != null) {
+			sshClientManager.stop();
+			sshClientManager=null;
 		}
-
-		return loginService;
 	}
 }
