@@ -17,7 +17,6 @@ import net.schmizz.sshj.transport.TransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flohrit.drillrig.DrillServer;
 import de.flohrit.drillrig.config.Forward;
 import de.flohrit.drillrig.config.MachineAccount;
 import de.flohrit.drillrig.config.SshClient;
