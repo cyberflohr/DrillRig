@@ -1,4 +1,4 @@
-package util;
+package de.flohrit.drillrig.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

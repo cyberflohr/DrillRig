@@ -1,0 +1,36 @@
+<assembly>
+	<id>run</id>
+	<formats>
+		<format>jar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	
+	<fileSets>
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>	
+	<files>
+		<file>
+			<source>target/internal.war</source>
+		</file>
+	</files>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/</outputDirectory>
+			<unpack>true</unpack>
+			<includes>
+				<include>de.flohrit.drillrig:jarloader:*</include>
+			</includes>
+		</dependencySet>
+		<dependencySet>
+			<outputDirectory>/</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<excludes>
+        		<exclude>*drillrig*</exclude>
+      		</excludes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

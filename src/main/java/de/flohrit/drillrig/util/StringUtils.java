@@ -1,4 +1,4 @@
-package util;
+package de.flohrit.drillrig.util;
 
 import java.util.UUID;
 
