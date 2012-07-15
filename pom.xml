@@ -23,8 +23,9 @@
 
 	<properties>
 		<jettyVersion>8.1.4.v20120524</jettyVersion>
-	</properties>
-
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	</properties>
+  	
 	<build>
 		<plugins>
 			<plugin>
@@ -155,10 +156,6 @@
 			<artifactId>jaxb2-basics-runtime</artifactId>
 			<version>0.6.3</version>
 		</dependency>
-		<dependency>
-			<groupId>de.flohrit.drillrig</groupId>
-			<artifactId>jarloader</artifactId>
-			<version>1.0</version>
-		</dependency>
+
 	</dependencies>
 </project>
