@@ -1,6 +1,7 @@
 package de.flohrit.drillrig;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,16 +13,11 @@ import java.util.jar.JarFile;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flohrit.drillrig.runtime.DrillServer;
 
 public class JettyStartup {
 	private static HashLoginService loginService;
-	final static private Logger logger = LoggerFactory
-			.getLogger(DrillServer.class);
 
 
 	/**
@@ -54,34 +50,32 @@ public class JettyStartup {
 		WebAppContext webapp = new WebAppContext();
 		webapp.setContextPath("/");
 		if (new File("webapp").isDirectory()) {
-			webapp.setWar("webapp");
+			webapp.setWar("webapp/");
 		} else {
 			File tmpdir = new File(System.getProperty("java.io.tmpdir")
 					+ "/drillrig");
 			if (tmpdir.isDirectory()) {
 				deleteDirectory(tmpdir.getAbsoluteFile());
-				tmpdir.mkdir();
 			}
+			tmpdir.mkdir();
 
-			InputStream warRes = DrillServer.class
-					.getResourceAsStream("/internal.war");
+			InputStream warRes = JettyStartup.class
+					.getResourceAsStream("/drillrig-1.0.war");
 			try {
 				File warFile = new File(tmpdir.getAbsoluteFile()
-						+ "/internal.war");
+						+ "/drillrig-1.0.war");
 				copyFile(warRes, warFile);
 				webapp.setWar(warFile.getAbsolutePath());
 				// extractJar(warFile.getAbsolutePath(),
 				// tmpdir.getAbsolutePath());
 			} catch (IOException e) {
-				logger.error("Failure during war extraction", e);
+				e.printStackTrace();
 				System.exit(1);
 			}
 
 			webapp.setTempDirectory(tmpdir);
-			// webapp.setResourceBase(tmpdir.getAbsolutePath());
 			webapp.setCopyWebDir(true);
 			webapp.setCopyWebInf(true);
-			webapp.setParentLoaderPriority(true);
 		}
 
 		webapp.getSecurityHandler().setLoginService(getLoginService());
@@ -94,7 +88,6 @@ public class JettyStartup {
 			e1.printStackTrace();
 		}
 	}
-
 	public static HashLoginService getLoginService() {
 		if (loginService == null) {
 			loginService = new HashLoginService() {
@@ -107,25 +100,26 @@ public class JettyStartup {
 				}
 
 			};
+			loginService.putUser("admin", Credential.getCredential("admin"), new String[] { "user"});
 			/*
 			for (User user : getConfiguration().getSecurity().getUser()) {
 				if (user.isEnabled()) {
 					loginService.putUser(user.getName(),
 							Credential.getCredential(user.getPassword()),
 							(String[]) user.getRole().toArray(new String[0]));
-				}
-			}*/
+				}*/
+			
 		}
 
 		return loginService;
 	}
 	static public void copyFile(InputStream is, File dest) throws IOException {
-		BufferedInputStream bis = new BufferedInputStream(is, 4096);
-		FileOutputStream fos = new FileOutputStream(dest);
+		BufferedInputStream bis = new BufferedInputStream(is, 8192);
+		BufferedOutputStream  bos = new BufferedOutputStream(new FileOutputStream(dest), 8192);
 		while (bis.available() > 0) { // write contents of 'is' to 'fos'
-			fos.write(bis.read());
+			bos.write(bis.read());
 		}
-		fos.close();
+		bos.close();
 		is.close();
 		bis.close();
 	}

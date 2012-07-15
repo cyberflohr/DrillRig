@@ -42,15 +42,15 @@ public 	class MyRemotePortForwarder implements PortForwarder {
 			remoteFwd = client
 			.getRemotePortForwarder()
 			.bind(// where the server should listen
-					"*".equals(forwardCfg.getRHost()) ?
+					"*".equals(forwardCfg.getSHost()) ?
 					new net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder.Forward(
-							forwardCfg.getRPort()) : new net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder.Forward(forwardCfg.getRHost(),
-							forwardCfg.getRPort()),
+							forwardCfg.getSPort()) : new net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder.Forward(forwardCfg.getSHost(),
+							forwardCfg.getSPort()),
 							
 					// what we do with incoming connections that are
 					// forwarded to us
 					new MySocketConnectListener(
-							new InetSocketAddress(forwardCfg.getSHost(), forwardCfg.getSPort())));
+							new InetSocketAddress(forwardCfg.getRHost(), forwardCfg.getRPort())));
 		} catch (ConnectionException e) {
 			logger.error("Starting remote port tunnel failed.", e);
 		} catch (TransportException e) {

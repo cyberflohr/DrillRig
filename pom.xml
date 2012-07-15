@@ -27,7 +27,16 @@
 
 	<build>
 		<plugins>
-			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -40,26 +49,13 @@
 							<goal>war</goal>
 						</goals>
 						<configuration>
-							<classifier>run</classifier>
 							<warSourceDirectory>${basedir}/webapp</warSourceDirectory>
 							<packagingExcludes>**/*jetty*</packagingExcludes>
 						</configuration>
 					</execution>
-					<execution>
-						<id>make-war2</id>
-						<phase>package</phase>
-						<goals>
-							<goal>war</goal>
-						</goals>
-						<configuration>
-							<warName>internal</warName>
-							<warSourceDirectory>${basedir}/webapp</warSourceDirectory>
-							<packagingExcludes>**/WEB-INF/lib/**/*</packagingExcludes>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2</version>
@@ -82,7 +78,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -141,23 +137,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>${jettyVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
 			<version>${jettyVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-servlet</artifactId>
-			<version>1.13-b01</version>
+			<version>1.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
-			<version>1.13-b01</version>
+			<version>1.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
