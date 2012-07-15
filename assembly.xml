@@ -4,19 +4,19 @@
 		<format>jar</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	
 	<fileSets>
 		<fileSet>
-			<directory>target/classes</directory>
-			<outputDirectory>/</outputDirectory>
+			<directory>target/classes/de/flohrit/drillrig</directory>
+			<outputDirectory>/de/flohrit/drillrig</outputDirectory>
 		</fileSet>
 	</fileSets>	
 	<files>
 		<file>
-			<source>target/internal.war</source>
+			<source>target/drillrig-1.0.war</source>
 		</file>
 	</files>
 	<dependencySets>
+	<!-- 
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<unpack>true</unpack>
@@ -24,13 +24,14 @@
 				<include>de.flohrit.drillrig:jarloader:*</include>
 			</includes>
 		</dependencySet>
+	 -->
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
-			<unpack>false</unpack>
-			<scope>runtime</scope>
-			<excludes>
-        		<exclude>*drillrig*</exclude>
-      		</excludes>
+			<unpack>true</unpack>
+			<includes>
+        		<include>org.eclipse.jetty:*</include>
+        		<include>org.eclipse.jetty.orbit:javax.servlet</include>
+        	</includes>
 		</dependencySet>
 	</dependencySets>
 </assembly>

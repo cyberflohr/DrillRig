@@ -1,18 +1,4 @@
 Manifest-Version: 1.0
-Rsrc-Class-Path: ./ jetty-util-8.1.4.v20120524.jar sshd-pam-0.7.0.jar 
- jetty-io-8.1.4.v20120524.jar sshj-0.8.0.jar jetty-security-8.1.4.v201
- 20524.jar activation-1.1.jar slf4j-api-1.6.1.jar jackson-mapper-asl-1
- .9.2.jar jaxb-api-2.2.2.jar jackson-xc-1.9.2.jar jetty-webapp-8.1.4.v
- 20120524.jar jackson-core-asl-1.9.2.jar asm-3.1.jar jersey-servlet-1.
- 13-b01.jar stax-api-1.0.1.jar mina-core-2.0.4.jar slf4j-simple-1.6.4.
- jar jetty-http-8.1.4.v20120524.jar jetty-servlet-8.1.4.v20120524.jar 
- tomcat-apr-5.5.23.jar jersey-json-1.13-b01.jar bcprov-jdk15-140.jar j
- ersey-server-1.13-b01.jar jetty-continuation-8.1.4.v20120524.jar sshd
- -core-0.7.0.jar jaxb-impl-2.2.3-1.jar jackson-jaxrs-1.9.2.jar javax.s
- ervlet-3.0.0.v201112011016.jar jersey-core-1.13-b01.jar jetty-server-
- 8.1.4.v20120524.jar jettison-1.1.jar jaxb2-basics-runtime-0.6.3.jar s
- tax-api-1.0-2.jar jetty-xml-8.1.4.v20120524.jar
 Class-Path: .
-Rsrc-Main-Class: de.flohrit.drillrig.DrillServer
-Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
+Main-Class: de.flohrit.drillrig.JettyStartup
 
