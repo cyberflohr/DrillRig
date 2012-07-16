@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Configuration xmlns:ns2="http:///www.flohrit.de/drillrig/config.xsd" id="ID23120228_9cbc_449e_bcf8_7b653f9d2255" version="0.1" creationDate="2012-07-10T09:59:43.418+02:00" modificationDate="2012-07-10T09:59:43.418+02:00">
+<ns2:Configuration xmlns:ns2="http:///www.flohrit.de/drillrig/config.xsd" id="ID23120228_9cbc_449e_bcf8_7b653f9d2255" version="0.1" creationDate="2012-07-10T09:59:43.418+02:00" modificationDate="2012-07-10T09:59:43.418+02:00" host="pc43455">
     <ns2:Security>
         <ns2:User ns2:enabled="true" name="admin" password="" email="admin@localhost">
             <role>admin</role>
@@ -7,11 +7,9 @@
         </ns2:User>
     </ns2:Security>
     <ns2:MachineAccount id="ID8245ad68_615a_4f21_9959_0b514ff526e0" name="SAM" host="cgn-sam-01" port="22" user="root" password="2xdNzXnUxLZ4hRJ2JOn4Cw=="/>
+    <ns2:MachineAccount id="IDfc843de3_eede_498c_9829_db6b3cbaf028" name="Cyberflohr" host="85.214.50.194" port="22" user="wflohr" password="Sd/SD1vh13BOeyvXjDbQzw=="/>
     <ns2:SshClient id="ID31848074_a769_4bd2_8406_cc90b4f0e1fb" machineAccount="ID8245ad68_615a_4f21_9959_0b514ff526e0" ns2:enabled="true" name="SAM" description="sam tunnels">
-        <ns2:Forward ns2:enabled="true" description="SSH" type="L" sHost="localhost" sPort="2222" rHost="localhost" rPort="22" id="ID996dd3dd_a7b8_463f_bd2b_2e2700da70fb"/>
+        <ns2:Forward ns2:enabled="true" description="SSH" type="L" sHost="localhost" sPort="2223" rHost="localhost" rPort="22" id="ID996dd3dd_a7b8_463f_bd2b_2e2700da70fb"/>
         <ns2:Forward ns2:enabled="true" description="reverese" type="R" sHost="localhost" sPort="8090" rHost="cgn-frodo-01" rPort="7010" id="ID2fb4744f_1018_4d3f_a424_9ddcd1674c6f"/>
-    </ns2:SshClient>
-    <ns2:SshClient id="ID8f0f6de2_69f2_4a1b_af61_82c3524cdb98" machineAccount="ID8245ad68_615a_4f21_9959_0b514ff526e0" name="SAM2" description="test">
-        <ns2:Forward ns2:enabled="true" description="test" type="L" sHost="localhost" sPort="3333" rHost="localhost" rPort="22" id="ID24184bc1_2c67_4879_bc0e_659a78e3101b"/>
     </ns2:SshClient>
 </ns2:Configuration>

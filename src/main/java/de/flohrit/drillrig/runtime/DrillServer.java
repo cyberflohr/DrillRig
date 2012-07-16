@@ -3,7 +3,10 @@ package de.flohrit.drillrig.runtime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.GregorianCalendar;
 
 import javax.xml.bind.JAXBContext;
@@ -14,6 +17,12 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.sshd.SshServer;
+import org.apache.sshd.common.util.OsUtils;
+import org.apache.sshd.server.PasswordAuthenticator;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.shell.ProcessShellFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +87,13 @@ public class DrillServer {
 				configuration.setModificationDate(xgcal);
 				configuration.setVersion("0.1");
 				configuration.setId(StringUtils.createUUID());
+				InetAddress addr;
+				try {
+					addr = InetAddress.getLocalHost();
+					configuration.setHost( addr.getHostName());
+				} catch (UnknownHostException e) {
+					configuration.setHost("unknown");
+				}
 
 				User user = new User();
 				user.setName("admin");
@@ -162,6 +178,39 @@ public class DrillServer {
 	}
 	
 	public static void startService() {
+		SshServer sshd = SshServer.setUpDefaultServer();
+		sshd.setPort(3222);
+		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
+				"hostkey.ser"));
+
+		sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
+
+			@Override
+			public boolean authenticate(String paramString1,
+					String paramString2, ServerSession paramServerSession) {
+				// hi
+				return true;
+			}
+		});
+
+		if (OsUtils.isUNIX()) {
+			sshd.setShellFactory(new ProcessShellFactory(new String[] {
+					"/bin/sh", "-i", "-l" }, EnumSet
+					.of(ProcessShellFactory.TtyOptions.ONlCr)));
+		} else {
+			sshd.setShellFactory(new ProcessShellFactory(
+					new String[] { "cmd.exe " }, EnumSet.of(
+							ProcessShellFactory.TtyOptions.Echo,
+							ProcessShellFactory.TtyOptions.ICrNl,
+							ProcessShellFactory.TtyOptions.ONlCr)));
+		}
+/*
+		try {
+			sshd.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+*/		
 		restartService();
 	}
 	

@@ -60,19 +60,16 @@
                       <th class="table-header-repeat line-left"><a
                         href="">Remote-Port</a></th>
                       <th class="table-header-repeat line-left"><a
-                        href="">Type</a></th>
-                      <th class="table-header-repeat line-left"><a
                         href="">Description</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
                       <td><span
                         class="status-symbol {{forwardStatus[forward['id']]}}"
                         title="{{forwardStatus[forward['id']]}}"></span></td>
-                      <td>{{forward['sHost']}}</td>
+                      <td>{{getSourceHost(config, client, forward)}}</td>
                       <td>{{forward['sPort']}}</td>
-                      <td>{{forward['rHost']}}</td>
+                      <td>{{getRemoteHost(config, client, forward)}}</td>
                       <td>{{forward['rPort']}}</td>
-                      <td>{{forward['type']}}</td>
                       <td>{{forward['description']}}</td>
 
                     </tr>
