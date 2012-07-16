@@ -64,9 +64,9 @@
                       <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td>{{forward['sHost']}}</td>
+                      <td>{{getSourceHost(config, client, forward)}}</td>
                       <td>{{forward['sPort']}}</td>
-                      <td>{{forward['rHost']}}</td>
+                      <td>{{getRemoteHost(config, client, forward)}}</td>
                       <td>{{forward['rPort']}}</td>
                       <td>{{forward['type']}}</td>
                       <td>{{forward['description']}}</td>
@@ -179,7 +179,7 @@
       </select>
       
       <label for="sourceHost">Source-Host:</label>
-      <input type="text" required ng-model="configForward.sHost" name="sourceHost" value="" />
+      <input type="text" ng-model="configForward.sHost" name="sourceHost" value="" />
       
       <label for="sourcePort">Source-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="configForward.sPort" name="sourcePort" value="" />
@@ -219,7 +219,7 @@
       </select>
       
       <label for="sourceHost">Source-Host:</label>
-      <input type="text" required ng-model="editForward.sHost" name="sourceHost" value="" />
+      <input type="text" ng-model="editForward.sHost" name="sourceHost" value="" />
       
       <label for="sourcePort">Source-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="editForward.sPort" name="sourcePort" value="" />

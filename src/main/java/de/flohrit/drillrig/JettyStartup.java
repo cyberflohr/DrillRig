@@ -24,25 +24,9 @@ public class JettyStartup {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		/*
-		 * SshServer sshd = SshServer.setUpDefaultServer(); sshd.setPort(22);
-		 * sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
-		 * "hostkey.ser"));
-		 * 
-		 * sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
-		 * 
-		 * @Override public boolean authenticate(String paramString1, String
-		 * paramString2, ServerSession paramServerSession) { // TODO
-		 * Auto-generated method stub return true; } });
-		 * sshd.setShellFactory(new ProcessShellFactory( new String[] {
-		 * "cmd.exe" }, EnumSet.of( ProcessShellFactory.TtyOptions.Echo,
-		 * ProcessShellFactory.TtyOptions.ICrNl,
-		 * ProcessShellFactory.TtyOptions.ONlCr)));
-		 * 
-		 * try { sshd.start(); } catch (IOException e) { e.printStackTrace(); }
-		 */
-
-		//reloadServer();
+		
+		
+		// reloadServer();
 		// writeConfiguration(configuration);
 
 		Server server = new Server(8080);

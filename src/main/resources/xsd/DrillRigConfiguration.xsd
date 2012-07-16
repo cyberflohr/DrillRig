@@ -30,12 +30,13 @@
    				minOccurs="0">
    			</xsd:element>
 
-            </xsd:sequence>
+   		</xsd:sequence>
    		<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
    		<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
 
    		<xsd:attribute name="creationDate" type="xsd:dateTime"></xsd:attribute>
    		<xsd:attribute name="modificationDate" type="xsd:dateTime"></xsd:attribute>
+   		<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
    	</xsd:complexType>
     </xsd:element>
 
