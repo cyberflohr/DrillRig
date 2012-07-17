@@ -185,7 +185,7 @@ public class ConfigHandler {
 						fwd.setRPort(forwardReq.getRPort());
 						fwd.setSPort(forwardReq.getSPort());
 						fwd.setConnection(mAccount);
-						
+		//				fwd.setFilter(forwardReq)
 						return ServiceUtils.createOKResponse("Forward changed");
 					} 
 

@@ -53,7 +53,7 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 							
 					// what we do with incoming connections that are
 					// forwarded to us
-					new MySocketConnectListener(
+					new MySocketConnectListener(this.forwardCfg,
 							new InetSocketAddress(forwardCfg.getRHost(), forwardCfg.getRPort())));
 		} catch (ConnectionException e) {
 			logger.error("Starting remote port tunnel failed.", e);
