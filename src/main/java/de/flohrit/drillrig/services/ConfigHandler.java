@@ -17,14 +17,14 @@ import javax.ws.rs.core.MediaType;
 
 import de.flohrit.drillrig.config.Configuration;
 import de.flohrit.drillrig.config.Forward;
-import de.flohrit.drillrig.config.MachineAccount;
-import de.flohrit.drillrig.config.SshClient;
+import de.flohrit.drillrig.config.Connection;
+import de.flohrit.drillrig.config.SshSession;
 import de.flohrit.drillrig.runtime.DrillServer;
 import de.flohrit.drillrig.util.StringUtils;
 
 @Path("/config")
 public class ConfigHandler {
-	
+
 	@GET
 	@Path("save")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -33,83 +33,113 @@ public class ConfigHandler {
 		Configuration cfg = getEditConfiguration(req);
 		DrillServer.writeConfiguration(cfg);
 		DrillServer.restartService();
-		
+
 		ServiceResponse sr = new ServiceResponse();
 		ServiceStatus ss = new ServiceStatus();
 		ss.setCode("OK");
 		ss.getMsg().add("New configuration loaded and server restarted.");
-		
+
 		sr.setServiceStatus(ss);
-		
+
 		return sr;
 	}
 
 	@GET
 	@Path("read")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Configuration read(@Context HttpServletRequest req, @QueryParam("edit") boolean editCfg) {
-		return editCfg ? getEditConfiguration(req) : DrillServer.getConfiguration();
+	public Configuration read(@Context HttpServletRequest req,
+			@QueryParam("edit") boolean editCfg) {
+		return editCfg ? getEditConfiguration(req) : DrillServer
+				.getConfiguration();
 	}
-	
+
 	private Configuration getEditConfiguration(HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
-		Configuration cfg = (Configuration) session.getAttribute("editConfiguration");
+		Configuration cfg = (Configuration) session
+				.getAttribute("editConfiguration");
 		if (cfg == null) {
-			cfg =  (Configuration) DrillServer.getConfiguration().clone();
-			
+			cfg = (Configuration) DrillServer.getConfiguration().clone();
+
 			session.setAttribute("editConfiguration", cfg);
 		}
-		
+
 		return cfg;
 	}
 
 	/**
 	 * Add new forward to configuration.
-	 * @param req HTTP request 
-	 * @param forwardReq forward data
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param forwardReq
+	 *            forward data
 	 * @return service response.
 	 */
 	@POST
 	@Path("forward/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse addForward(@Context HttpServletRequest req,ForwardActionRequest forwardReq) {
+	public ServiceResponse addForward(@Context HttpServletRequest req,
+			ForwardActionRequest forwardReq) {
 		Configuration cfg = getEditConfiguration(req);
-		
-		for (SshClient sshClient : cfg.getSshClient()) {
-			if (sshClient.getId().equals(forwardReq.getSSHClientId())) {
-				
-				Forward fwd = new Forward();
-				fwd.setId(StringUtils.createUUID());
-				fwd.setDescription(forwardReq.getDescription());
-				fwd.setEnabled(forwardReq.isEnabled());
-				fwd.setSHost(forwardReq.getSHost());
-				fwd.setSPort(forwardReq.getSPort());
-				fwd.setRHost(forwardReq.getRHost());
-				fwd.setRPort(forwardReq.getRPort());
-				fwd.setType(forwardReq.getType());
-				sshClient.getForward().add(fwd);
 
-				return ServiceUtils.createOKResponse("SSH forward added");
+		for (SshSession sshClient : cfg.getSshSession()) {
+			if (sshClient.getId().equals(forwardReq.getSession())) {
+
+				Connection mAccount = getConnectionById(forwardReq.getConnection(), cfg);
+				if (mAccount != null) {
+				
+						Forward fwd = new Forward();
+						fwd.setConnection(mAccount);
+
+						fwd.setId(StringUtils.createUUID());
+						fwd.setDescription(forwardReq.getDescription());
+						fwd.setEnabled(forwardReq.isEnabled());
+						fwd.setSHost(forwardReq.getSHost());
+						fwd.setSPort(forwardReq.getSPort());
+						fwd.setRHost(forwardReq.getRHost());
+						fwd.setRPort(forwardReq.getRPort());
+						fwd.setType(forwardReq.getType());
+						sshClient.getForward().add(fwd);
+
+						return ServiceUtils.createOKResponse("SSH forward added");
+				}
+
+				return ServiceUtils.createNOKResponse("SSH connection not found");
 			}
 		}
-		
+
 		return ServiceUtils.createNOKResponse("SSH client not found");
+	}
+
+	private Connection getConnectionById(String connectionId,
+			Configuration cfg) {
+		
+		for (Connection mAccount : cfg.getConnection()) {
+			if (mAccount.getId().equals(connectionId)) {
+				return mAccount;
+			}
+		}
+		return null;
 	}
 
 	/**
 	 * Delete forward from configuration.
-	 * @param req HTTP request 
-	 * @param id forward id to delete
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            forward id to delete
 	 * @return service response.
 	 */
 	@DELETE
 	@Path("forward/delete/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse deleteForward(@Context HttpServletRequest req, @PathParam("id") String id) {
-		
+	public ServiceResponse deleteForward(@Context HttpServletRequest req,
+			@PathParam("id") String id) {
+
 		Configuration cfg = getEditConfiguration(req);
-		for (SshClient sshClient : cfg.getSshClient()) {
+		for (SshSession sshClient : cfg.getSshSession()) {
 			Iterator<Forward> iter = sshClient.getForward().iterator();
 			while (iter.hasNext()) {
 				Forward fwd = iter.next();
@@ -121,203 +151,230 @@ public class ConfigHandler {
 		}
 		return ServiceUtils.createOKResponse("Forward not found: " + id);
 	}
-	
+
 	/**
 	 * Change forward configuration.
-	 * @param req HTTP request 
-	 * @param id forward id to change
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            forward id to change
 	 * @return service response.
 	 */
 	@POST
 	@Path("forward/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeForward(@Context HttpServletRequest req, @PathParam("id") String id, ForwardActionRequest forwardReq) {
-		
+	public ServiceResponse changeForward(@Context HttpServletRequest req,
+			@PathParam("id") String id, ForwardActionRequest forwardReq) {
+
 		Configuration cfg = getEditConfiguration(req);
-		for (SshClient sshClient : cfg.getSshClient()) {
+		for (SshSession sshClient : cfg.getSshSession()) {
 			Iterator<Forward> iter = sshClient.getForward().iterator();
 			while (iter.hasNext()) {
 				Forward fwd = iter.next();
 				if (fwd.getId().equals(id)) {
 
-					fwd.setDescription(forwardReq.getDescription());
-					fwd.setEnabled(forwardReq.isEnabled());
-					fwd.setType(forwardReq.getType());
-					fwd.setRHost(forwardReq.getRHost());
-					fwd.setSHost(forwardReq.getSHost());
-					fwd.setRPort(forwardReq.getRPort());
-					fwd.setSPort(forwardReq.getSPort());
+					Connection mAccount = getConnectionById(forwardReq.getConnection(), cfg);
+					if (mAccount != null) {
+						fwd.setDescription(forwardReq.getDescription());
+						fwd.setEnabled(forwardReq.isEnabled());
+						fwd.setType(forwardReq.getType());
+						fwd.setRHost(forwardReq.getRHost());
+						fwd.setSHost(forwardReq.getSHost());
+						fwd.setRPort(forwardReq.getRPort());
+						fwd.setSPort(forwardReq.getSPort());
+						fwd.setConnection(mAccount);
+						
+						return ServiceUtils.createOKResponse("Forward changed");
+					} 
 
-					return ServiceUtils.createOKResponse("Forward changed");
+					return ServiceUtils.createNOKResponse("Connection not found");
 				}
 			}
 		}
 		return ServiceUtils.createOKResponse("Forward not found: " + id);
 	}
-	
+
 	/**
-	 * Add new machine to configuration.
-	 * @param req HTTP request 
-	 * @param machineCfg forward data
+	 * Add new connection to configuration.
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param connectionCfg
+	 *            forward data
 	 * @return service response.
 	 */
 	@POST
-	@Path("machine/add")
+	@Path("connection/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse addMachine(@Context HttpServletRequest req,MachineAccount machineCfg) {
+	public ServiceResponse addConnection(@Context HttpServletRequest req,
+			Connection connectionCfg) {
 		Configuration cfg = getEditConfiguration(req);
-		
-		machineCfg.setId(StringUtils.createUUID());
-		machineCfg.setPassword(DrillServer.getEncDecorder().encrypt(
-				machineCfg.getPassword()));
-		cfg.getMachineAccount().add(machineCfg);
-		
-		return ServiceUtils.createOKResponse("Machine account added");
+
+		connectionCfg.setId(StringUtils.createUUID());
+		connectionCfg.setPassword(DrillServer.getEncDecorder().encrypt(
+				connectionCfg.getPassword()));
+		cfg.getConnection().add(connectionCfg);
+
+		return ServiceUtils.createOKResponse("Connection added");
 	}
 
 	/**
-	 * Delete machine from configuration.
-	 * @param req HTTP request 
-	 * @param id forward id to delete
+	 * Delete connection from configuration.
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            forward id to delete
 	 * @return service response.
 	 */
 	@DELETE
-	@Path("machine/delete/{id}")
+	@Path("connection/delete/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse deleteMachine(@Context HttpServletRequest req, @PathParam("id") String id) {
-		
+	public ServiceResponse deleteConnection(@Context HttpServletRequest req,
+			@PathParam("id") String id) {
+
 		Configuration cfg = getEditConfiguration(req);
-		for (SshClient sshClient : cfg.getSshClient()) {
-			if (((MachineAccount)sshClient.getMachineAccount()).getId().equals(id)) {
-				return ServiceUtils.createNOKResponse("Machine is in use by session " + sshClient.getName());
+		for (SshSession sshClient : cfg.getSshSession()) {
+			for (Forward fwd : sshClient.getForward()) {
+				if (((Connection) fwd.getConnection()).getId().equals(
+						id)) {
+					return ServiceUtils
+							.createNOKResponse("Connection is in use by session "
+									+ sshClient.getName());
+				}
 			}
 		}
-		Iterator<MachineAccount> iter = cfg.getMachineAccount().iterator();
+		Iterator<Connection> iter = cfg.getConnection().iterator();
 		while (iter.hasNext()) {
-			MachineAccount machine = iter.next();
-			if (machine.getId().equals(id)) {
+			Connection connection = iter.next();
+			if (connection.getId().equals(id)) {
 				iter.remove();
-				return ServiceUtils.createOKResponse("Machine account deleted");
+				return ServiceUtils.createOKResponse("Connection deleted");
 			}
 		}
-		
-		return ServiceUtils.createOKResponse("Machine not found: " + id);
+
+		return ServiceUtils.createOKResponse("Connection not found: " + id);
 	}
-	
+
 	/**
-	 * Change machine configuration.
-	 * @param req HTTP request 
-	 * @param id forward id to change
+	 * Change connection configuration.
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            forward id to change
 	 * @return service response.
 	 */
 	@POST
-	@Path("machine/update/{id}")
+	@Path("connection/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeMachine(@Context HttpServletRequest req, @PathParam("id") String id, MachineAccount forwardReq) {
-		
-		Configuration cfg = getEditConfiguration(req);
-		for (MachineAccount account : cfg.getMachineAccount()) {
-				if (account.getId().equals(id)) {
+	public ServiceResponse changeConnection(@Context HttpServletRequest req,
+			@PathParam("id") String id, Connection forwardReq) {
 
-					account.setName(forwardReq.getName());
-					account.setHost(forwardReq.getHost());
-					account.setPort(forwardReq.getPort());
-					account.setUser(forwardReq.getUser());
-					account.setPassword(forwardReq.getPassword().endsWith("==") ? forwardReq
+		Configuration cfg = getEditConfiguration(req);
+		for (Connection account : cfg.getConnection()) {
+			if (account.getId().equals(id)) {
+
+				account.setName(forwardReq.getName());
+				account.setHost(forwardReq.getHost());
+				account.setPort(forwardReq.getPort());
+				account.setUser(forwardReq.getUser());
+				account.setPassword(forwardReq.getPassword().endsWith("==") ? forwardReq
 						.getPassword() : DrillServer.getEncDecorder().encrypt(
 						forwardReq.getPassword()));
 
-					return ServiceUtils.createOKResponse("Machine account changed");
-				}
+				return ServiceUtils.createOKResponse("Connection changed");
+			}
 		}
-		return ServiceUtils.createOKResponse("Machine account not found: " + id);
+		return ServiceUtils
+				.createOKResponse("Connection not found: " + id);
 	}
-	
+
 	/**
 	 * Add new session to configuration.
-	 * @param req HTTP request 
-	 * @param forwardReq forward data
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param forwardReq
+	 *            forward data
 	 * @return service response.
 	 */
 	@POST
 	@Path("session/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse addSession(@Context HttpServletRequest req, SshClient sessionCfg) {
+	public ServiceResponse addSession(@Context HttpServletRequest req,
+			SshSession sessionCfg) {
 		Configuration cfg = getEditConfiguration(req);
-		
+
 		sessionCfg.setId(StringUtils.createUUID());
-		for (MachineAccount mAccount : cfg.getMachineAccount()) {
-			if (mAccount.getId().equals(sessionCfg.getMachineAccount())) {
-				sessionCfg.setMachineAccount(mAccount);
-				cfg.getSshClient().add(sessionCfg);
-				
-				return ServiceUtils.createOKResponse("SSH client session added");
-			}
-		}
-		
-		return ServiceUtils.createNOKResponse("Machine account not found: " + sessionCfg.getMachineAccount());
+		cfg.getSshSession().add(sessionCfg);
+
+		return ServiceUtils.createOKResponse("SSH client session added");
 	}
-	
+
 	/**
 	 * Delete session from configuration.
-	 * @param req HTTP request 
-	 * @param id session id to delete
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            session id to delete
 	 * @return service response.
 	 */
 	@DELETE
 	@Path("session/delete/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse deleteSession(@Context HttpServletRequest req, @PathParam("id") String id) {
-		
+	public ServiceResponse deleteSession(@Context HttpServletRequest req,
+			@PathParam("id") String id) {
+
 		Configuration cfg = getEditConfiguration(req);
-		Iterator<SshClient> iter = cfg.getSshClient().iterator();
+		Iterator<SshSession> iter = cfg.getSshSession().iterator();
 		while (iter.hasNext()) {
-			SshClient sshClient = iter.next();
+			SshSession sshClient = iter.next();
 			if (sshClient.getId().equals(id)) {
 				iter.remove();
-				return ServiceUtils.createOKResponse("Session '" + sshClient.getName() + "' deleted");
+				return ServiceUtils.createOKResponse("Session '"
+						+ sshClient.getName() + "' deleted");
 			}
 		}
-		
+
 		return ServiceUtils.createNOKResponse("Session not found: " + id);
 	}
-	
+
 	/**
 	 * Change session configuration.
-	 * @param req HTTP request 
-	 * @param id session id to change
+	 * 
+	 * @param req
+	 *            HTTP request
+	 * @param id
+	 *            session id to change
 	 * @return service response.
 	 */
 	@POST
 	@Path("session/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeSession(@Context HttpServletRequest req, @PathParam("id") String id, SshClient newSessionCfg) {
-		
+	public ServiceResponse changeSession(@Context HttpServletRequest req,
+			@PathParam("id") String id, SshSession newSessionCfg) {
+
 		Configuration cfg = getEditConfiguration(req);
-		for (SshClient sessionCfg : cfg.getSshClient()) {
-				if (sessionCfg.getId().equals(id)) {
+		for (SshSession sessionCfg : cfg.getSshSession()) {
+			if (sessionCfg.getId().equals(id)) {
 
-					for (MachineAccount machine : cfg.getMachineAccount()) {
-						if (machine.getId().equals(newSessionCfg.getMachineAccount())) {
-							
-							sessionCfg.setName(newSessionCfg.getName());
-							sessionCfg.setEnabled(newSessionCfg.isEnabled());
-							sessionCfg.setDescription(newSessionCfg.getDescription());
-							sessionCfg.setMachineAccount(machine);
+				sessionCfg.setName(newSessionCfg.getName());
+				sessionCfg.setEnabled(newSessionCfg.isEnabled());
+				sessionCfg.setDescription(newSessionCfg.getDescription());
 
-							return ServiceUtils.createOKResponse("Session configuration changed");
-						}
-					}
-					
-					return ServiceUtils.createNOKResponse("Maschine configuration not found changed");
-				}
+				return ServiceUtils
+						.createOKResponse("Session configuration changed");
+			}
 		}
 		return ServiceUtils.createOKResponse("Session not found: " + id);
 	}
-	
+
 }

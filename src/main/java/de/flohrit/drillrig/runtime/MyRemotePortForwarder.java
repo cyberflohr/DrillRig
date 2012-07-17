@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.DisconnectReason;
 import net.schmizz.sshj.connection.ConnectionException;
+import net.schmizz.sshj.transport.DisconnectListener;
 import net.schmizz.sshj.transport.TransportException;
 
 import org.slf4j.Logger;
@@ -12,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Forward;
 
-public 	class MyRemotePortForwarder implements PortForwarder {
+public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener {
 	final static private Logger logger = LoggerFactory
 			.getLogger(MyRemotePortForwarder.class);
 	
@@ -23,7 +25,8 @@ public 	class MyRemotePortForwarder implements PortForwarder {
 	public void close() {
 		try {
 			if (isAlive()) {
-				if (false) client.getRemotePortForwarder().cancel(remoteFwd);
+				client.getRemotePortForwarder().cancel(remoteFwd);
+				client.close();
 			}
 		} catch (IOException e) {
 			logger.error("Forcing socket close failed.");
@@ -35,6 +38,7 @@ public 	class MyRemotePortForwarder implements PortForwarder {
 
 		this.client = sshClient;
 		this.forwardCfg = forward;
+		client.getTransport().setDisconnectListener(this);
 	}
 	
 	public void start() {
@@ -62,6 +66,13 @@ public 	class MyRemotePortForwarder implements PortForwarder {
 	public boolean isAlive() {
 		return remoteFwd != null
 				&& client.getRemotePortForwarder().getActiveForwards()
-						.contains(remoteFwd);
+						.contains(remoteFwd); 
+	}
+	
+	@Override
+	public void notifyDisconnect(DisconnectReason paramDisconnectReason) {
+		remoteFwd=null;
+		logger.warn(
+				"notifyDisconnect received {}", paramDisconnectReason);
 	}
 }

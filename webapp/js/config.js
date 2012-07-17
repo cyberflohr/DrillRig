@@ -32,7 +32,10 @@ angular.module('DrillRig.config', [ ])
 			if ($scope.AddForwardForm.$valid) {
 
 				// detach the object data an work only with the ID   
-				$scope.configForward.SSHClientId = $scope.configForward.SSHClientId ? $scope.configForward.SSHClientId['id'] : '';
+				$scope.configForward.session = $scope.configForward.session ? $scope.configForward.session['id'] : '';
+				// detach the object data an work only with the ID   
+				$scope.configForward.connection = $scope.configForward.connection ? $scope.configForward.connection['id'] : '';
+				
 				
 				configServices.addForward($scope.configForward).then(function(reason) {
 					$scope.infoMessages = reason;
@@ -57,9 +60,6 @@ angular.module('DrillRig.config', [ ])
 			var deferred = $q.defer();
 			if ($scope.AddSessionForm.$valid) {
 
-				// detach the object data an work only with the ID   
-				$scope.configSession.machineAccount = $scope.configSession.machineAccount ? $scope.configSession.machineAccount['id'] : '';
-				
 				configServices.addSession($scope.configSession).then(function(reason) {
 					$scope.infoMessages = reason;
 					$scope.refreshConfig();
@@ -106,6 +106,9 @@ angular.module('DrillRig.config', [ ])
 		$scope.updateForward = function() {
 			var deferred = $q.defer();
 			if ($scope.EditForwardForm.$valid) {
+				var connection =  $scope.editForward.connection;
+				$scope.editForward.connection = connection.id;
+
 				configServices.updateForward( $scope.editForward).then(function(reason) {
 					$scope.refreshConfig();
 					deferred.resolve(reason);
@@ -127,8 +130,6 @@ angular.module('DrillRig.config', [ ])
 		$scope.updateSession = function() {
 			var deferred = $q.defer();
 			if ($scope.EditSessionForm.$valid) {
-				var machineAccount =  $scope.configSession.machineAccount;
-				$scope.configSession.machineAccount = machineAccount.id;
 				
 				configServices.updateSession( $scope.configSession).then(function(reason) {
 					$scope.refreshConfig();
@@ -136,7 +137,7 @@ angular.module('DrillRig.config', [ ])
 	
 				}, function(reason) {
 					$scope.infoMessages = reason; 
-					$scope.configSession.machineAccount = machineAccount;
+					$scope.configSession.connection = connection;
 					
 					deferred.reject(reason);
 				});
@@ -156,6 +157,8 @@ angular.module('DrillRig.config', [ ])
 
 			var editFwd = {};
 			editFwd.id = forward['id'];
+			editFwd.connection = findElement(forward.connection.id, $scope.config.Connection);
+
 			editFwd.description = forward['description'];
 			editFwd.type = forward['type'];
 			editFwd.rHost = forward['rHost'];
@@ -174,8 +177,8 @@ angular.module('DrillRig.config', [ ])
 		$scope.showAddForwardDialog = function() {
 			$scope.infoMessages = [];
 			$scope.configForward = {};
-			if ($scope.config.SshClient) {
-				$scope.configForward.SSHClientId = $scope.config.SshClient[0];
+			if ($scope.config.SshSession) {
+				$scope.configForward.session = $scope.config.SshSession[0];
 			}
 			dialogServices.showDialog("#AddForwardDialog");
 		};
@@ -186,9 +189,7 @@ angular.module('DrillRig.config', [ ])
 		$scope.showAddSessionDialog = function() {
 			$scope.infoMessages = [];
 			$scope.configSession = {};
-			if ($scope.config.MachineAccount) {
-				$scope.configSession.machineAccount = $scope.config.MachineAccount[0];
-			}
+
 			dialogServices.showDialog("#AddSessionDialog");
 		};
 		
@@ -200,9 +201,9 @@ angular.module('DrillRig.config', [ ])
 			$scope.configSession = {};
 			
 			$scope.configSession.id = session.id;
-			$scope.configSession.machineAccount = findElement(session.machineAccount.id, $scope.config.MachineAccount);
 			$scope.configSession.name = session.name;
 			$scope.configSession.description = session.description;
+			$scope.configSession.enabled = session.enabled;
 
 			dialogServices.showDialog("#EditSessionDialog");
 		};
@@ -234,6 +235,7 @@ angular.module('DrillRig.config', [ ])
 			dialogServices.destroyDialog("#AddForwardDialog");
 			dialogServices.destroyDialog("#EditForwardDialog");
 			dialogServices.destroyDialog("#AddSessionDialog");
+			dialogServices.destroyDialog("#EditSessionDialog");
 		});
 
 		/**
@@ -328,16 +330,16 @@ angular.module('DrillRig.config', [ ])
 	/**
 	 * Config forward controller
 	 */
- 	.controller('ConfigMachineCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices','localServices', function($q, $scope, configServices, Config, dialogServices,localServices) {
+ 	.controller('ConfigConnectionCtrl', [ '$q', '$scope', 'configServices','Config', 'dialogServices','localServices', function($q, $scope, configServices, Config, dialogServices,localServices) {
  		
 		/**
-		 * Add new machine to configuration
+		 * Add new connection to configuration
 		 */
-		$scope.addMachine = function() {
+		$scope.addConnection = function() {
 			var deferred = $q.defer();
-			if ($scope.AddMachineForm.$valid) {
+			if ($scope.AddConnectionForm.$valid) {
 
-				configServices.addMachine($scope.configMachine).then(function(reason) {
+				configServices.addConnection($scope.configConnection).then(function(reason) {
 					$scope.infoMessages = reason;
 					$scope.refreshConfig();
 					deferred.resolve(reason);
@@ -354,10 +356,10 @@ angular.module('DrillRig.config', [ ])
 		};
 
 		/**
-		 * Delete machine to configuration
+		 * Delete connection to configuration
 		 */
-		$scope.deleteMachine = function(machine) {
-			configServices.deleteMachine(machine['id']).then(function(reason) {
+		$scope.deleteConnection = function(connection) {
+			configServices.deleteConnection(connection['id']).then(function(reason) {
 				$scope.refreshConfig();
 
 			}, function(reason) {
@@ -367,31 +369,31 @@ angular.module('DrillRig.config', [ ])
 		};
 		
 		/**
-		 * Edit machine configuration
+		 * Edit connection configuration
 		 */
-		$scope.showEditMachine = function(machine) {
+		$scope.showEditConnection = function(connection) {
 			
 			$scope.infoMessages = [];
 
-			var editMachine = {};
-			editMachine.id = machine['id'];
-			editMachine.name = machine['name'];
-			editMachine.host = machine['host'];
-			editMachine.port = machine['port'];
-			editMachine.user = machine['user'];
-			editMachine.password = machine['password'];
+			var editConnection = {};
+			editConnection.id = connection['id'];
+			editConnection.name = connection['name'];
+			editConnection.host = connection['host'];
+			editConnection.port = connection['port'];
+			editConnection.user = connection['user'];
+			editConnection.password = connection['password'];
 			
-			$scope.editMachine = editMachine;
-			dialogServices.showDialog("#EditMachineDialog");
+			$scope.editConnection = editConnection;
+			dialogServices.showDialog("#EditConnectionDialog");
 		};
 
 		/**
-		 * Edit machine configuration
+		 * Edit connection configuration
 		 */
-		$scope.updateMachine = function() {
+		$scope.updateConnection = function() {
 			var deferred = $q.defer();
-			if ($scope.EditMachineForm.$valid) {
-				configServices.updateMachine( $scope.editMachine).then(function(reason) {
+			if ($scope.EditConnectionForm.$valid) {
+				configServices.updateConnection( $scope.editConnection).then(function(reason) {
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 	
@@ -408,13 +410,13 @@ angular.module('DrillRig.config', [ ])
 		
 
 		/**
-		 * Show "add new machine" dialog
+		 * Show "add new connection" dialog
 		 */
-		$scope.showAddMachineDialog = function() {
+		$scope.showAddConnectionDialog = function() {
 			$scope.infoMessages = [];
-			$scope.configMachine = {};
+			$scope.configConnection = {};
 
-			dialogServices.showDialog("#AddMachineDialog");
+			dialogServices.showDialog("#AddConnectionDialog");
 		};
 		
 		/** 
@@ -441,25 +443,25 @@ angular.module('DrillRig.config', [ ])
 		 * Scope destroy handling
 		 */
 		$scope.$on('$destroy', function(ev) {
-			dialogServices.destroyDialog("#AddMachineDialog");
-			dialogServices.destroyDialog("#EditMachineDialog");
+			dialogServices.destroyDialog("#AddConnectionDialog");
+			dialogServices.destroyDialog("#EditConnectionDialog");
 		});
 
 		/**
-		 * create "add new machine" dialog
+		 * create "add new connection" dialog
 		 */
-		dialogServices.createDialog("#AddMachineDialog", {
+		dialogServices.createDialog("#AddConnectionDialog", {
 			autoOpen : false,
 			width : 420,
 			modal : true,
 			buttons : {
-				"add machine" : function() {
-					$scope.$apply($scope.addMachine).then(function() {
-						dialogServices.closeDialog("#AddMachineDialog");
+				"add connection" : function() {
+					$scope.$apply($scope.addConnection).then(function() {
+						dialogServices.closeDialog("#AddConnectionDialog");
 					});		
 				},
 				cancel : function() {
-					dialogServices.closeDialog("#AddMachineDialog");
+					dialogServices.closeDialog("#AddConnectionDialog");
 				}
 			},
 			close : function() {
@@ -467,20 +469,20 @@ angular.module('DrillRig.config', [ ])
 		});
 		
 		/**
-		 * create "edit machine" dialog
+		 * create "edit connection" dialog
 		 */
-		dialogServices.createDialog("#EditMachineDialog", {
+		dialogServices.createDialog("#EditConnectionDialog", {
 			autoOpen : false,
 			width : 420,
 			modal : true,
 			buttons : {
 				"change" : function() {
-					$scope.$apply($scope.updateMachine).then(function() {
-						dialogServices.closeDialog("#EditMachineDialog");
+					$scope.$apply($scope.updateConnection).then(function() {
+						dialogServices.closeDialog("#EditConnectionDialog");
 					});		
 				},
 				cancel : function() {
-					dialogServices.closeDialog("#EditMachineDialog");
+					dialogServices.closeDialog("#EditConnectionDialog");
 				}
 			},
 			close : function() {
@@ -577,30 +579,30 @@ angular.module('DrillRig.config', [ ])
 				});
 			},
 
-			addMachine : function(configForward) {
+			addConnection : function(configForward) {
 				
 				return httpService({
 					method : 'POST',
-					url : '/services/config/machine/add',
+					url : '/services/config/connection/add',
 					data : angular.toJson( configForward )
 					
 				});
 			},
 
-			deleteMachine : function(forwardId) {
+			deleteConnection : function(forwardId) {
 				
 				return httpService({
 					method : 'DELETE',
-					url : '/services/config/machine/delete/' + forwardId
+					url : '/services/config/connection/delete/' + forwardId
 				});
 			},
 			
-			updateMachine : function(data) {
+			updateConnection : function(data) {
 				var id = data.id;
 				delete data.id;
 				return httpService({
 					method : 'POST',
-					url : '/services/config/machine/update/' + id,
+					url : '/services/config/connection/update/' + id,
 					data : angular.toJson( data )
 				});
 			},

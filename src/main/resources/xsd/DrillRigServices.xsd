@@ -41,7 +41,8 @@
 	<element name="ForwardActionRequest">
 		<complexType>
 			<sequence>
-				<element name="SSHClientId" type="ID"></element>
+				<element name="session" type="ID"></element>
+				<element name="connection" type="ID"></element>
 				<element name="enabled" type="boolean"></element>
 				<element name="description" type="string"></element>
 				<element name="sHost" type="string"></element>

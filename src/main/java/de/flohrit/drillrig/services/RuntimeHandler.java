@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import de.flohrit.drillrig.runtime.DrillServer;
-import de.flohrit.drillrig.runtime.SshClientMonitor;
+import de.flohrit.drillrig.runtime.SshSessionMonitor;
 
 @Path("/runtime")
 public class RuntimeHandler {
@@ -34,7 +34,7 @@ public class RuntimeHandler {
 		
 		
 		List<ForwardStateInfo> fwdInfos = new ArrayList<ForwardStateInfo>();
-		for (SshClientMonitor monitor : DrillServer.getSshClientManager().getSshClientMonitors()) {
+		for (SshSessionMonitor monitor : DrillServer.getSshClientManager().getSshClientMonitors()) {
 			fwdInfos.addAll(monitor.getForwardStateInfos());
 		}
 		

@@ -14,9 +14,9 @@ angular.module('DrillRig.navigation', [ ])
   			templateUrl: 'gui/partials/forward.html', 
   			controller: 'ConfigForwardCtrl'
   		});
-  		$routeProvider.when('/configuration_machine', {
-  			templateUrl: 'gui/partials/machine.html', 
-  			controller: 'ConfigMachineCtrl'
+  		$routeProvider.when('/configuration_connection', {
+  			templateUrl: 'gui/partials/connection.html', 
+  			controller: 'ConfigConnectionCtrl'
   		});
 
 		$routeProvider.when('/monitor', {

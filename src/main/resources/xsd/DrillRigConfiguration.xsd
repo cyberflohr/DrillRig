@@ -22,11 +22,11 @@
    	<xsd:complexType>
    		<xsd:sequence>
    			<xsd:element ref="dr:Security"></xsd:element>
-   			<xsd:element ref="dr:MachineAccount"
+   			<xsd:element ref="dr:Connection"
    				maxOccurs="unbounded" minOccurs="0">
    			</xsd:element>
    			<xsd:element ref="dr:SshServer"></xsd:element>
-   			<xsd:element ref="dr:SshClient" maxOccurs="unbounded"
+   			<xsd:element ref="dr:SshSession" maxOccurs="unbounded"
    				minOccurs="0">
    			</xsd:element>
 
@@ -40,7 +40,7 @@
    	</xsd:complexType>
     </xsd:element>
 
-	<xsd:element name="MachineAccount">
+	<xsd:element name="Connection">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
             <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
@@ -57,6 +57,7 @@
     		<xsd:sequence>
     			<xsd:element name="filter" type="dr:IpFilter" minOccurs="0" maxOccurs="unbounded"></xsd:element>
     		</xsd:sequence>
+            <xsd:attribute name="connection" type="xsd:IDREF"></xsd:attribute>
     		<xsd:attribute ref="dr:enabled"></xsd:attribute>
     		<xsd:attribute name="description" type="xsd:string"></xsd:attribute>
     		<xsd:attribute name="type">
@@ -76,7 +77,7 @@
     	</xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="SshClient">
+    <xsd:element name="SshSession">
     	<xsd:complexType>
     		<xsd:sequence>
     			<xsd:element ref="dr:Forward" minOccurs="0"
@@ -85,7 +86,6 @@
     		</xsd:sequence>
 
     		<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
-            <xsd:attribute name="machineAccount" type="xsd:IDREF"></xsd:attribute>
             <xsd:attribute ref="dr:enabled"></xsd:attribute>
     		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
     		<xsd:attribute name="description" type="xsd:string"></xsd:attribute>
