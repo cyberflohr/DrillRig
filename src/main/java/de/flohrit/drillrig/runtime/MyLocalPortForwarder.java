@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.schmizz.concurrent.Event;
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.DisconnectReason;
 import net.schmizz.sshj.common.SSHPacket;
 import net.schmizz.sshj.common.StreamCopier;
 import net.schmizz.sshj.connection.Connection;
@@ -16,6 +17,7 @@ import net.schmizz.sshj.connection.channel.SocketStreamCopyMonitor;
 import net.schmizz.sshj.connection.channel.direct.AbstractDirectChannel;
 import net.schmizz.sshj.connection.channel.direct.LocalPortForwarder;
 import net.schmizz.sshj.connection.channel.direct.LocalPortForwarder.Parameters;
+import net.schmizz.sshj.transport.DisconnectListener;
 import net.schmizz.sshj.transport.TransportException;
 
 import org.slf4j.Logger;
@@ -23,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Forward;
 
-public 	class MyLocalPortForwarder extends Thread implements PortForwarder {
+public 	class MyLocalPortForwarder extends Thread implements PortForwarder, DisconnectListener {
 	final static private Logger logger = LoggerFactory
 			.getLogger(MyLocalPortForwarder.class);
 	
@@ -37,6 +39,7 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder {
 
 	public void close() {
 		try {
+			client.close();
 			serverSocket.close();
 		} catch (IOException e) {
 			logger.error("Forcing socket close failed.");
@@ -59,12 +62,13 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder {
 				forward.getSHost(), forward.getSPort(),
 				forward.getRHost(), forward.getRPort());
 									
+		client.getTransport().setDisconnectListener(this);
 		this.parameters = parameters;
 	}
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (!isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
 				startForwarding(socket);
@@ -132,5 +136,17 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder {
 					.putString(parameters.getLocalHost())
 					.putUInt32(parameters.getLocalPort());
 		}
+	}
+
+	@Override
+	public void notifyDisconnect(DisconnectReason paramDisconnectReason) {
+		interrupt();
+		client=null;
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+		}
+		logger.warn(
+				"notifyDisconnect received {}", paramDisconnectReason);
 	}
 }

@@ -1,13 +1,13 @@
 
 <!--  start page-heading -->
 <div id="page-heading">
-  <h1>MachineAccount Configuration</h1>
+  <h1>Connection Configuration</h1>
 
   <!--  start actions-box ............................................... -->
   <div id="actions-box">
     <a class="action-slider" href=""></a>
     <div id="actions-box-slider">
-      <a class="action-edit" ng-click="showAddMachineDialog()" href="">Add</a>
+      <a class="action-edit" ng-click="showAddConnectionDialog()" href="">Add</a>
       <a class="action-edit" ng-click="saveConfiguration()" href="">Save</a>
     </div>
   </div>
@@ -57,14 +57,14 @@
                         href="">User</a></th>
                       <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
-                    <tr ng-repeat="machine in config.MachineAccount">
-                      <td>{{machine['name']}}</td>
-                      <td>{{machine['host']}}</td>
-                      <td>{{machine['port']}}</td>
-                      <td>{{machine['user']}}</td>
+                    <tr ng-repeat="connection in config.Connection">
+                      <td>{{connection['name']}}</td>
+                      <td>{{connection['host']}}</td>
+                      <td>{{connection['port']}}</td>
+                      <td>{{connection['user']}}</td>
                       <td>
-                        <a class="icon icon-edit" title="edit" ng-click="showEditMachine(machine)" href=""></a>
-                        <a class="icon icon-delete" title="delete" ng-click="deleteMachine(machine)" href=""></a>
+                        <a class="icon icon-edit" title="edit" ng-click="showEditConnection(connection)" href=""></a>
+                        <a class="icon icon-delete" title="delete" ng-click="deleteConnection(connection)" href=""></a>
                       </td>
                     </tr>
                   </tbody>
@@ -90,8 +90,8 @@
 </table>
 <div class="clear">&nbsp;</div>
 
-<!-- begin: Add machine Dialog -->
-<div id="AddMachineDialog" class="dialog" title="Add new machine">
+<!-- begin: Add connection Dialog -->
+<div id="AddConnectionDialog" class="dialog" title="Add new connection">
 
   <div class="dialogMessageArea">
       <ul class="info" ng-show="infoMessages.length>0">
@@ -99,31 +99,31 @@
       </ul>
   </div>
   
-  <form name="AddMachineForm">
+  <form name="AddConnectionForm">
     <fieldset>
       <label for="name">Name:</label>
-      <input type="text" required ng-model="configMachine.name" name="name" value="" />
+      <input type="text" required ng-model="configConnection.name" name="name" value="" />
       
       <label for="host">Host:</label>
-      <input type="text" required ng-model="configMachine.host" name="host" value="" />
+      <input type="text" required ng-model="configConnection.host" name="host" value="" />
       
       <label for="port">Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="configMachine.port" name="port" value="" />
+      <input type="number" required min="1" max="65535" ng-model="configConnection.port" name="port" value="" />
 
       <label for="user">User:</label>
-      <input type="text" required ng-model="configMachine.user" name="user" value="" />
+      <input type="text" required ng-model="configConnection.user" name="user" value="" />
       
       <label for="password">Password:</label>
-      <input type="password" required ng-model="configMachine.password" name="password" value="" />
+      <input type="password" required ng-model="configConnection.password" name="password" value="" />
 
     </fieldset>
     
   </form>
 </div>
-<!-- end: Add machine Dialog -->
+<!-- end: Add connection Dialog -->
 
-<!-- begin: Edit machine Dialog -->
-<div id="EditMachineDialog" class="dialog" title="Edit machine">
+<!-- begin: Edit connection Dialog -->
+<div id="EditConnectionDialog" class="dialog" title="Edit connection">
 
   <div class="dialogMessageArea">
       <ul class="info" ng-show="infoMessages.length>0">
@@ -131,27 +131,27 @@
       </ul>
   </div>
   
-  <form name="EditMachineForm">
+  <form name="EditConnectionForm">
     <fieldset>
       <label for="name">Name:</label>
-      <input type="text" required ng-model="editMachine.name" name="name" value="" />
+      <input type="text" required ng-model="editConnection.name" name="name" value="" />
       
       <label for="host">Host:</label>
-      <input type="text" required ng-model="editMachine.host" name="host" value="" />
+      <input type="text" required ng-model="editConnection.host" name="host" value="" />
       
       <label for="port">Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="editMachine.port" name="port" value="" />
+      <input type="number" required min="1" max="65535" ng-model="editConnection.port" name="port" value="" />
 
       <label for="user">User:</label>
-      <input type="text" required ng-model="editMachine.user" name="user" value="" />
+      <input type="text" required ng-model="editConnection.user" name="user" value="" />
       
       <label for="password">Password:</label>
-      <input type="password" required ng-model="editMachine.password" name="password" value="" />
+      <input type="password" required ng-model="editConnection.password" name="password" value="" />
     </fieldset>
     
   </form>
 </div>
-<!-- end: Edit machine Dialog -->
+<!-- end: Edit connection Dialog -->
 
 <script>
   $(".action-slider").click(function() {

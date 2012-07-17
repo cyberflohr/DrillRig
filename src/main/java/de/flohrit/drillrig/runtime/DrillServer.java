@@ -36,7 +36,7 @@ public class DrillServer {
 	final static private Logger logger = LoggerFactory
 			.getLogger(DrillServer.class);
 
-	private static SshClientManager sshClientManager;
+	private static SshSessionManager sshClientManager;
 	private static Configuration configuration;
 	private static StringEncDecoder encDecoder;
 
@@ -50,7 +50,7 @@ public class DrillServer {
 		return new String(bytes);
 	}
 
-	public static SshClientManager getSshClientManager() {
+	public static SshSessionManager getSshClientManager() {
 		return sshClientManager;
 	}
 
@@ -127,7 +127,7 @@ public class DrillServer {
 
 		readConfiguration();
 
-		sshClientManager = new SshClientManager(configuration.getSshClient());
+		sshClientManager = new SshSessionManager(configuration.getSshSession());
 		sshClientManager.start();
 	}
 

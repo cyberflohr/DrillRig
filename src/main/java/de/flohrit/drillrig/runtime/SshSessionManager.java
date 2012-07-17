@@ -8,20 +8,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flohrit.drillrig.config.SshClient;
+import de.flohrit.drillrig.config.SshSession;
 
-public class SshClientManager {
+public class SshSessionManager {
 
 	final static private Logger logger = LoggerFactory
-			.getLogger(SshClientManager.class);
+			.getLogger(SshSessionManager.class);
 			
-	private List<SshClient> sshClientsCfg;
-	private List<SshClientMonitor> sshClientMonitor = new ArrayList<SshClientMonitor>();
+	private List<SshSession> sshClientsCfg;
+	private List<SshSessionMonitor> sshClientMonitor = new ArrayList<SshSessionMonitor>();
 	private State state;
 	
 	private enum State { ACTIVE, INACTIVE };
 	
-	public SshClientManager(List<SshClient> sshClientsCfg) {
+	public SshSessionManager(List<SshSession> sshClientsCfg) {
 
 		this.state = State.INACTIVE;
 		this.sshClientsCfg = sshClientsCfg;
@@ -33,10 +33,10 @@ public class SshClientManager {
 		}
 		
 		sshClientMonitor.clear();
-		for (SshClient client : sshClientsCfg) {
+		for (SshSession client : sshClientsCfg) {
 
 			try {
-				SshClientMonitor mon = new SshClientMonitor(client);
+				SshSessionMonitor mon = new SshSessionMonitor(client);
 				mon.start();
 				sshClientMonitor.add(mon);
 			} catch (IOException e) {
@@ -56,9 +56,9 @@ public class SshClientManager {
 		while (doPoll) {
 			
 			doPoll=false;
-			Iterator<SshClientMonitor> iter = sshClientMonitor.iterator();
+			Iterator<SshSessionMonitor> iter = sshClientMonitor.iterator();
 			while (iter.hasNext()) {
-				SshClientMonitor mon = iter.next();
+				SshSessionMonitor mon = iter.next();
 				mon.interrupt();
 				if (mon.isAlive()) {
 					doPoll=true;
@@ -74,7 +74,7 @@ public class SshClientManager {
 		this.state = State.INACTIVE;
 	}
 	
-	synchronized public List<SshClientMonitor> getSshClientMonitors() {
+	synchronized public List<SshSessionMonitor> getSshClientMonitors() {
 		return sshClientMonitor;
 	}
 }

@@ -41,7 +41,7 @@
 
             <!--  start product-table ..................................................................................... -->
             <form action="" id="mainform">
-              <div ng-repeat="client in config.SshClient">
+              <div ng-repeat="client in config.SshSession">
                 <h2>Session: {{client['name']}} -
                   {{client['description']}}</h2>
                 <table width="100%" cellspacing="0" cellpadding="0"
@@ -55,6 +55,9 @@
                       <th
                         class="table-header-repeat line-left minwidth-1"><a
                         href="">Source-Port</a></th>
+                      <th
+                        class="table-header-repeat line-left minwidth-1"><a
+                        href="">via</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">Remote-Host</a></th>
                       <th class="table-header-repeat line-left"><a
@@ -66,9 +69,10 @@
                       <td><span
                         class="status-symbol {{forwardStatus[forward['id']]}}"
                         title="{{forwardStatus[forward['id']]}}"></span></td>
-                      <td>{{getSourceHost(config, client, forward)}}</td>
+                      <td>{{getSourceHost(config, forward)}}</td>
                       <td>{{forward['sPort']}}</td>
-                      <td>{{getRemoteHost(config, client, forward)}}</td>
+                      <td>{{forward.connection.name}}</td>
+                      <td>{{getRemoteHost(config, forward)}}</td>
                       <td>{{forward['rPort']}}</td>
                       <td>{{forward['description']}}</td>
 

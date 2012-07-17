@@ -38,7 +38,7 @@
 
             <!--  start product-table ..................................................................................... -->
             <form action="" id="mainform">
-              <div ng-repeat="client in config.SshClient">
+              <div ng-repeat="client in config.SshSession">
                 <h2>Session: {{client['name']}} -
                   {{client['description']}}                         <a class="icon icon-edit" title="edit" ng-click="showEditSessionDialog(client)" href=""></a>
                         <a class="icon icon-delete" title="delete" ng-click="deleteSession(client)" href=""></a>
@@ -54,6 +54,8 @@
                         class="table-header-repeat line-left minwidth-1"><a
                         href="">Source-Port</a></th>
                       <th class="table-header-repeat line-left"><a
+                        href="">via</a></th>
+                      <th class="table-header-repeat line-left"><a
                         href="">Remote-Host</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">Remote-Port</a></th>
@@ -64,9 +66,10 @@
                       <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
                     <tr ng-repeat="forward in client.Forward">
-                      <td>{{getSourceHost(config, client, forward)}}</td>
+                      <td>{{getSourceHost(config, forward)}}</td>
                       <td>{{forward['sPort']}}</td>
-                      <td>{{getRemoteHost(config, client, forward)}}</td>
+                      <td>{{forward.connection.name}}</td>
+                      <td>{{getRemoteHost(config, forward)}}</td>
                       <td>{{forward['rPort']}}</td>
                       <td>{{forward['type']}}</td>
                       <td>{{forward['description']}}</td>
@@ -101,7 +104,7 @@
 <div class="clear">&nbsp;</div>
 
 <!-- begin: Add session Dialog -->
-<div id="AddSessionDialog" class="dialog" title="Add new forward">
+<div id="AddSessionDialog" class="dialog" title="Add new session">
 
   <div class="dialogMessageArea">
       <ul class="info" ng-show="infoMessages.length>0">
@@ -111,15 +114,15 @@
   
   <form name="AddSessionForm">
     <fieldset>
-      <label for="machineAccount">MachineAccount:</label>
-      <select ng-model="configSession.machineAccount" name="machineAccount" ng-options="c['name'] for c in config.MachineAccount" ></select>
-       
       <label for="name">Name:</label>
       <input type="text" required ng-model="configSession.name" name="name" value="" />
 
       <label for="description">Description:</label>
       <input type="text" ng-model="configSession.description" name="description" value="" />
       
+      <label for="enabled">Enabled:</label>
+      <input type="checkbox" ng-model="configSession.enabled" name="enabled" value="" />
+
     </fieldset>
     
   </form>
@@ -127,7 +130,7 @@
 <!-- end: Add session Dialog -->
 
 <!-- begin: Edit session Dialog -->
-<div id="EditSessionDialog" class="dialog" title="Edit forward">
+<div id="EditSessionDialog" class="dialog" title="Edit session">
 
   <div class="dialogMessageArea">
       <ul class="info" ng-show="infoMessages.length>0">
@@ -137,15 +140,15 @@
   
   <form name="EditSessionForm">
     <fieldset>
-      <label for="machineAccount">MachineAccount:</label>
-      <select ng-model="configSession.machineAccount" name="machineAccount" ng-options="c['name'] for c in config.MachineAccount" ></select>
-       
       <label for="name">Name:</label>
       <input type="text" required ng-model="configSession.name" name="name" value="" />
 
       <label for="description">Description:</label>
       <input type="text" ng-model="configSession.description" name="description" value="" />
       
+      <label for="enabled">Enabled:</label>
+      <input type="checkbox" ng-model="configSession.enabled" name="enabled" value="" />
+
     </fieldset>
     
   </form>
@@ -163,8 +166,11 @@
   
   <form name="AddForwardForm">
     <fieldset>
-      <label for="clientId">Client Session:</label>
-      <select ng-model="configForward.SSHClientId" name="clientId" ng-options="c['name'] for c in config.SshClient" ></select>
+      <label for="clientId">Session:</label>
+      <select ng-model="configForward.session" name="clientId" ng-options="c['name'] for c in config.SshSession" ></select>
+       
+      <label for="connection">Connection:</label>
+      <select ng-model="configForward.connection" name="connection" ng-options="c['name'] for c in config.Connection" ></select>
        
       <label for="description">Description:</label>
       <input type="text" required ng-model="configForward.description" name="description" value="" />
@@ -206,6 +212,9 @@
   
   <form name="EditForwardForm">
     <fieldset>
+      <label for="connection">Connection:</label>
+      <select ng-model="editForward.connection" name="connection" ng-options="c['name'] for c in config.Connection" ></select>
+       
       <label for="description">Description:</label>
       <input type="text" required ng-model="editForward.description" name="description" value="" />
       
