@@ -32,17 +32,22 @@ angular.module('DrillRig.config', [ ])
 			if ($scope.AddForwardForm.$valid) {
 
 				// detach the object data an work only with the ID   
-				$scope.configForward.session = $scope.configForward.session ? $scope.configForward.session['id'] : '';
-				// detach the object data an work only with the ID   
+				var sessionId = $scope.configForward.session;
+				delete $scope.configForward.session; 
+				
+				// detach the object data an work only with the ID
+				var connection = $scope.configForward.connection;
 				$scope.configForward.connection = $scope.configForward.connection ? $scope.configForward.connection['id'] : '';
 				
 				
-				configServices.addForward($scope.configForward).then(function(reason) {
+				configServices.addForward($scope.configForward,  sessionId).then(function(reason) {
 					$scope.infoMessages = reason;
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 
 				}, function(reason) {
+					$scope.configForward.session = sessionId;
+					$scope.configForward.connection = connection;
 					$scope.infoMessages = reason; 
 					deferred.reject(reason);
 				});
@@ -109,7 +114,13 @@ angular.module('DrillRig.config', [ ])
 				var connection =  $scope.editForward.connection;
 				$scope.editForward.connection = connection.id;
 				if ($scope.editForwardFilter.length > 0) {
-					$scope.editForward.filter = { block:false, mask : $scope.editForwardFilter };	
+					$scope.editForward.filter = { 
+						block:$scope.IpMaskBlacklist, 
+						mask : $scope.editForwardFilter,
+						enabled:true
+					};	
+				} else {
+					$scope.editForward.filter=null; 
 				}
 				
 				configServices.updateForward( $scope.editForward).then(function(reason) {
@@ -117,6 +128,7 @@ angular.module('DrillRig.config', [ ])
 					deferred.resolve(reason);
 	
 				}, function(reason) {
+					$scope.editForward.connection = connection;
 					$scope.infoMessages = reason; 
 					deferred.reject(reason);
 				});
@@ -171,6 +183,7 @@ angular.module('DrillRig.config', [ ])
 			editFwd.enabled = forward['enabled'];
 			editFwd.filter = forward.filter;
 			$scope.editForwardFilter = forward.filter ? [].concat(forward.filter.mask) : [];	
+			$scope.IpMaskBlacklist =  forward.filter ? forward.filter.block :false;
 			
 			$scope.editForward = editFwd;
 			dialogServices.showDialog("#EditForwardDialog");
@@ -558,7 +571,7 @@ angular.module('DrillRig.config', [ ])
 				
 				return httpService({
 					method : 'POST',
-					url : '/services/config/forward/add',
+					url : '/services/config/forward/add/'+sessionId,
 					data : angular.toJson( configForward )
 					
 				});

@@ -76,17 +76,17 @@ public class ConfigHandler {
 	 * @return service response.
 	 */
 	@POST
-	@Path("forward/add")
+	@Path("forward/add/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceResponse addForward(@Context HttpServletRequest req,
-			ForwardActionRequest forwardReq) {
+			@PathParam("id") String sessionId, Forward forwardReq) {
 		Configuration cfg = getEditConfiguration(req);
 
 		for (SshSession sshClient : cfg.getSshSession()) {
-			if (sshClient.getId().equals(forwardReq.getSession())) {
+			if (sshClient.getId().equals(sessionId)) {
 
-				Connection mAccount = getConnectionById(forwardReq.getConnection(), cfg);
+				Connection mAccount = getConnectionById((String) forwardReq.getConnection(), cfg);
 				if (mAccount != null) {
 				
 						Forward fwd = new Forward();
@@ -165,8 +165,8 @@ public class ConfigHandler {
 	@Path("forward/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeForward(@Context HttpServletRequest req,
-			@PathParam("id") String id, ForwardActionRequest forwardReq) {
+	public ServiceResponse updateForward(@Context HttpServletRequest req,
+			@PathParam("id") String id, Forward forwardReq) {
 
 		Configuration cfg = getEditConfiguration(req);
 		for (SshSession sshClient : cfg.getSshSession()) {
@@ -175,7 +175,7 @@ public class ConfigHandler {
 				Forward fwd = iter.next();
 				if (fwd.getId().equals(id)) {
 
-					Connection mAccount = getConnectionById(forwardReq.getConnection(), cfg);
+					Connection mAccount = getConnectionById((String) forwardReq.getConnection(), cfg);
 					if (mAccount != null) {
 						fwd.setDescription(forwardReq.getDescription());
 						fwd.setEnabled(forwardReq.isEnabled());
@@ -185,7 +185,8 @@ public class ConfigHandler {
 						fwd.setRPort(forwardReq.getRPort());
 						fwd.setSPort(forwardReq.getSPort());
 						fwd.setConnection(mAccount);
-		//				fwd.setFilter(forwardReq)
+						fwd.setFilter(forwardReq.getFilter());
+						
 						return ServiceUtils.createOKResponse("Forward changed");
 					} 
 
@@ -272,7 +273,7 @@ public class ConfigHandler {
 	@Path("connection/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeConnection(@Context HttpServletRequest req,
+	public ServiceResponse updateConnection(@Context HttpServletRequest req,
 			@PathParam("id") String id, Connection forwardReq) {
 
 		Configuration cfg = getEditConfiguration(req);
@@ -359,7 +360,7 @@ public class ConfigHandler {
 	@Path("session/update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceResponse changeSession(@Context HttpServletRequest req,
+	public ServiceResponse updateSession(@Context HttpServletRequest req,
 			@PathParam("id") String id, SshSession newSessionCfg) {
 
 		Configuration cfg = getEditConfiguration(req);
