@@ -246,6 +246,9 @@
       <label for="IpMask">IP Filter:</label>
       <select ng-model="editForward.filter" id="type" multiple="multiple" ng-options="c for c in editForwardFilter">
       </select><button style="float:left;margin-left:5px;" ng-click="removeIpMask(IpMask)">remove</button>
+
+      <label for="IpMaskBlacklist">Blacklist:</label>
+      <input type="checkbox" ng-model="IpMaskBlacklist" name="IpMaskBlacklist" />
       
     </fieldset>
     

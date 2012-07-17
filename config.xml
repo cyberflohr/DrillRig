@@ -12,16 +12,16 @@
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="SVN @ Durin" type="R" sHost="" sPort="24690" rHost="cgn-durin-01" rPort="3690" id="ID23e33afa_48be_4869_ac08_fe927d6c03b4"/>
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="Artifactory" type="R" sHost="" sPort="29081" rHost="cgn-bifur" rPort="8081" id="IDc600ea03_7934_454c_b68e_3a7958603990"/>
     </ns2:SshSession>
-    <ns2:SshSession id="ID6ca3df8d_ffd5_4f4f_b16c_9ce33a176d19" ns2:enabled="false" name="EPlus" description="EPlus MaXX Tunnels">
+    <ns2:SshSession id="ID6ca3df8d_ffd5_4f4f_b16c_9ce33a176d19" ns2:enabled="true" name="EPlus" description="EPlus MaXX Tunnels">
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="SSH Zaphod" type="L" sHost="" sPort="12022" rHost="localhost" rPort="12022" id="ID37da8086_e58f_46e2_8f2d_c2f7b34daa5b"/>
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="MAXXSIM DB  @ zaphod" type="L" sHost="" sPort="12023" rHost="localhost" rPort="12023" id="IDe43875a4_f118_45a1_905f_5cd903482f59"/>
     </ns2:SshSession>
     <ns2:SshSession id="ID6d60be6b_465a_407e_a981_9d77dfa4e18b" ns2:enabled="true" name="Stampit" description="Stampit project tunnels">
         <ns2:Forward connection="ID15203c5b_749b_421d_9f89_62bbb8821a9b" ns2:enabled="true" description="SiS HTTP port (Test environment)" type="L" sHost="" sPort="9999" rHost="cgn-frodo-01" rPort="7010" id="IDc3a72524_4c2a_4fc3_9ffa_122f7611cd7c">
-			<filter enabled="true" block="false">
-				<mask>127.0.0.1</mask>
-				<mask>141.77.246.143</mask>
-			</filter>
-		</ns2:Forward>
+            <filter enabled="true" block="false">
+                <mask>127.0.0.1</mask>
+                <mask>141.77.246.143</mask>
+            </filter>
+        </ns2:Forward>
     </ns2:SshSession>
 </ns2:Configuration>
