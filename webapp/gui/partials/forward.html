@@ -195,6 +195,7 @@
       
       <label for="remotePort">Remote-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="configForward.rPort" name="remotePort" value="" />
+      
     </fieldset>
     
   </form>
@@ -238,6 +239,14 @@
       
       <label for="remotePort">Remote-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="editForward.rPort" name="remotePort" value="" />
+
+      <label for="IpMask">IP:</label>
+      <input type="text" ng-model="IpMask" name="IpMask" value="" /><button style="float:left;margin-left:5px;" ng-click="addIpMask(IpMask)">add</button>
+
+      <label for="IpMask">IP Filter:</label>
+      <select ng-model="editForward.filter" id="type" multiple="multiple" ng-options="c for c in editForwardFilter">
+      </select><button style="float:left;margin-left:5px;" ng-click="removeIpMask(IpMask)">remove</button>
+      
     </fieldset>
     
   </form>

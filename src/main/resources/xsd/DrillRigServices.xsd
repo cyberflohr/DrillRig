@@ -65,12 +65,25 @@
 				</element>
 				<element name="type">
 					<simpleType>
-						<restriction base="string">							<enumeration value="L"></enumeration>
+						<restriction base="string">
+							<enumeration value="L"></enumeration>
 							<enumeration value="R"></enumeration>
 						</restriction>
 					</simpleType>
 				</element>
+
+				<element name="filter" type="tns:IpFilter" maxOccurs="1" minOccurs="0"></element>
 			</sequence>
 		</complexType>
 	</element>
+	
+   	<complexType name="IpFilter">
+   		<sequence>
+   			<element name="mask" type="string" maxOccurs="unbounded"></element>
+   		</sequence>
+   		<attribute name="id" type="ID"></attribute>
+   		<attribute name="enabled" type="boolean"></attribute>
+   		<attribute name="name" type="string"></attribute>
+   		<attribute name="block" type="boolean"></attribute>
+   	</complexType>	
 </schema>

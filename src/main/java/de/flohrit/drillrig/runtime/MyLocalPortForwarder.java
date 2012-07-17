@@ -3,9 +3,11 @@ package de.flohrit.drillrig.runtime;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import net.schmizz.concurrent.Event;
 import net.schmizz.sshj.SSHClient;
@@ -24,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Forward;
+import de.flohrit.drillrig.config.IpFilter;
 
 public 	class MyLocalPortForwarder extends Thread implements PortForwarder, DisconnectListener {
 	final static private Logger logger = LoggerFactory
@@ -32,6 +35,8 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 	private SSHClient client;
 	private Parameters parameters;
 	private ServerSocket serverSocket;
+
+	private Forward forwardCfg;
 
 	public ServerSocket getServerSocket() {
 		return serverSocket;
@@ -67,6 +72,7 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 				forward.getRHost(), forward.getRPort());
 									
 		this.parameters = parameters;
+		this.forwardCfg = forward;
 	}
 	
 	@Override
@@ -74,7 +80,11 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 		while (!isInterrupted()) {
 			try {
 				Socket socket = serverSocket.accept();
-				startForwarding(socket);
+				if (isBlockedIp((InetSocketAddress) socket.getRemoteSocketAddress())) {
+					socket.close();
+				} else {
+					startForwarding(socket);
+				}
 			} catch (ConnectException e) { // i.e. connection refused on
 											// remote end
 
@@ -160,5 +170,22 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 		}
 		logger.warn(
 				"notifyDisconnect received {}", paramDisconnectReason);
+	}
+	
+	private boolean isBlockedIp(InetSocketAddress socketAddress) {
+
+		IpFilter filter = forwardCfg.getFilter();
+		if (filter != null) {
+			if (filter.isEnabled()) {
+				
+				for (String mask : filter.getMask()) {
+					if (Pattern.compile(mask).matcher(socketAddress.getAddress().getHostAddress()).matches()) {
+						return filter.isBlock();
+					}
+				}
+				return !filter.isBlock();
+			}
+		}
+		return false;
 	}
 }

@@ -18,6 +18,7 @@ var DrillRig = angular.module('DrillRig',
 		createDialog : function(dialogId, options) {
 
 			var dialog = $(dialogId);
+			$('button', dialog).button();
 			dialog.dialog(options);
 		},
 

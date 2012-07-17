@@ -108,7 +108,10 @@ angular.module('DrillRig.config', [ ])
 			if ($scope.EditForwardForm.$valid) {
 				var connection =  $scope.editForward.connection;
 				$scope.editForward.connection = connection.id;
-
+				if ($scope.editForwardFilter.length > 0) {
+					$scope.editForward.filter = { block:false, mask : $scope.editForwardFilter };	
+				}
+				
 				configServices.updateForward( $scope.editForward).then(function(reason) {
 					$scope.refreshConfig();
 					deferred.resolve(reason);
@@ -166,6 +169,8 @@ angular.module('DrillRig.config', [ ])
 			editFwd.rPort = forward['rPort'];
 			editFwd.sPort = forward['sPort'];
 			editFwd.enabled = forward['enabled'];
+			editFwd.filter = forward.filter;
+			$scope.editForwardFilter = forward.filter ? [].concat(forward.filter.mask) : [];	
 			
 			$scope.editForward = editFwd;
 			dialogServices.showDialog("#EditForwardDialog");
@@ -206,6 +211,22 @@ angular.module('DrillRig.config', [ ])
 			$scope.configSession.enabled = session.enabled;
 
 			dialogServices.showDialog("#EditSessionDialog");
+		};
+
+		$scope.addIpMask = function(IpMask) {
+			if (IpMask != "") {
+				$scope.editForwardFilter.push(IpMask);
+				$scope.IpMask='';
+			}
+		};
+		
+		$scope.removeIpMask = function(IpMask) {
+			for (var s in $scope.editForwardFilter) {
+				if ($scope.editForwardFilter[s] == $scope.editForward.filter) {
+					$scope.editForwardFilter.splice(s, 1);
+					break;
+				}
+			}
 		};
 
 		/** 
@@ -306,7 +327,7 @@ angular.module('DrillRig.config', [ ])
 		 */
 		dialogServices.createDialog("#EditForwardDialog", {
 			autoOpen : false,
-			width : 420,
+			width : 490,
 			modal : true,
 			buttons : {
 				"update forward" : function() {
