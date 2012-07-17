@@ -24,7 +24,7 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 	
 	public void close() {
 		try {
-			if (isAlive()) {
+			if (isActive()) {
 				client.getRemotePortForwarder().cancel(remoteFwd);
 				client.close();
 			}
@@ -63,7 +63,7 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 	}
 
 	@Override
-	public boolean isAlive() {
+	public boolean isActive() {
 		return remoteFwd != null
 				&& client.getRemotePortForwarder().getActiveForwards()
 						.contains(remoteFwd); 

@@ -39,8 +39,12 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 
 	public void close() {
 		try {
-			client.close();
-			serverSocket.close();
+			if (client != null) {
+				client.close();
+			}
+			if (serverSocket != null) {
+				serverSocket.close();
+			}
 		} catch (IOException e) {
 			logger.error("Forcing socket close failed.");
 		}
@@ -62,7 +66,6 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 				forward.getSHost(), forward.getSPort(),
 				forward.getRHost(), forward.getRPort());
 									
-		client.getTransport().setDisconnectListener(this);
 		this.parameters = parameters;
 	}
 	
@@ -101,6 +104,7 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 				client.getConnection(), socket, parameters);
 		chan.open();
 		chan.start();
+		client.getTransport().setDisconnectListener(this);
 	}
 
 	class DirectTCPIPChannel extends AbstractDirectChannel {
@@ -139,11 +143,19 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 	}
 
 	@Override
+	public boolean isActive() {
+	
+		return super.isAlive() && client != null && client.isAuthenticated() && client.isConnected();
+	}
+	
+	@Override
 	public void notifyDisconnect(DisconnectReason paramDisconnectReason) {
 		interrupt();
 		client=null;
 		try {
-			serverSocket.close();
+			if (serverSocket != null) {
+				serverSocket.close();
+			}
 		} catch (IOException e) {
 		}
 		logger.warn(

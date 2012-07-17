@@ -143,7 +143,7 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 						PortForwarder myLocalPortForwarder = portForwarders
 								.get(forward);
 						if (myLocalPortForwarder == null
-								|| !myLocalPortForwarder.isAlive()) {
+								|| !myLocalPortForwarder.isActive()) {
 							createPortForwarding(forward);
 						}
 					}
@@ -174,7 +174,7 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 					info.setState("deactivated");
 				} else if (myLocalPortForwarder == null) {
 					info.setState("stopped");
-				} else if (myLocalPortForwarder.isAlive()) {
+				} else if (myLocalPortForwarder.isActive()) {
 					info.setState("running");
 				} else {
 					info.setState("retry");
