@@ -156,6 +156,11 @@
 			<artifactId>jaxb2-basics-runtime</artifactId>
 			<version>0.6.3</version>
 		</dependency>
+		<dependency>
+			<groupId>de.flohrit.drillrig</groupId>
+			<artifactId>jsocks</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 	</dependencies>
 </project>
