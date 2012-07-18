@@ -60,6 +60,10 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 			if ("L".equals(forward.getType())) {
 				fwd = new MyLocalPortForwarder(sshClient, forward);
 
+			} else if ("D".equals(forward.getType())) {
+
+				fwd = new MyDynamicPortForwarder(sshClient, forward);
+				
 			} else {
 
 				fwd = new MyRemotePortForwarder(sshClient, forward);

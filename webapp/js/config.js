@@ -32,7 +32,7 @@ angular.module('DrillRig.config', [ ])
 			if ($scope.AddForwardForm.$valid) {
 
 				// detach the object data an work only with the ID   
-				var sessionId = $scope.configForward.session;
+				var session = $scope.configForward.session;
 				delete $scope.configForward.session; 
 				
 				// detach the object data an work only with the ID
@@ -40,13 +40,13 @@ angular.module('DrillRig.config', [ ])
 				$scope.configForward.connection = $scope.configForward.connection ? $scope.configForward.connection['id'] : '';
 				
 				
-				configServices.addForward($scope.configForward,  sessionId).then(function(reason) {
+				configServices.addForward($scope.configForward,  session.id).then(function(reason) {
 					$scope.infoMessages = reason;
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 
 				}, function(reason) {
-					$scope.configForward.session = sessionId;
+					$scope.configForward.session = session;
 					$scope.configForward.connection = connection;
 					$scope.infoMessages = reason; 
 					deferred.reject(reason);
@@ -105,11 +105,23 @@ angular.module('DrillRig.config', [ ])
 			});
 		};
 		
+		$scope.onChangeForwardType = function(forward) {
+			
+			if (forward.type == 'D') {
+				forward.rPort=1;
+				forward.rHost='dynamic';
+			} else {
+				forward.rPort=0;
+				forward.rHost='';
+			}
+		};
+		
 		/**
 		 * Edit forward to configuration
 		 */
 		$scope.updateForward = function() {
 			var deferred = $q.defer();
+			
 			if ($scope.EditForwardForm.$valid) {
 				var connection =  $scope.editForward.connection;
 				$scope.editForward.connection = connection.id;
@@ -567,7 +579,7 @@ angular.module('DrillRig.config', [ ])
 		};
 		
 		return {
-			addForward : function(configForward) {
+			addForward : function(configForward, sessionId) {
 				
 				return httpService({
 					method : 'POST',

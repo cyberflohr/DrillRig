@@ -179,9 +179,10 @@
       <input type="checkbox" ng-model="configForward.enabled" name="enabled" value="" />
       
       <label for="type">Type:</label>
-      <select required ng-model="configForward.type" id="type">
+      <select required ng-model="configForward.type" ng-change="onChangeForwardType(configForward)" id="type">
         <option value="L">Local</option>
         <option value="R">Remote</option>
+        <option value="D">Dynamic</option>
       </select>
       
       <label for="sourceHost">Source-Host:</label>
@@ -190,12 +191,13 @@
       <label for="sourcePort">Source-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="configForward.sPort" name="sourcePort" value="" />
       
-      <label for="remoteHost">Remote-Host:</label>
-      <input type="text" required ng-model="configForward.rHost" name="remoteHost" value="" />
-      
-      <label for="remotePort">Remote-Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="configForward.rPort" name="remotePort" value="" />
-      
+      <div ng-hide="configForward.type == 'D'">
+        <label for="remoteHost">Remote-Host:</label>
+        <input type="text" required ng-model="configForward.rHost" name="remoteHost" value="" />
+        
+        <label for="remotePort">Remote-Port:</label>
+        <input type="number" required min="1" max="65535" ng-model="configForward.rPort" name="remotePort" value="" />
+      </div>
     </fieldset>
     
   </form>
@@ -223,9 +225,10 @@
       <input type="checkbox" ng-model="editForward.enabled" name="enabled" value="" />
       
       <label for="type">Type:</label>
-      <select required ng-model="editForward.type" id="type">
+      <select required ng-model="editForward.type" ng-change="onChangeForwardType(editForward)" id="type">
         <option value="L">Local</option>
         <option value="R">Remote</option>
+        <option value="D">Dynamic</option>
       </select>
       
       <label for="sourceHost">Source-Host:</label>
@@ -234,12 +237,14 @@
       <label for="sourcePort">Source-Port:</label>
       <input type="number" required min="1" max="65535" ng-model="editForward.sPort" name="sourcePort" value="" />
       
-      <label for="remoteHost">Remote-Host:</label>
-      <input type="text" required ng-model="editForward.rHost" name="remoteHost" value="" />
+      <div ng-hide="editForward.type == 'D'">
+        <label for="remoteHost">Remote-Host:</label>
+        <input type="text" required ng-model="editForward.rHost" name="remoteHost" value="" />
+        
+        <label for="remotePort">Remote-Port:</label>
+        <input type="number" required min="1" max="65535" ng-model="editForward.rPort" name="remotePort" value="" />
+      </div>
       
-      <label for="remotePort">Remote-Port:</label>
-      <input type="number" required min="1" max="65535" ng-model="editForward.rPort" name="remotePort" value="" />
-
       <label for="IpMask">IP:</label>
       <input type="text" ng-model="IpMask" name="IpMask" value="" /><button style="float:left;margin-left:5px;" ng-click="addIpMask(IpMask)">add</button>
 
