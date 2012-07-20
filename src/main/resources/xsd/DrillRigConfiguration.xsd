@@ -42,13 +42,18 @@
 
 	<xsd:element name="Connection">
 		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:element name="proxy" type="dr:Proxy"></xsd:element>
+			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
-            <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
-            <xsd:attribute name="host" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
 			<xsd:attribute name="port" type="xsd:int" default="22"></xsd:attribute>
 
 			<xsd:attribute name="user" type="xsd:string"></xsd:attribute>
-			<xsd:attribute name="password" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="password" type="xsd:string"></xsd:attribute>
+
 		</xsd:complexType>
 	</xsd:element>
    
@@ -124,5 +129,42 @@
    		<xsd:attribute name="enabled" type="xsd:boolean"></xsd:attribute>
    		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
    		<xsd:attribute name="block" type="xsd:boolean"></xsd:attribute>
+   	</xsd:complexType>
+
+
+   	<xsd:complexType name="Proxy">
+   		<xsd:sequence>
+   			<xsd:element name="authentication">
+   				<xsd:complexType>
+   					<xsd:attribute name="user" type="xsd:string">
+   					</xsd:attribute>
+   					<xsd:attribute name="password"
+   						type="xsd:string">
+   					</xsd:attribute>
+   					<xsd:attribute name="domain" type="xsd:string">
+   					</xsd:attribute>
+   					<xsd:attribute name="authType">
+   						<xsd:simpleType>
+   							<xsd:restriction base="xsd:string">
+   								<xsd:enumeration value="BASIC"></xsd:enumeration>
+   								<xsd:enumeration value="NTLM"></xsd:enumeration>
+   							</xsd:restriction>
+   						</xsd:simpleType>
+   					</xsd:attribute>
+   				</xsd:complexType>
+   			</xsd:element>
+   		</xsd:sequence>
+   		<xsd:attribute name="type" use="required">
+   			<xsd:simpleType>
+   				<xsd:restriction base="xsd:string">
+   					<xsd:enumeration value="NONE"></xsd:enumeration>
+   					<xsd:enumeration value="HTTP"></xsd:enumeration>
+   					<xsd:enumeration value="SOCKS"></xsd:enumeration>
+   				</xsd:restriction>
+   			</xsd:simpleType>
+   		</xsd:attribute>
+
+   		<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
+   		<xsd:attribute name="port" type="xsd:int"></xsd:attribute>
    	</xsd:complexType>
 </xsd:schema>

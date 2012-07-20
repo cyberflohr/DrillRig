@@ -49,6 +49,7 @@ public 	class MyDynamicPortForwarder extends Thread implements PortForwarder, Di
 			if (serverSocket != null) {
 				serverSocket.close();
 			}
+			serverSocket=null;
 			
 		} catch (IOException e) {
 			logger.error("Forcing socket close failed.");
@@ -181,7 +182,7 @@ public 	class MyDynamicPortForwarder extends Thread implements PortForwarder, Di
 	@Override
 	public boolean isActive() {
 	
-		return super.isAlive() && client != null && client.isAuthenticated() && client.isConnected();
+		return super.isAlive() && client != null && serverSocket != null && client.isAuthenticated() && client.isConnected();
 	}
 	
 	@Override
@@ -194,6 +195,7 @@ public 	class MyDynamicPortForwarder extends Thread implements PortForwarder, Di
 			}
 		} catch (IOException e) {
 		}
+		serverSocket=null;
 		logger.warn(
 				"notifyDisconnect received {}", paramDisconnectReason);
 	}
