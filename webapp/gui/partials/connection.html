@@ -55,6 +55,7 @@
                         href="">Port</a></th>
                       <th class="table-header-repeat line-left"><a
                         href="">User</a></th>
+                      <th class="table-header-repeat"><a href="">Proxy</a></th>
                       <th class="table-header-repeat"><a href="">Actions</a></th>
                     </tr>
                     <tr ng-repeat="connection in config.Connection">
@@ -62,6 +63,7 @@
                       <td>{{connection['host']}}</td>
                       <td>{{connection['port']}}</td>
                       <td>{{connection['user']}}</td>
+                      <td>{{connection.proxy.type}}</td>
                       <td>
                         <a class="icon icon-edit" title="edit" ng-click="showEditConnection(connection)" href=""></a>
                         <a class="icon icon-delete" title="delete" ng-click="deleteConnection(connection)" href=""></a>
@@ -116,6 +118,21 @@
       <label for="password">Password:</label>
       <input type="password" required ng-model="configConnection.password" name="password" value="" />
 
+      <label for="type">Proxy:</label>
+      <select required ng-model="configConnection.proxy.type" ng-change="onChangeProxyType(configConnection)" id="type">
+        <option value="DIRECT">None</option>
+        <option value="HTTP">HTTP</option>
+        <option value="SOCKS">Socks</option>
+      </select>
+      
+      <div ng-hide="configConnection.proxy.type == 'DIRECT'">
+        <label for="proxyHost">Proxy-Host:</label>
+        <input type="text" required ng-model="configConnection.proxy.host" name="proxyHost" value="" />
+  
+        <label for="proxyPort">Proxy-Port:</label>
+        <input type="number" required ng-model="configConnection.proxy.port" name="proxyPort" value="" />
+      </div>
+      
     </fieldset>
     
   </form>
@@ -147,6 +164,22 @@
       
       <label for="password">Password:</label>
       <input type="password" required ng-model="editConnection.password" name="password" value="" />
+
+      <label for="type">Proxy:</label>
+      <select required ng-model="editConnection.proxy.type" ng-change="onChangeProxyType(editConnection)" id="type">
+        <option value="DIRECT">None</option>
+        <option value="HTTP">HTTP</option>
+        <option value="SOCKS">Socks</option>
+      </select>
+      
+      <div ng-hide="editConnection.proxy.type == 'DIRECT'">
+        <label for="proxyHost">Proxy-Host:</label>
+        <input type="text" required ng-model="editConnection.proxy.host" name="proxyHost" value="" />
+  
+        <label for="proxyPort">Proxy-Port:</label>
+        <input type="number" required ng-model="editConnection.proxy.port" name="proxyPort" value="" />
+      </div>
+      
     </fieldset>
     
   </form>

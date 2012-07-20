@@ -287,7 +287,8 @@ public class ConfigHandler {
 				account.setPassword(forwardReq.getPassword().endsWith("==") ? forwardReq
 						.getPassword() : DrillServer.getEncDecorder().encrypt(
 						forwardReq.getPassword()));
-
+				account.setProxy(forwardReq.getProxy());
+				
 				return ServiceUtils.createOKResponse("Connection changed");
 			}
 		}

@@ -9,15 +9,25 @@
     <ns2:Connection id="ID15203c5b_749b_421d_9f89_62bbb8821a9b" name="SAM" host="cgn-sam-01" port="22" user="root" password="ZnbJY4h0Bl1rkRQ7hK9AQA=="/>
     <ns2:Connection id="ID499510e1_d353_4203_9b46_b3ad98018f0c" name="Hetzner" host="85.10.193.50" port="22" user="stampittun" password="g3V185/9Xb5i1KYsm6WiVQ=="/>
     <ns2:Connection id="ID71fc1414_23d7_474c_806f_2b526620c946" name="Zaphod" host="cgn-sam-01" port="12022" user="salessimu" password="wrF5dy8DJka7tc41OqREMg=="/>
+    <ns2:Connection id="ID67315eed_eae6_4339_9fef_b467dce207fb" name="SAM_via_Socks" host="cgn-sam-01" port="22" user="root" password="ZnbJY4h0Bl1rkRQ7hK9AQA==">
+        <proxy type="SOCKS" host="localhost" port="9998">
+            <authentication authType="NONE"/>
+        </proxy>
+    </ns2:Connection>
+    <ns2:Connection id="IDf636108c_c82a_4956_85c4_7fbaeb6febc3" name="Hetzner_SSL" host="85.10.193.50" port="443" user="root" password="CXNnXBj/45YCUMlPG1Vapw==">
+        <proxy type="HTTP" host="proxy.de.softlab.net" port="8080"/>
+    </ns2:Connection>
     <ns2:SshSession id="ID05fe4c02_51d9_433c_97eb_c0d61efae2d1" ns2:enabled="false" name="Common" description="Common Tunnels">
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="SVN @ Durin" type="R" sHost="" sPort="24690" rHost="cgn-durin-01" rPort="3690" id="ID23e33afa_48be_4869_ac08_fe927d6c03b4"/>
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="Artifactory" type="R" sHost="" sPort="29081" rHost="cgn-bifur" rPort="8081" id="IDc600ea03_7934_454c_b68e_3a7958603990"/>
     </ns2:SshSession>
-    <ns2:SshSession id="ID6ca3df8d_ffd5_4f4f_b16c_9ce33a176d19" ns2:enabled="true" name="EPlus" description="EPlus MaXX Tunnels">
+    <ns2:SshSession id="ID6ca3df8d_ffd5_4f4f_b16c_9ce33a176d19" ns2:enabled="false" name="EPlus" description="EPlus MaXX Tunnels">
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="SSH Zaphod" type="L" sHost="" sPort="12022" rHost="localhost" rPort="12022" id="ID37da8086_e58f_46e2_8f2d_c2f7b34daa5b"/>
         <ns2:Forward connection="ID499510e1_d353_4203_9b46_b3ad98018f0c" ns2:enabled="true" description="MAXXSIM DB  @ zaphod" type="L" sHost="" sPort="12023" rHost="localhost" rPort="12023" id="IDe43875a4_f118_45a1_905f_5cd903482f59"/>
     </ns2:SshSession>
     <ns2:SshSession id="ID6d60be6b_465a_407e_a981_9d77dfa4e18b" ns2:enabled="true" name="Stampit" description="Stampit project tunnels">
         <ns2:Forward connection="ID15203c5b_749b_421d_9f89_62bbb8821a9b" ns2:enabled="true" description="socks proxy" type="D" sHost="localhost" sPort="9999" rHost="dynamic" rPort="1" id="IDc3a72524_4c2a_4fc3_9ffa_122f7611cd7c"/>
+        <ns2:Forward connection="ID67315eed_eae6_4339_9fef_b467dce207fb" ns2:enabled="true" description="test" type="L" sHost="" sPort="7777" rHost="localhost" rPort="22" id="IDc3d926f4_e1e2_4107_9b03_0842041cba14"/>
+        <ns2:Forward connection="IDf636108c_c82a_4956_85c4_7fbaeb6febc3" ns2:enabled="true" description="HetzSSL" type="L" sHost="localhost" sPort="9997" rHost="localhost" rPort="22" id="ID77cf2d66_2303_4057_b16a_355374cedaf6"/>
     </ns2:SshSession>
 </ns2:Configuration>

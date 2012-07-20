@@ -197,6 +197,7 @@ angular.module('DrillRig.config', [ ])
 			$scope.editForwardFilter = forward.filter ? [].concat(forward.filter.mask) : [];	
 			$scope.IpMaskBlacklist =  forward.filter ? forward.filter.block :false;
 			
+			
 			$scope.editForward = editFwd;
 			dialogServices.showDialog("#EditForwardDialog");
 		};
@@ -428,6 +429,7 @@ angular.module('DrillRig.config', [ ])
 			editConnection.port = connection['port'];
 			editConnection.user = connection['user'];
 			editConnection.password = connection['password'];
+			editConnection.proxy = connection.proxy ? connection.proxy : { type:'DIRECT', port : 1, host : 'none'};
 			
 			$scope.editConnection = editConnection;
 			dialogServices.showDialog("#EditConnectionDialog");
@@ -439,11 +441,16 @@ angular.module('DrillRig.config', [ ])
 		$scope.updateConnection = function() {
 			var deferred = $q.defer();
 			if ($scope.EditConnectionForm.$valid) {
+				var proxy = $scope.editConnection.proxy;
+				if ($scope.editConnection.proxy.type == 'DIRECT') {
+					$scope.editConnection.proxy = null;
+				}
 				configServices.updateConnection( $scope.editConnection).then(function(reason) {
 					$scope.refreshConfig();
 					deferred.resolve(reason);
 	
 				}, function(reason) {
+					$scope.editConnection.proxy = proxy;
 					$scope.infoMessages = reason; 
 					deferred.reject(reason);
 				});
@@ -493,6 +500,12 @@ angular.module('DrillRig.config', [ ])
 			dialogServices.destroyDialog("#EditConnectionDialog");
 		});
 
+		$scope.onChangeProxyType = function(connection) {
+
+			connection.proxy.port = connection.proxy.type == 'DIRECT' ? 1 : '';
+			connection.proxy.host = connection.proxy.type == 'DIRECT' ? 'none' : '';
+		};
+		
 		/**
 		 * create "add new connection" dialog
 		 */

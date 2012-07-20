@@ -16,7 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Connection;
 import de.flohrit.drillrig.config.Forward;
+import de.flohrit.drillrig.config.Proxy;
 import de.flohrit.drillrig.config.SshSession;
+import de.flohrit.drillrig.protocol.ProxyTunnelSocketFactory;
+import de.flohrit.drillrig.protocol.SocksSocketFactory;
 import de.flohrit.drillrig.services.ForwardStateInfo;
 
 public class SshSessionMonitor extends Thread implements DisconnectListener {
@@ -55,6 +58,10 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 	public void createPortForwarding(Forward forward) {
 		PortForwarder fwd;
 
+		if (!forward.isEnabled()) {
+			return;
+		}
+		
 		try {
 			SSHClient sshClient = createSshTransportSession(forward);
 			if ("L".equals(forward.getType())) {
@@ -77,33 +84,35 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 		}
 	}
 
-	private SSHClient createSshTransportSession(Forward forward) {
+	private SSHClient createSshTransportSession(Forward forward) throws IOException {
 		SSHClient sshClient = new SSHClient();
 		Connection maschineAccount = (Connection) forward.getConnection();
-		try {
-			logger.info("create ssh session for user {}@{}", new Object[] {
-					maschineAccount.getUser(), maschineAccount.getHost() });
-			sshClient.addHostKeyVerifier(new AutoKnownHostsVerifier(new File(
-					"known_hosts")));
-
-			sshClient.connect(maschineAccount.getHost(),
-					maschineAccount.getPort());
-			
-			sshClient.authPassword(maschineAccount.getUser(),
-					DrillServer.getEncDecorder().decrypt(maschineAccount.getPassword()));
-
-			
-		} catch (IOException e) {
-			logger.error(
-					"Authentication failed for user {}@{}: {}",
-					new Object[] { maschineAccount.getUser(),
-							maschineAccount.getHost(), e });
-			try {
-				sshClient.close();
-			} catch (IOException e1) {
+		logger.info("create ssh session for user {}@{}", new Object[] {
+				maschineAccount.getUser(), maschineAccount.getHost() });
+		
+		Proxy proxy = maschineAccount.getProxy();
+		if (proxy != null) {
+			if ("HTTP".equals(proxy.getType())) {
+				sshClient.setSocketFactory(new ProxyTunnelSocketFactory(proxy.getHost(), proxy.getPort()));
+			} else if ("SOCKS".equals(proxy.getType())) {
+				sshClient.setSocketFactory(new SocksSocketFactory(proxy.getHost(), proxy.getPort()));
+			} else if ("DIRECT".equals(proxy.getType())) {
+				// no proxy
+			} else {
+				logger.warn("Unsupported proxy type found {}", proxy.getType());
 			}
-			return null;
 		}
+		
+		sshClient.addHostKeyVerifier(new AutoKnownHostsVerifier(new File(
+				"known_hosts")));
+
+		sshClient.connect(maschineAccount.getHost(),
+				maschineAccount.getPort());
+		
+		sshClient.authPassword(maschineAccount.getUser(),
+				DrillServer.getEncDecorder().decrypt(maschineAccount.getPassword()));
+
+		
 		return sshClient;
 	}
 
