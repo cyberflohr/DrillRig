@@ -58,7 +58,7 @@ public 	class MyDynamicPortForwarder extends Thread implements PortForwarder, Di
 
 	MyDynamicPortForwarder(SSHClient client,
 			Forward forward) throws IOException {
-		super("DForwarder-" + forward.getSPort());
+		super("DForwarder");
 		this.client = client;
 		
 
@@ -74,7 +74,7 @@ public 	class MyDynamicPortForwarder extends Thread implements PortForwarder, Di
 	@Override
 	public void run() {
 
-		while (!isInterrupted()) {
+		while (!isInterrupted() && isActive()) {
 			try {
 				final Socket socket = serverSocket.accept();
 				if (isBlockedIp((InetSocketAddress) socket

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import de.flohrit.drillrig.config.Forward;
 
-public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener {
+public 	class MyRemotePortForwarder extends Thread  implements PortForwarder, DisconnectListener {
 	final static private Logger logger = LoggerFactory
 			.getLogger(MyRemotePortForwarder.class);
 	
@@ -36,12 +36,14 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 	MyRemotePortForwarder(SSHClient sshClient,
 			Forward forward) throws IOException {
 
+		super("RForwarder");
 		this.client = sshClient;
 		this.forwardCfg = forward;
 		client.getTransport().setDisconnectListener(this);
 	}
 	
-	public void start() {
+	@Override
+	public void run() {
 		try {
 			remoteFwd = client
 			.getRemotePortForwarder()
@@ -55,10 +57,16 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 					// forwarded to us
 					new MySocketConnectListener(this.forwardCfg,
 							new InetSocketAddress(forwardCfg.getRHost(), forwardCfg.getRPort())));
+
+			synchronized (Thread.currentThread()) {
+				Thread.currentThread().wait();
+			}
 		} catch (ConnectionException e) {
 			logger.error("Starting remote port tunnel failed.", e);
 		} catch (TransportException e) {
 			logger.error("Starting remote port tunnel failed.", e);
+		} catch (InterruptedException e) {
+			logger.info("Dynamic port listener stopped.");
 		}
 	}
 
@@ -72,6 +80,7 @@ public 	class MyRemotePortForwarder implements PortForwarder, DisconnectListener
 	@Override
 	public void notifyDisconnect(DisconnectReason paramDisconnectReason) {
 		remoteFwd=null;
+		interrupt();
 		logger.warn(
 				"notifyDisconnect received {}", paramDisconnectReason);
 	}

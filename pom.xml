@@ -51,7 +51,7 @@
 						</goals>
 						<configuration>
 							<warSourceDirectory>${basedir}/webapp</warSourceDirectory>
-							<packagingExcludes>**/*jetty*</packagingExcludes>
+							<packagingExcludes>**/*jetty*,**/*simple*</packagingExcludes>
 						</configuration>
 					</execution>
 				</executions>
@@ -130,6 +130,12 @@
 			<artifactId>apache-sshd</artifactId>
 			<version>0.7.0</version>
 			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.schmizz</groupId>
@@ -161,6 +167,10 @@
 			<artifactId>jsocks</artifactId>
 			<version>1.0</version>
 		</dependency>
-
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>1.0.6</version>
+		</dependency>
 	</dependencies>
 </project>
