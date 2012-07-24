@@ -12,7 +12,6 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.4/mina-core-2.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/sshd/sshd-pam/0.7.0/sshd-pam-0.7.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk15/140/bcprov-jdk15-140.jar"/>
   <classpathentry kind="var" path="M2_REPO/tomcat/tomcat-apr/5.5.23/tomcat-apr-5.5.23.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/schmizz/sshj/0.8.0/sshj-0.8.0.jar"/>
@@ -40,4 +39,6 @@
   <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-xc/1.9.2/jackson-xc-1.9.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jvnet/jaxb2_commons/jaxb2-basics-runtime/0.6.3/jaxb2-basics-runtime-0.6.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/de/flohrit/drillrig/jsocks/1.0/jsocks-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-classic/1.0.6/logback-classic-1.0.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-core/1.0.6/logback-core-1.0.6.jar"/>
 </classpath>

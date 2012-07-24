@@ -13,6 +13,7 @@ import net.schmizz.sshj.transport.DisconnectListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import de.flohrit.drillrig.config.Connection;
 import de.flohrit.drillrig.config.Forward;
@@ -31,8 +32,9 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 
 	public SshSessionMonitor(SshSession sshClientsCfg) throws IOException {
 
-		super(sshClientsCfg.getName());
+		super("LForwarder");
 		setDaemon(true);
+
 		this.sshClientsCfg = sshClientsCfg;
 
 		if (sshClientsCfg.isEnabled()) {
@@ -61,6 +63,7 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 		if (!forward.isEnabled()) {
 			return;
 		}
+		MDC.put("forward", forward.getId());
 		
 		try {
 			SSHClient sshClient = createSshTransportSession(forward);
@@ -81,10 +84,14 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 		} catch (IOException e) {
 			logger.error("Can't create port {} listener for interface {}",
 					new Object[] { forward.getSPort(), e.toString() });
+
+		} finally {
+			MDC.remove("forward");
 		}
 	}
 
 	private SSHClient createSshTransportSession(Forward forward) throws IOException {
+		
 		SSHClient sshClient = new SSHClient();
 		Connection maschineAccount = (Connection) forward.getConnection();
 		logger.info("create ssh session for user {}@{}", new Object[] {
@@ -112,7 +119,7 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 		sshClient.authPassword(maschineAccount.getUser(),
 				DrillServer.getEncDecorder().decrypt(maschineAccount.getPassword()));
 
-		
+
 		return sshClient;
 	}
 
@@ -131,6 +138,7 @@ public class SshSessionMonitor extends Thread implements DisconnectListener {
 
 	@Override
 	public void run() {
+
 		while (!interrupted()) {
 			try {
 				Thread.sleep(10000);

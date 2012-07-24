@@ -57,7 +57,7 @@ public 	class MyLocalPortForwarder extends Thread implements PortForwarder, Disc
 
 	MyLocalPortForwarder(SSHClient client,
 			Forward forward) throws IOException {
-		super("LForwarder-" + forward.getSPort());
+		super("LForwarder");
 		this.client = client;
 		
 		serverSocket = new java.net.ServerSocket(
