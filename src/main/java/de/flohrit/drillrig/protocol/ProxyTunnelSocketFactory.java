@@ -12,7 +12,6 @@ import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
-import org.jvnet.jaxb2_commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +102,7 @@ public class ProxyTunnelSocketFactory extends SocketFactory {
         	sb.append("Proxy-Authorization: Basic " + credentials + "\r\n\r\n");
 //        }
         
-        logger.debug("Connecting to proxy: {}", sb);
+        logger.debug("Connecting to proxy: {}:{}", host, port);
         byte b[];
         try {
             b = sb.toString().getBytes("UTF-8");
