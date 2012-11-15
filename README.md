@@ -1,3 +1,7 @@
+DrillRig - SSH tunnel management server
+=======================================
+
+With DrillRig you can manage your SSH tunnel endpoints via Web ... TBD
 
 Download JSocks http://sourceforge.net/projects/jsocks/files/jsocks.jar/download
 
