@@ -16,15 +16,6 @@
 		</file>
 	</files>
 	<dependencySets>
-	<!-- 
-		<dependencySet>
-			<outputDirectory>/</outputDirectory>
-			<unpack>true</unpack>
-			<includes>
-				<include>de.flohrit.drillrig:jarloader:*</include>
-			</includes>
-		</dependencySet>
-	 -->
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<unpack>true</unpack>
