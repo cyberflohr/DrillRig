@@ -24,8 +24,8 @@ or within eclipse "run DrillRig"
 Open WebGUI:
 
 http://localhost:8080/
-User: admin
-Pwd: admin
+
+User: admin, Password: admin
 
 Configuration
 -------------
@@ -41,6 +41,10 @@ Configuration
 6. Change to the "monitoring" tab to show the actual state of the tunnel endpoints.
 
 
-Contribution:
+Contribution
+------------
 
 Still a lot to do, so if anyone wants to contribute to this project - you are welcome!
+
+regards,
+cyberflohr
